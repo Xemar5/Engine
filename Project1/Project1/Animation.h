@@ -8,7 +8,6 @@ class Entity;
 class Animation
 {
 public:
-	int loool = 0;
 	//*** Adds an animation to an existing sprite
 	//*** Select it's unique name and number and order of each frame
 	//*** If the name is already taken, this function will replace it instead of making new
