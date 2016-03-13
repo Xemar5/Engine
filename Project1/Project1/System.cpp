@@ -3,6 +3,7 @@
 #include "Screen.h"
 #include "Timer.h"
 #include "Input_Handler.h"
+#include "Movement_Handler.h"
 
 SDL_Event System::Events;
 Timer System::FPS_Clock;
@@ -12,6 +13,8 @@ unsigned System::FPS = 60;
 void System::_System_Update()
 {
 	bool Quit_System = false;
+
+	Movement_Handler::Set("mama", "int", 'l', 333, 3.0, 0.0, 4.2);
 
 	FPS_Clock.Start();
 	if (!System::FPS || System::FPS > 1000) System::FPS = 60;
