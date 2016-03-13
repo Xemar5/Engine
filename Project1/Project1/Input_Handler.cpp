@@ -13,8 +13,9 @@ bool Input_Handler::Key_Down(SDL_Keycode key)
 
 bool Input_Handler::Key_Up(SDL_Keycode key)
 {
-	if (System::Events.key.keysym.sym == key && System::Events.type == SDL_KEYUP) 
-		return true;
+	for (std::map<SDL_Keycode, int>::iterator it = Input_Handler::__Key_Map.begin(); it != Input_Handler::__Key_Map.end(); it++)
+		if (it->first == key && it->second == -1)
+			return true;
 	return false;
 }
 

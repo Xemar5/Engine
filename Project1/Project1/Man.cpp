@@ -17,15 +17,15 @@ void Man::Create()
 	double vy = 0;
 void Man::Update()
 {
-	Move(vx, vy, .02);
-	Entity::Update();
-}
-void Man::Events()
-{
 	if (Input_Handler::Key_Held(SDLK_w)) vy = -1;
 	else if (Input_Handler::Key_Held(SDLK_s)) vy = 1;
 	else vy = 0;
 	if (Input_Handler::Key_Held(SDLK_a)) vx = -1;
 	else if (Input_Handler::Key_Held(SDLK_d)) vx = 1;
 	else vx = 0;
+	Move(vx, vy, 0.02);
+	Entity::Update();
+}
+void Man::Events()
+{
 }

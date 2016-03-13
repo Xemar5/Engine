@@ -14,7 +14,7 @@ void Main_Menu::Update()
 void Main_Menu::Events()
 {
 	State::Events();
-	if (System::Events.type == SDL_MOUSEBUTTONDOWN) State::Exit_Game();
-	std::cout << "menu";
+	//if (System::Events.type == SDL_MOUSEBUTTONDOWN) State::Exit_Game();
+	//std::cout << "menu";
 }
 
