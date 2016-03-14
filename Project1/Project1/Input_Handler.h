@@ -15,7 +15,7 @@ public:
 	//*** Returns true if supplied button is being released
 	static bool Key_Up(SDL_Keycode key);
 	//*** Returns true if supplied button is being held for the given ammount of time in milisecounds
-	static bool Key_Held(SDL_Keycode key, int time = 0);
+	static bool Key_Held(SDL_Keycode key, Uint32 time = 0);
 private:
 	//*** Updates every event, cares for key pushes and releases
 	static void __Input_Events();

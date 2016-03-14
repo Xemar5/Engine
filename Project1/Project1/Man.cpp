@@ -13,17 +13,17 @@ void Man::Create()
 	X = 20;
 	Y = 20;
 }
-	double vx = 0;
-	double vy = 0;
 void Man::Update()
 {
-	if (Input_Handler::Key_Held(SDLK_w)) vy = -1;
-	else if (Input_Handler::Key_Held(SDLK_s)) vy = 1;
-	else vy = 0;
-	if (Input_Handler::Key_Held(SDLK_a)) vx = -1;
-	else if (Input_Handler::Key_Held(SDLK_d)) vx = 1;
-	else vx = 0;
-	Move(vx, vy, 0.02);
+	double vx1 = 0;
+	double vy1 = 0;
+	double vx2 = 0;
+	double vy2 = 0;
+	if (Input_Handler::Key_Held(SDLK_w)) vy1 = -3;
+	if (Input_Handler::Key_Held(SDLK_s)) vy2 = 3;
+	if (Input_Handler::Key_Held(SDLK_a)) vx1 = -3;
+	if (Input_Handler::Key_Held(SDLK_d)) vx2 = 3;
+	Move(vx1 + vx2, vy1 + vy2, 0.02);
 	Entity::Update();
 }
 void Man::Events()
