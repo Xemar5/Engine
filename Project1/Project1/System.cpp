@@ -26,12 +26,12 @@ void System::_System_Update()
 			if (State::Deleted.size()) __Delete();
 			if (State::Built.size()) __Update();
 			else { Quit_System = true; break; }
-			Input_Handler::__Input_Update();
+			Input_Handler::__Update();
 
 			while (SDL_PollEvent(&System::Events))
 			{
 				if (System::Events.type == SDL_QUIT) { State::Exit_Game(); break; }
-				Input_Handler::__Input_Events();
+				Input_Handler::__Events();
 				__Events();
 			}
 		}

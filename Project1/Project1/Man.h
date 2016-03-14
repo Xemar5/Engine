@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "Gamepad_Handler.h"
 
 class Man : public Entity
 {
