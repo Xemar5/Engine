@@ -37,7 +37,7 @@ private:
 template <typename T>
 void System::Start()
 {
-	SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
 	Screen::Start();
 	State::New<T>();
 	_System_Update();

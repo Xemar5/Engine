@@ -3,7 +3,6 @@
 #include "Screen.h"
 #include "Timer.h"
 #include "Input_Handler.h"
-#include "Movement_Handler.h"
 
 SDL_Event System::Events;
 Timer System::FPS_Clock;
@@ -14,7 +13,6 @@ void System::_System_Update()
 {
 	bool Quit_System = false;
 
-	Movement_Handler::Set("mama", "int", 'l', 333, 3.0, 0.0, 4.2);
 
 	FPS_Clock.Start();
 	if (!System::FPS || System::FPS > 1000) System::FPS = 60;
@@ -28,12 +26,12 @@ void System::_System_Update()
 			if (State::Deleted.size()) __Delete();
 			if (State::Built.size()) __Update();
 			else { Quit_System = true; break; }
-			Input_Handler::__Input_Update();
+			Input_Handler::__Update();
 
 			while (SDL_PollEvent(&System::Events))
 			{
 				if (System::Events.type == SDL_QUIT) { State::Exit_Game(); break; }
-				Input_Handler::__Input_Events();
+				Input_Handler::__Events();
 				__Events();
 			}
 		}
