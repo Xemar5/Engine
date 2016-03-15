@@ -11,11 +11,11 @@
 class Animation;
 class Sprite_Handler;
 
-class Sprite
+class Texture
 {
 public:
 
-	//*** Returns the pair of Width and Height of the whole texture
+	//*** Returns the pair of Width and Height of the whole Texture
 	std::pair<unsigned, unsigned> Get_Size();
 
 	//*** Returns the size of a frame
@@ -32,11 +32,11 @@ public:
 
 	//*** Returns pair of x and y of Sprite starting position
 	std::pair<float, float> Get_Starting_Point();
-	//*** Returns the texture of sprite
-	SDL_Texture* Get_Texture();
+	//*** Returns the SDL_Texture of sprite
+	SDL_Texture* Get_SDL_Texture();
 
-	//*** Sets the Starting position of Sprite
-	//***  - It is the point where the Sprites (0,0) point is located
+	//*** Sets the Starting position of Texture
+	//***  - It is the point where the Texture (0,0) point is located
 	//***  - Choose numbers between -1 / 1
 	std::pair<float, float> Set_Starting_Point(float x, float y);
 
@@ -52,13 +52,13 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static Sprite* Load(std::string path, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
+	static Texture* Load(std::string path, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
 
 	//*** Returns all loaded sprites in this session
-	static std::vector<std::shared_ptr<Sprite>> Get_Loaded();
+	static std::vector<std::shared_ptr<Texture>> Get_Loaded();
 
-	//*** Destroys a sprite
-	static bool Destroy(Sprite*);
+	//*** Destroys a Texture
+	static bool Destroy(Texture*);
 
 	//*** Checks if a certain sprite from a path is loaded:
 	//*** -1 if not loaded
@@ -105,7 +105,7 @@ private:
 	SDL_Texture* __Texture;
 
 	//*** All loaded sprites
-	static std::vector<std::shared_ptr<Sprite>> __Loaded;
+	static std::vector<std::shared_ptr<Texture>> __Loaded;
 
 	friend class Animation;
 };

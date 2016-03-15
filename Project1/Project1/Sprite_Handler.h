@@ -6,19 +6,19 @@
 #include <SDL.h>
 
 class Animation;
-class Sprite;
+class Texture;
 
 
-class Sprite_Handler
+class Sprite
 {
 public:
 	//*** Creates new Sprite Handler and sets its Sprite
 	//*** - sprite - can't be nullptr
-	static Sprite_Handler* Create(Sprite* sprite);
+	static Sprite* Create(Sprite* sprite);
 	//*** Returns the sprite of this Sprite Handler
-	Sprite* Get_Sprite();
-	//*** Returns Texture stored in sprite of this Sprite Handler
-	SDL_Texture* Get_Texture();
+	Texture* Get_Texture();
+	//*** Returns SDL_Texture stored in Texture of this Sprite
+	SDL_Texture* Get_SDL_Texture();
 	//*** Returns the size of a frame in the sprite stored in this Sprite Handler
 	std::pair<unsigned, unsigned> Get_Frame_Size();
 	//*** Returns the position of current frame in the sprite stored in this Sprite Handler
@@ -30,8 +30,8 @@ public:
 	//*** Horizontal or vertical flip of this sprite
 	SDL_RendererFlip Flip;
 private:
-	//*** Loaded sprite of this entity
-	Sprite* __Sprite = nullptr;
+	//*** Loaded Texture of this entity
+	Texture* __Texture = nullptr;
 	//*** The X coordinate of this entity frame position
 	unsigned __Frame_Pos_X = 0;
 	//*** The Y coordinate of this entity frame position
@@ -42,7 +42,7 @@ private:
 	int __Sequence_Iterator = -1;
 
 	//*** Set of sprite handlers of all entities
-	static std::vector<std::shared_ptr<Sprite_Handler>> __Sprite_Handlers;
+	static std::vector<std::shared_ptr<Sprite>> __Sprites;
 
 	friend class Animation;
 };

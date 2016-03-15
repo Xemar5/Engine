@@ -5,7 +5,6 @@
 void Main_Menu::Create()
 {
 	Man* m = State::Add_Entity<Man>(0);
-	std::cout << m->Get_Sprite_Handler()->Get_Frame_Size().first;
 }
 void Main_Menu::Update()
 {
