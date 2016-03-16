@@ -119,10 +119,10 @@
     <ClCompile Include="Main_State.cpp" />
     <ClCompile Include="Man.cpp" />
     <ClCompile Include="Movement.cpp" />
-    <ClCompile Include="Actions.cpp" />
+    <ClCompile Include="Action.cpp" />
     <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="Sprite_Handler.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Stats.cpp" />
     <ClCompile Include="System.cpp" />
@@ -139,10 +139,10 @@
     <ClInclude Include="Main_State.h" />
     <ClInclude Include="Man.h" />
     <ClInclude Include="Movement.h" />
-    <ClInclude Include="Actions.h" />
+    <ClInclude Include="Action.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="Sprite_Handler.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="Stats.h" />
     <ClInclude Include="System.h" />

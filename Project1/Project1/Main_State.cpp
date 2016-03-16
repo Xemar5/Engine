@@ -1,6 +1,5 @@
 #include "Main_State.h"
 #include "System.h"
-#include "Sprite_Handler.h"
 
 void Main_Menu::Create()
 {

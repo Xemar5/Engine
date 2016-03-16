@@ -1,9 +1,17 @@
 #pragma once
+#include <memory>
+#include <vector>
+#include <iostream>
 
+class Entity;
 
 class Hitbox
 {
 public:
+	//*** Creates and initializes the Hitbox class
+	//*** Responsible for colision detection
+	//*** - ent - can be nullptr; function will just return pointer
+	static std::shared_ptr<Hitbox> Set(Entity* ent, unsigned width, unsigned height);
 
 private:
 	//*** If true, the object is considered when colisions are resolved

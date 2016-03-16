@@ -2,7 +2,7 @@
 #include <vector>
 #include <SDL.h>
 
-class Sprite_Handler;
+class Sprite;
 
 
 class Screen
@@ -30,7 +30,7 @@ public:
 	//*** - y - the Y coordinate of where the entity should be placed
 	//*** - frame_x - the X coordinate of frame
 	//*** - frame_y - the Y coordinate of frame
-	static bool Add(Sprite_Handler* sprite, double x, double y);
+	static bool Add(Sprite* sprite, double x, double y);
 
 	//*** Draws the screen renderer to the screen
 	//*** Use when all entities are added to the renderer
@@ -47,7 +47,7 @@ private:
 
 	//*** Where all the sprties are queued to be drawn on the screen the next frame update
 	//*** It empties itself every frame update
-	static std::vector<Sprite_Handler*> __Sprite_Handlers;
+	static std::vector<Sprite*> __Sprites;
 
 	//*** Where all the positions of sprites added to the renderer are stored
 	//*** It empties itself every frame update

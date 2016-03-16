@@ -1,9 +1,9 @@
 #include "Animation.h"
-#include "Sprite_Handler.h"
 #include "Sprite.h"
+#include "Texture.h"
 #include "Entity.h"
 
-Animation* Animation::Add(Sprite* sprite, std::string name, std::string frame_sequence, bool repeat)
+Animation* Animation::Add(Texture* sprite, std::string name, std::string frame_sequence, bool repeat)
 {
 	if (!sprite)
 	{
@@ -36,14 +36,24 @@ Animation* Animation::Add(Sprite* sprite, std::string name, std::string frame_se
 }
 
 
-Animation * Animation::Exists(Sprite* sprite, std::string name)
+Animation * Animation::Add(Entity * ent, std::string name, std::string frame_sequence, bool repeat)
+{
+	if (!ent)
+	{
+		std::cerr << "ERR Animation::Add : No entity supplied\n";
+		return nullptr;
+	}
+	return Animation::Add(ent->Get_Sprite()->Get_Texture(), name, frame_sequence, repeat);
+}
+
+Animation * Animation::Exists(Texture* sprite, std::string name)
 {
 	for (auto anim : sprite->__Animations)
 		if (anim->__Name == name) return anim.get();
 	return nullptr;
 }
 
-std::vector<unsigned> Animation::Get_Sequence(Sprite* sprite, std::string name)
+std::vector<unsigned> Animation::Get_Sequence(Texture* sprite, std::string name)
 {
 	if (auto anim = Animation::Exists(sprite, name))
 		return anim->__Frame_Sequence;
@@ -62,44 +72,47 @@ unsigned Animation::Get_Current_Frame(unsigned sequence_iterator)
 	return __Frame_Sequence[sequence_iterator];
 }
 
-bool Animation::Set_Frame(Sprite_Handler* sprite_handler, unsigned frame)
+bool Animation::Set_Frame(Entity* ent, unsigned frame)
 {
-	if (!sprite_handler)											{ std::cerr << "ERR Animation::Set_Frame : No Sprite Handler supplied\n"; return false; }
-	if (!sprite_handler->Get_Sprite())								{ std::cerr << "ERR Animation::Set_Frame : Given Sprite Handler has no Sprite supplied\n"; return false; };
-	if (frame >= sprite_handler->Get_Sprite()->Get_Frames_Number()) { std::cerr << "ERR Animation::Set_Frame : Given frame number is greater than the max number of frames\n"; return false; }
+	if (!ent) { std::cerr << "ERR Animation::Set_Frame : No Entity supplied\n"; return false; }
+	if (!ent->Get_Sprite()) { std::cerr << "ERR Animation::Set_Frame : Given Entity has no Sprite supplied\n"; return false; };
+	if (!ent->Get_Sprite()->Get_Texture()) { std::cerr << "ERR Animation::Set_Frame : Given Sprite has no Texture supplied\n"; return false; };
+	if (frame >= ent->Get_Sprite()->Get_Texture()->Get_Frames_Number()) { std::cerr << "ERR Animation::Set_Frame : Given frame number is greater than the max number of frames\n"; return false; }
 
-	auto pos = sprite_handler->Get_Sprite()->Get_Frame_Pos(frame);
-	sprite_handler->__Frame_Pos_X = pos.first;
-	sprite_handler->__Frame_Pos_Y = pos.second;
+	auto pos = ent->Get_Sprite()->Get_Texture()->Get_Frame_Pos(frame);
+	ent->Get_Sprite()->__Frame_Pos_X = pos.first;
+	ent->Get_Sprite()->__Frame_Pos_Y = pos.second;
 	return true;
 }
 
-unsigned Animation::Next_Frame(Sprite_Handler* sprite_handler)
+unsigned Animation::Next_Frame(Entity* ent)
 {
-	if (!sprite_handler)						{ std::cerr << "ERR Animation::Next_Frame : No Sprite Handler supplied\n"; return false; }
-	if (!sprite_handler->Get_Sprite())			{ std::cerr << "ERR Animation::Next_Frame : Given Sprite Handler has no Sprite supplied\n"; return false; }
-	if (!sprite_handler->__Current_Animation)	{ std::cerr << "ERR Animation::Next_Frame : Given Sprite Handler plays no Animation\n"; return false; }
+	if (!ent) { std::cerr << "ERR Animation::Next_Frame : No Entity supplied\n"; return 0; }
+	if (!ent->Get_Sprite()) { std::cerr << "ERR Animation::Next_Frame : Given Entity has no Sprite supplied\n"; return 0; };
+	if (!ent->Get_Sprite()->Get_Texture()) { std::cerr << "ERR Animation::Next_Frame : Given Sprite has no Texture supplied\n"; return 0; };
+	if (!ent->Get_Sprite()->__Current_Animation){ std::cerr << "ERR Animation::Next_Frame : Given Sprite plays no Animation\n"; return 0; }
 
-	sprite_handler->__Sequence_Iterator++;
-	if (sprite_handler->__Sequence_Iterator >= (int)Animation::Get_Sequence(sprite_handler->Get_Sprite(), sprite_handler->__Current_Animation->__Name).size())
+	ent->Get_Sprite()->__Sequence_Iterator++;
+	if (ent->Get_Sprite()->__Sequence_Iterator >= (int)Animation::Get_Sequence(ent->Get_Sprite()->Get_Texture(), ent->Get_Sprite()->__Current_Animation->__Name).size())
 	{
-		sprite_handler->__Sequence_Iterator = -1;
-		if (!sprite_handler->__Current_Animation->__Repeat) sprite_handler->__Current_Animation = nullptr;
+		ent->Get_Sprite()->__Sequence_Iterator = -1;
+		if (!ent->Get_Sprite()->__Current_Animation->__Repeat) ent->Get_Sprite()->__Current_Animation = nullptr;
 	}
-	return sprite_handler->__Sequence_Iterator;
+	return ent->Get_Sprite()->__Sequence_Iterator;
 }
 
-Animation* Animation::Play(Sprite_Handler* sprite_handler, std::string name)
+Animation* Animation::Play(Entity* ent, std::string name)
 {
-	if (!sprite_handler)				{ std::cerr << "ERR Animation::Play : No Sprite Handler supplied\n"; return false; }
-	if (!name.size())					{ std::cerr << "ERR Animation::Play : No name of the animation supplied\n"; return false; }
-	if (!sprite_handler->Get_Sprite())	{ std::cerr << "ERR Animation::Play : Given Sprite Handler has no Sprite supplied\n"; return false; }
-	if (!(sprite_handler->__Current_Animation = Animation::Exists(sprite_handler->Get_Sprite(), name)))
+	if (!ent) { std::cerr << "ERR Animation::Play : No Entity supplied\n"; return nullptr; }
+	if (!ent->Get_Sprite()) { std::cerr << "ERR Animation::Next_Frame : Given Entity has no Sprite supplied\n"; return nullptr; };
+	if (!ent->Get_Sprite()->Get_Texture())	{ std::cerr << "ERR Animation::Play : Given Sprite has no Texture supplied\n"; return nullptr; }
+	if (!name.size()) { std::cerr << "ERR Animation::Play : No name of the animation supplied\n"; return nullptr; }
+	if (!(ent->Get_Sprite()->__Current_Animation = Animation::Exists(ent->Get_Sprite()->Get_Texture(), name)))
 	{
 		std::cerr << "ERR Animation::Play : Animation "<< name <<" doesn't exists in supplied sprite\n";
 		return nullptr;
 	}
-	return sprite_handler->__Current_Animation;
+	return ent->Get_Sprite()->__Current_Animation;
 }
 
 std::vector<unsigned> Animation::Decode(std::string code)

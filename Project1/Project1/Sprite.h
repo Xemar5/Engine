@@ -7,14 +7,16 @@
 
 class Animation;
 class Texture;
+class Entity;
 
 
 class Sprite
 {
 public:
 	//*** Creates new Sprite Handler and sets its Sprite
-	//*** - sprite - can't be nullptr
-	static Sprite* Create(Sprite* sprite);
+	//*** - ent - the entity this sprite will be given to; leave nullptr if no entity wanted
+	//*** - texture - a pointer to an existing texture class; can't be nullptr
+	static Sprite* Create(Entity* ent, Texture* texture);
 	//*** Returns the sprite of this Sprite Handler
 	Texture* Get_Texture();
 	//*** Returns SDL_Texture stored in Texture of this Sprite

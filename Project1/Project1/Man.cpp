@@ -2,14 +2,19 @@
 #include "Keyboard_Handler.h"
 #include "Gamepad_Handler.h"
 
+#include "Sprite.h"
+#include "Animation.h"
+#include "Movement.h"
+#include "Texture.h"
+
 void Man::Create()
 {
-	Load_Sprite("imgs/Sprite-0001-sheet.png", 96, 32, -3, 0, 0, 1);
-	Add_Animation("idle2", "0x100 1x100 2x100", true);
+	Sprite::Create(this, Texture::Load("imgs/Sprite-0001-sheet.png", 96, 32, -3, 0, 0, 1));
+	Animation::Add(this, "idle", "0x100 1x100 2x100", true);
+	Animation::Play(this, "idle");
 	//Load_Sprite("imgs/Paku_G.bmp", 256, 128, -8, -4, 0, 1);
 	//Add_Animation("idle2", "0x43 1x5 2x26 1x5", true);
-	Play_Animation("idle2");
-	Set_Movement(10);
+	Movement::Set(this, 10);
 	X = 20;
 	Y = 20;
 	Gamepad_Handler::Set(0);
@@ -29,8 +34,7 @@ void Man::Update()
 	if (Keyboard_Handler::Key_Held(SDLK_s)) vy2 = 3;
 	if (Keyboard_Handler::Key_Held(SDLK_a)) vx1 = -3;
 	if (Keyboard_Handler::Key_Held(SDLK_d)) vx2 = 3;
-	Move(vx1 + vx2, vy1 + vy2, 0.2);
-	Entity::Update();
+	Movement::Move(this, vx1 + vx2, vy1 + vy2, 0.2);
 }
 void Man::Events()
 {

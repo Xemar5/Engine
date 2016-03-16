@@ -1,23 +1,33 @@
 #include "Movement.h"
+#include "Entity.h"
 
 template <typename T> int sgn(T val) {
 	return (T(0) < val) - (val < T(0));
 }
 
-std::vector<std::shared_ptr<Movement>> Movement::__Movements;
-
-Movement * Movement::Set(double & x, double & y, int mass)
+std::shared_ptr<Movement> Movement::Set(double & x, double & y, int mass)
 {
 	if (mass < -1)
 	{
 		std::cout << "ERR Movement::Create : Given mass can't be less than -1\n";
 		return nullptr;
 	}
-	Movement::__Movements.emplace_back(std::make_shared<Movement>());
-	Movement::__Movements.back()->__X = &x;
-	Movement::__Movements.back()->__Y = &y;
-	Movement::__Movements.back()->__Mass = mass;
-	return Movement::__Movements.back().get();
+	std::shared_ptr<Movement> m = std::make_shared<Movement>();
+	m->__X = &x;
+	m->__Y = &y;
+	m->__Mass = mass;
+	return m;
+}
+
+std::shared_ptr<Movement> Movement::Set(Entity * ent, int mass)
+{
+	if (!ent)
+	{
+		std::cerr << "ERR Movement::Set : No entity supplied; use the other Movement::Set if only object needed\n";
+		return nullptr;
+	}
+	ent->__Movement = Movement::Set(ent->X, ent->Y, mass);
+	return ent->__Movement;
 }
 
 bool Movement::Move(Movement * movement, double force_x, double force_y, double traction)
@@ -43,6 +53,22 @@ bool Movement::Move(Movement * movement, double force_x, double force_y, double 
 
 	*movement->__X += movement->__vx;
 	*movement->__Y += movement->__vy;
+	return true;
+}
+
+bool Movement::Move(Entity * ent, double force_x, double force_y, double traction)
+{
+	if (!ent)
+	{
+		std::cerr << "ERR Movement::Move : No entity supplied; use the other Movement::Move function instead\n";
+		return false;
+	}
+	if (!ent->Get_Movement())
+	{
+		std::cerr << "ERR Movement::Move : Given entity has no Movement\n";
+		return false;
+	}
+	Movement::Move(ent->Get_Movement(), force_x, force_y, traction);
 	return true;
 }
 

@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <vector>
 #include <memory>
+#include <stdio.h>
 //#include "State.h"
 
 class Timer;
@@ -30,6 +31,7 @@ private:
 	static void __Delete();
 	static void __Update();
 	static void __Events();
+	
 };
 
 #include "Screen.h"

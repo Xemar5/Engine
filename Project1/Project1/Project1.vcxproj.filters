@@ -27,9 +27,6 @@
     <ClCompile Include="System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Main_State.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,9 +37,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Screen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite_Handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="State.cpp">
@@ -63,16 +57,22 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Actions.cpp">
+    <ClCompile Include="Hitbox.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Stats.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Hitbox.cpp">
-      <Filter>Source Files\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Stats.cpp">
+    <ClCompile Include="Action.cpp">
       <Filter>Source Files\Entity</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,19 +113,19 @@
     <ClInclude Include="Hitbox.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Actions.h">
-      <Filter>Header Files\Entity</Filter>
-    </ClInclude>
     <ClInclude Include="Stats.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite_Handler.h">
+    <ClInclude Include="Texture.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
       <Filter>Header Files\Entity</Filter>
     </ClInclude>
   </ItemGroup>

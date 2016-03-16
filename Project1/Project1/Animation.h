@@ -2,18 +2,22 @@
 #include <memory>
 #include <vector>
 #include <map>
-class Texture;
-class Sprite;
 class Entity;
+class Texture;
 
 //*** Class with only static members; use them to get frames
 class Animation
 {
 public:
-	//*** Adds an animation to an existing sprite
+	//*** Adds an animation to an existing texture
 	//*** Select it's unique name and number and order of each frame
 	//*** If the name is already taken, this function will replace it instead of making new
-	static Animation* Add(Texture* sprite, std::string name, std::string frame_sequence, bool repeat = false);
+	static Animation* Add(Texture* texture, std::string name, std::string frame_sequence, bool repeat = false);
+	//*** Adds an animation to an existing texture in a given entity
+	//*** Select it's unique name and number and order of each frame
+	//*** If the name is already taken, this function will replace it instead of making new
+	//*** - ent - pointer to an entity; must be supplied; otherwise use the other Animation::Add function
+	static Animation* Add(Entity* ent, std::string name, std::string frame_sequence, bool repeat = false);
 	//*** Returns pointer if animation with given name exists in supplied sprite
 	static Animation* Exists(Texture* sprite, std::string name);
 	//*** Returns the sequence of frames in given animation
@@ -25,11 +29,12 @@ public:
 	unsigned Get_Current_Frame(unsigned sequence_iterator);
 	//*** Sets the current frame of a Sprite to the given value
 	//*** Can't set the frame to a number greater than the number of frames
-	static bool Set_Frame(Sprite* sprite, unsigned frame);
+	static bool Set_Frame(Entity* ent, unsigned frame);
 	//*** Sets the frame to the next one in the frame sequence
-	static unsigned Next_Frame(Sprite* sprite);
+	static unsigned Next_Frame(Entity* ent);
 	//*** Sets the currently playing animation to the given one
-	static Animation* Play(Sprite* sprite, std::string name);
+	//*** If no name supplied or animation doesn't exist, frame 0 will be played
+	static Animation* Play(Entity* ent, std::string name = "");
 	//*** Decodes the given code into a vector of unsigned ints
 	//*** Code details:
 	//*** 0x5    ==  frame 0 will be played 5 times

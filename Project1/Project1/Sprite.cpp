@@ -1,151 +1,67 @@
 #include "Sprite.h"
+#include "Texture.h"
 #include "Animation.h"
-#include "System.h"
-#include "Screen.h"
+#include "Entity.h"
 
-std::vector<std::shared_ptr<Sprite>> Sprite::__Loaded;
+std::vector<std::shared_ptr<Sprite>> Sprite::__Sprites;
 
 
-Sprite* Sprite::Load(std::string path, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
+Sprite * Sprite::Create(Entity* ent, Texture * texture)
 {
-	if (!path.size())
+	if (!ent)
 	{
-		std::cerr << "ERR Sprite::Load : No path supplied\n";
+		std::cout << "MSG Sprite::Create : No entity supplied; returning pointer to this sprite\n";
+	}
+	if (!texture)
+	{
+		std::cerr << "ERR Sprite::Set : No Texture supplied\n";
 		return nullptr;
 	}
-	for (auto sprite : Sprite::__Loaded) if (path == sprite->__Path)
-	{
-		std::cerr << "MSG Sprite::Load : Sprite already loaded, returning loaded version\n";
-		return sprite.get();
-	}
-	Sprite::__Loaded.emplace_back(std::make_shared<Sprite>());
-	Sprite::__Loaded.back()->__Texture = IMG_LoadTexture(Screen::Renderer, path.c_str());
-	if (!Sprite::__Loaded.back()->__Texture)
-	{
-		std::cerr << "ERR Sprite::Load : No valid texture file supplied\n";
-		Sprite::__Loaded.pop_back();
-		return nullptr;
-	}
-	Sprite::__Loaded.back()->__Path = path;
-	Sprite::__Loaded.back()->__Width = width;
-	Sprite::__Loaded.back()->__Height = height;
-	Sprite::__Loaded.back()->Set_Starting_Point(starting_point_x, starting_point_y);
-	Sprite::__Loaded.back()->Set_Frame_Size(frame_width, frame_height);
-	//Animation::Add(Sprite::__Loaded.back().get(), "default", { 0 });
-	return Sprite::__Loaded.back().get();
+	Sprite::__Sprites.emplace_back(std::make_shared<Sprite>());
+	Sprite::__Sprites.back()->__Texture = texture;
+	Sprite::__Sprites.back()->Flip = SDL_FLIP_NONE;
+	if (ent) ent->__Sprite = Sprite::__Sprites.back().get();
+	return Sprite::__Sprites.back().get();
 }
 
-inline std::vector<std::shared_ptr<Sprite>> Sprite::Get_Loaded()
+
+Texture * Sprite::Get_Texture()
 {
-	return Sprite::__Loaded;
+	return __Texture;
 }
 
-bool Sprite::Destroy(Sprite* sprite)
+
+SDL_Texture * Sprite::Get_SDL_Texture()
 {
-	if (!sprite)
-	{
-		std::cerr << "ERR Sprite::Destroy_Sprite : No pointer to Sprite supplied\n";
-		return false;
-	}
-	if (int pos = Sprite::Already_Loaded(sprite->__Path))
-	{
-		Sprite::__Loaded.erase(Sprite::__Loaded.begin() + pos);
-		return true;
-	}
-	return false;
+	if (__Texture)
+		return __Texture->Get_SDL_Texture();
+	return nullptr;
 }
-
-int Sprite::Already_Loaded(std::string path)
-{
-	if (!path.size())
-	{
-		std::cerr << "ERR Sprite::__Check_If_Sprite_Already_Loaded : No sprite path supplied\n";
-		return -1;
-	}
-	for (unsigned i = 0; i < Sprite::__Loaded.size(); i++)
-		if (path == Sprite::__Loaded[i]->__Path)
-		{
-			return i;
-		}
-	return -1;
-}
-
-unsigned Sprite::Get_Frames_Number()
-{
-	unsigned x, y;
-	x = (unsigned)floor(__Width / __Frame_Width);
-	y = (unsigned)floor(__Height / __Frame_Height);
-	return x*y;
-}
-
-std::pair<unsigned, unsigned> Sprite::Get_Frame_Pos(unsigned frame)
-{
-	if (frame >= Get_Frames_Number())
-	{
-		std::cerr << "ERR Sprite::Get_Frame_Pos : Given frame is greater than the max number of frames\n";
-		return std::make_pair<unsigned, unsigned>(0, 0);
-	}
-	unsigned x, y = 0;
-	x = frame * __Frame_Width;
-	while (x >= __Width)
-	{
-		x -= __Width;
-		y += __Frame_Height;
-	}
-	return std::make_pair(x,y);
-}
-
-
-
-
-std::pair<unsigned, unsigned> Sprite::Get_Size()
-{
-	return std::make_pair(__Width, __Height);
-}
-
-
 
 std::pair<unsigned, unsigned> Sprite::Get_Frame_Size()
 {
-	return std::make_pair(__Frame_Width, __Frame_Height);
-}
-std::pair<unsigned, unsigned> Sprite::Set_Frame_Size(int w, int h)
-{
-
-	if (w < 0) w = __Width / -w;
-	else if ((unsigned)w > __Width) { std::cout << "MSG Sprite::Set_Frame_Size : Given Frame width is invalid; Setting to Texture Width\n"; w = __Width; }
-	else if (w == 0)w = __Width;
-
-	if (h < 0) h = __Height / -h;
-	else if ((unsigned)h > __Height) { std::cout << "MSG Sprite::Set_Frame_Size : Given Frame height is invalid; Setting to Texture Height\n"; h = __Height; }
-	else if (h == 0)h = __Height;
-	__Frame_Width = w;
-	__Frame_Height = h;
-	return std::make_pair(w, h);
+	if (this && __Texture)
+		return __Texture->Get_Frame_Size();
+	std::cerr << "ERR Sprite::Get_Frame_Size : No Texture loaded\n";
+	return std::make_pair(0,0);
 }
 
-inline unsigned Sprite::Max_Frames()
+std::pair<unsigned, unsigned> Sprite::Get_Frame_Pos()
 {
-	return (__Width / __Frame_Width) * (__Height / __Frame_Height);
+	return std::make_pair(__Frame_Pos_X, __Frame_Pos_Y);
 }
 
-
-
-inline std::pair<float, float> Sprite::Get_Starting_Point()
+int Sprite::Get_Current_Frame()
 {
-	return std::make_pair(__Starting_Point_X, __Starting_Point_Y);
+	if (!this || !__Current_Animation)
+	{
+		std::cerr << "ERR Sprite::Get_Current_Frame : No Current Animation\n";
+		return -1;
+	}
+	return __Current_Animation->Get_Current_Frame(__Sequence_Iterator);
 }
-SDL_Texture * Sprite::Get_Texture()
+
+Animation * Sprite::Get_Current_Animation()
 {
-	return this->__Texture;
-}
-std::pair<float, float> Sprite::Set_Starting_Point(float x, float y)
-{
-	if (x > 1.0) { std::cout << "MSG Sprite::Set_Starting_Point : Starting point x only in range from -1 to 1; Setting to 1\n"; x = 1.0; }
-	if (x < -1.0) { std::cout << "MSG Sprite::Set_Starting_Point : Starting point x only in range from -1 to 1; Setting to -1\n"; x = -1.0; }
-	if (y > 1.0) { std::cout << "MSG Sprite::Set_Starting_Point : Starting point y only in range from -1 to 1; Setting to 1\n";  y = 1.0; }
-	if (y < -1.0) { std::cout << "MSG Sprite::Set_Starting_Point : Starting point y only in range from -1 to 1; Setting to -1\n"; y = -1.0; }
-	__Starting_Point_X = x;
-	__Starting_Point_Y = y;
-	return std::make_pair(x, y);
+	return __Current_Animation;
 }
