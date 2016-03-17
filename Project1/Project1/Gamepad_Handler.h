@@ -14,18 +14,47 @@ public:
 	static Gamepad_Handler* Get(int gamepad_index);
 	//*** Returns the number of connected gamepads
 	static unsigned Gamepad_Count();
-	//*** Returns the state of given axis in range from -1 to 1
-	double Get_Axis_State(int axis);
+
+	//*** Returns the state of given axis in range from -1.0 to 1.0
+	//*** - (1st arg) axis - the number of axis to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given axis
+	static double Get_Axis_State(std::initializer_list<Sint32> args);
+	//*** Returns the state of given axis if its value is positive (range from 0.0 to 1.0)
+	//*** - (1st arg) axis - the number of axis to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given axis
+	static double Get_Axis_State_Positive(std::initializer_list<Sint32> args);
+	//*** Returns the state of given axis if its value is negative (range from 0.0 to 1.0)
+	//*** - (1st arg) axis - the number of axis to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given axis
+	static double Get_Axis_State_Negative(std::initializer_list<Sint32> args);
+
 	//*** Returns the state of given axis in range from -32768 to 32767
-	Sint16 Get_Absolute_Axis_State(int axis);
+	//*** - (1st arg) axis - the number of axis to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given axis
+	static double Get_Absolute_Axis_State(std::initializer_list<Sint32> args);
+	//*** Returns the state of given axis if its value is positive (range from 0 to 32767)
+	//*** - (1st arg) axis - the number of axis to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given axis
+	static double Get_Absolute_Axis_State_Positive(std::initializer_list<Sint32> args);
+	//*** Returns the state of given axis if its value is negative (range from 0 to 32767)
+	//*** - (1st arg) axis - the number of axis to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given axis
+	static double Get_Absolute_Axis_State_Negative(std::initializer_list<Sint32> args);
+
 	//*** Returns true if supplied button is being pushed
-	bool Button_Down(Uint8 button);
+	//*** - (1st arg) button - the index of button to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given button
+	static double Button_Down(std::initializer_list<Sint32> args);
 	//*** Returns true if supplied button is being released
-	bool Button_Up(Uint8 button);
+	//*** - (1st arg) button - the index of button to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given button
+	static double Button_Up(std::initializer_list<Sint32> args);
 	//*** Returns true if supplied button is being held for the given ammount of time in milisecounds
-	bool Button_Held(Uint8 button, Uint32 time = 0);
-	//*** Reverse Button_Held function
-	bool Button_XHeld(Uint8 button, Uint32 time);
+	//*** - (1st arg) button - the index of button to check
+	//*** - (2nd arg) gamepad - the index of gamepad with given button
+	//*** - (3rd arg) time - the time in which the condition is check; true if time passes
+	static double Button_Held(std::initializer_list<Sint32> args);
+
 	//*** Returns the index of this gamepad
 	int Get_Index();
 	//*** Return the SDL_GameController this Gamepad_Handler points to

@@ -11,13 +11,15 @@ class Keyboard_Handler
 {
 public:
 	//*** Returns true if supplied key is being pushed
-	static bool Key_Down(SDL_Keycode key);
+	//*** - (1st arg) key - the keyboard key to check
+	static double Key_Down(std::initializer_list<Sint32> args);
 	//*** Returns true if supplied key is being released
-	static bool Key_Up(SDL_Keycode key);
+	//*** - (1st arg) key - the keyboard key to check
+	static double Key_Up(std::initializer_list<Sint32> args);
 	//*** Returns true if supplied key is being held for the given ammount of time in milisecounds
-	static bool Key_Held(SDL_Keycode key, Uint32 time = 0);
-	//*** Reverse Key_Held function
-	static bool Key_XHeld(SDL_Keycode key, Uint32 time);
+	//*** - (1st arg) key - the keyboard key to check
+	//*** - (2nd arg) time - the time in which the condition is check; true if time passes
+	static double Key_Held(std::initializer_list<Sint32> args);
 private:
 	//*** Updates every event, cares for key pushes and releases
 	static void __Events();

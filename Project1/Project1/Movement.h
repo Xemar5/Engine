@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 
+#include "Action.h"
+
 class Entity;
 
 class Movement
@@ -35,6 +37,7 @@ public:
 	double Get_Velocity_X();
 	//*** Returns the y-dimension velocity
 	double Get_Velocity_Y();
+
 private:
 	//*** The mass of an entity
 	//*** Changes the way it accelerates/breaks and bevahe in contact with other entities
@@ -48,3 +51,7 @@ private:
 	//*** Reference to the enitity's y coordinate
 	double* __Y = nullptr;
 };
+
+
+
+

@@ -3,37 +3,47 @@
 
 std::map<SDL_Keycode, int> Keyboard_Handler::__Map;
 
-bool Keyboard_Handler::Key_Down(SDL_Keycode key)
+double Keyboard_Handler::Key_Down(std::initializer_list<Sint32> args)
 {
+	auto* it = args.begin();
+	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Down : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	Sint32 key = (Sint32)*it;
+
 	for (std::map<SDL_Keycode, int>::iterator it = Keyboard_Handler::__Map.begin(); it != Keyboard_Handler::__Map.end(); it++)
 		if (it->first == key && it->second == -2)
-			return true;
-	return false;
+			return 1.0;
+	return 0.0;
 }
 
-bool Keyboard_Handler::Key_Up(SDL_Keycode key)
+double Keyboard_Handler::Key_Up(std::initializer_list<Sint32> args)
 {
+	auto* it = args.begin();
+	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Up : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	Sint32 key = (Sint32)*it;
+
 	for (std::map<SDL_Keycode, int>::iterator it = Keyboard_Handler::__Map.begin(); it != Keyboard_Handler::__Map.end(); it++)
 		if (it->first == key && it->second == -1)
-			return true;
-	return false;
+			return 1.0;
+	return 0.0;
 }
 
-bool Keyboard_Handler::Key_Held(SDL_Keycode key, Uint32 time)
+double Keyboard_Handler::Key_Held(std::initializer_list<Sint32> args)
 {
+	auto* it = args.begin();
+	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Held : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	Sint32 key = (Sint32)*it++;
+
+	Sint32 time;
+	if (it == args.end()) time = 0;
+	else time = (Sint32)*it;
+
 	for (std::map<SDL_Keycode, int>::iterator it = Keyboard_Handler::__Map.begin(); it != Keyboard_Handler::__Map.end(); it++)
-		if (it->first == key && it->second >= 0 && SDL_GetTicks() - it->second >= time)
-			return true;
-	return false;
+		if (it->first == key && it->second >= 0 && SDL_GetTicks() - it->second >= (Uint32)time)
+			return 1.0;
+	return 0.0;
 }
 
-bool Keyboard_Handler::Key_XHeld(SDL_Keycode key, Uint32 time)
-{
-	for (std::map<SDL_Keycode, int>::iterator it = Keyboard_Handler::__Map.begin(); it != Keyboard_Handler::__Map.end(); it++)
-		if (it->first == key && it->second >= 0 && SDL_GetTicks() - it->second < time)
-			return true;
-	return false;
-}
+
 
 void Keyboard_Handler::__Events()
 {

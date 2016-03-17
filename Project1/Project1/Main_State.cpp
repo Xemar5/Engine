@@ -3,6 +3,7 @@
 
 void Main_Menu::Create()
 {
+	Gamepad_Handler::Set(0);
 	Man* m = State::Add_Entity<Man>(0);
 }
 void Main_Menu::Update()
