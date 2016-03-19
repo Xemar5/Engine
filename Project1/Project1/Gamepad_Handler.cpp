@@ -11,10 +11,24 @@ Gamepad_Handler * Gamepad_Handler::Set(int gamepad_index)
 		std::cerr << "ERR Gamepad_Handler::Set : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
 		return nullptr;
 	}
+	if (auto joy = Gamepad_Handler::Get(gamepad_index)) return joy;
 	Gamepad_Handler::__Gamepads.emplace_back(std::make_shared<Gamepad_Handler>());
 	Gamepad_Handler::__Gamepads.back().get()->__Joystick = SDL_JoystickOpen(gamepad_index);
 	Gamepad_Handler::__Gamepads.back().get()->__Index = gamepad_index;
 	return Gamepad_Handler::__Gamepads.back().get();
+}
+
+bool Gamepad_Handler::Remove(int gamepad_index)
+{
+	auto joy_index = Gamepad_Handler::__Get_Gamepads_Index(gamepad_index);
+	if (joy_index == -1)
+	{
+		std::cout << "MSG Gamepad_Handler::Remove : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
+		return false;
+	}
+	SDL_JoystickClose(Gamepad_Handler::__Gamepads[joy_index]->Get_Joystick());
+	Gamepad_Handler::__Gamepads.erase(Gamepad_Handler::__Gamepads.begin() + Gamepad_Handler::__Get_Gamepads_Index(gamepad_index));
+	return true;
 }
 
 Gamepad_Handler * Gamepad_Handler::Get(int gamepad_index)
@@ -174,6 +188,20 @@ SDL_Joystick * Gamepad_Handler::Get_Joystick()
 
 void Gamepad_Handler::__Events()
 {
+	if (System::Events.type == 1541)
+		Gamepad_Handler::Set(System::Events.cdevice.which);
+	if (System::Events.type == 1542)
+	{
+		for (unsigned i = 0; i < Gamepad_Count(); i++)
+		{
+			if (SDL_JoystickInstanceID(__Gamepads[i]->Get_Joystick()) == System::Events.cdevice.which)
+			{
+				Gamepad_Handler::Remove(__Gamepads[i]->Get_Index());
+				break;
+			}
+		}
+	}
+
 	for (unsigned i = 0; i < Gamepad_Count(); i++)
 	{
 		if (System::Events.type == SDL_JOYBUTTONDOWN)
@@ -205,4 +233,16 @@ void Gamepad_Handler::__Update()
 			else ++it;
 		}
 	}
+}
+
+int Gamepad_Handler::__Get_Gamepads_Index(int gamepad_index)
+{
+	int i = 0;
+	while ((unsigned)i < __Gamepads.size())
+	{
+		if (__Gamepads[i]->__Index == gamepad_index) return i;
+		++i;
+	}
+	std::cout << "MSG Gamepad_Handler::__Get_Gamepads_Index : No gamepad with given index connected\n";
+	return -1;
 }

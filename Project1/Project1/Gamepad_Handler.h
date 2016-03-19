@@ -10,6 +10,9 @@ public:
 	//*** Creates the gamepad handler class
 	//*** - gamepad_index - the index of a gamepad
 	static Gamepad_Handler* Set(int gamepad_index);
+	//*** Creates the gamepad handler class
+	//*** - gamepad_index - the index of a gamepad
+	static bool Remove(int gamepad_index);
 	//*** Returns the Gamepad_Handler of a given index if it exists
 	static Gamepad_Handler* Get(int gamepad_index);
 	//*** Returns the number of connected gamepads
@@ -72,6 +75,8 @@ private:
 	static void __Update();
 	//*** Contains every pushed button and the time it's being pushed for
 	std::map<Uint8, int> __Map;
+	//*** This gamepad index from __Gamepads
+	static int __Get_Gamepads_Index(int gamepad_index);
 	//*** Contains every connected gamepad
 	static std::vector<std::shared_ptr<Gamepad_Handler>> __Gamepads;
 
