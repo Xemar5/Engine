@@ -14,8 +14,8 @@ void Man::Create()
 {
 	X = 20;
 	Y = 20;
-	Sprite::Create(this, Texture::Load("imgs/Sprite-0001-sheet.png", 96, 32, -3, 0, 0, 1));
-	Animation::Add(this, "idle", "0x100 1x100 2x100", true);
+	Sprite::Create(this, Texture::Load("imgs/Sprite-0001b-sheet.png", 160, 32, -5, 0, 0, 1));
+	Animation::Add(this, "idle", "0x10 1x7 2x8 3x7 4x13 3x7 2x8 1x7", true);
 	Animation::Play(this, "idle");
 	//Load_Sprite("imgs/Paku_G.bmp", 256, 128, -8, -4, 0, 1);
 	//Add_Animation("idle2", "0x43 1x5 2x26 1x5", true);

@@ -27,6 +27,11 @@ Sprite * Sprite::Create(Entity* ent, Texture * texture)
 
 Texture * Sprite::Get_Texture()
 {
+	if (!this)
+	{
+		std::cerr << "ERR Sprite::Get_Texture : This Sprite has no Texture\n";
+		return nullptr;
+	}
 	return __Texture;
 }
 
@@ -63,5 +68,10 @@ int Sprite::Get_Current_Frame()
 
 Animation * Sprite::Get_Current_Animation()
 {
+	if (!this)
+	{
+		std::cerr << "ERR Sprite::Get_Current_Animation : This Sprite has no current animation\n";
+		return nullptr;
+	}
 	return __Current_Animation;
 }
