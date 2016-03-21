@@ -21,42 +21,42 @@ public:
 	//*** Returns the state of given axis in range from -1.0 to 1.0
 	//*** - (1st arg) axis - the number of axis to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given axis
-	static double Get_Axis_State(std::initializer_list<Sint32> args);
+	static double Get_Axis_State(std::vector<Sint32> args);
 	//*** Returns the state of given axis if its value is positive (range from 0.0 to 1.0)
 	//*** - (1st arg) axis - the number of axis to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given axis
-	static double Get_Axis_State_Positive(std::initializer_list<Sint32> args);
+	static double Get_Axis_State_Positive(std::vector<Sint32> args);
 	//*** Returns the state of given axis if its value is negative (range from 0.0 to 1.0)
 	//*** - (1st arg) axis - the number of axis to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given axis
-	static double Get_Axis_State_Negative(std::initializer_list<Sint32> args);
+	static double Get_Axis_State_Negative(std::vector<Sint32> args);
 
 	//*** Returns the state of given axis in range from -32768 to 32767
 	//*** - (1st arg) axis - the number of axis to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given axis
-	static double Get_Absolute_Axis_State(std::initializer_list<Sint32> args);
+	static double Get_Absolute_Axis_State(std::vector<Sint32> args);
 	//*** Returns the state of given axis if its value is positive (range from 0 to 32767)
 	//*** - (1st arg) axis - the number of axis to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given axis
-	static double Get_Absolute_Axis_State_Positive(std::initializer_list<Sint32> args);
+	static double Get_Absolute_Axis_State_Positive(std::vector<Sint32> args);
 	//*** Returns the state of given axis if its value is negative (range from 0 to 32767)
 	//*** - (1st arg) axis - the number of axis to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given axis
-	static double Get_Absolute_Axis_State_Negative(std::initializer_list<Sint32> args);
+	static double Get_Absolute_Axis_State_Negative(std::vector<Sint32> args);
 
 	//*** Returns true if supplied button is being pushed
 	//*** - (1st arg) button - the index of button to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given button
-	static double Button_Down(std::initializer_list<Sint32> args);
+	static double Button_Down(std::vector<Sint32> args);
 	//*** Returns true if supplied button is being released
 	//*** - (1st arg) button - the index of button to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given button
-	static double Button_Up(std::initializer_list<Sint32> args);
+	static double Button_Up(std::vector<Sint32> args);
 	//*** Returns true if supplied button is being held for the given ammount of time in milisecounds
 	//*** - (1st arg) button - the index of button to check
 	//*** - (2nd arg) gamepad - the index of gamepad with given button
 	//*** - (3rd arg) time - the time in which the condition is check; true if time passes
-	static double Button_Held(std::initializer_list<Sint32> args);
+	static double Button_Held(std::vector<Sint32> args);
 
 	//*** Returns the index of this gamepad
 	int Get_Index();

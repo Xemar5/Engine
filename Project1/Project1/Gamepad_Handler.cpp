@@ -51,9 +51,9 @@ unsigned Gamepad_Handler::Gamepad_Count()
 	return __Gamepads.size();
 }
 
-double Gamepad_Handler::Get_Axis_State(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Get_Axis_State(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 
 	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Get_Axis_State : Given axis doesn't exist\n"; return 0.0; }
 	Sint32 axis = (Sint32)*it++;
@@ -68,23 +68,23 @@ double Gamepad_Handler::Get_Axis_State(std::initializer_list<Sint32> args)
 	return (double)stt / 32768.0;
 }
 
-double Gamepad_Handler::Get_Axis_State_Positive(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Get_Axis_State_Positive(std::vector<Sint32> args)
 {
 	double val = Gamepad_Handler::Get_Axis_State(args);
 	if (val > 0.0) return val;
 	return 0.0;
 }
 
-double Gamepad_Handler::Get_Axis_State_Negative(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Get_Axis_State_Negative(std::vector<Sint32> args)
 {
 	double val = Gamepad_Handler::Get_Axis_State(args);
 	if (val < 0.0) return -val;
 	return 0.0;
 }
 
-double Gamepad_Handler::Get_Absolute_Axis_State(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Get_Absolute_Axis_State(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 
 	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Given axis doesn't exist\n"; return 0.0; }
 	Sint32 axis = (Sint32)*it++;
@@ -97,23 +97,23 @@ double Gamepad_Handler::Get_Absolute_Axis_State(std::initializer_list<Sint32> ar
 	return SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
 }
 
-double Gamepad_Handler::Get_Absolute_Axis_State_Positive(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Get_Absolute_Axis_State_Positive(std::vector<Sint32> args)
 {
 	double val = Gamepad_Handler::Get_Absolute_Axis_State(args);
 	if (val > 0.0) return val;
 	return 0.0;
 }
 
-double Gamepad_Handler::Get_Absolute_Axis_State_Negative(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Get_Absolute_Axis_State_Negative(std::vector<Sint32> args)
 {
 	double val = Gamepad_Handler::Get_Absolute_Axis_State(args);
 	if (val < 0.0) return -val;
 	return 0.0;
 }
 
-double Gamepad_Handler::Button_Down(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Button_Down(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 
 	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Down : Button not supplied\n"; return 0.0; }
 	Sint32 button = (Sint32)*it++;
@@ -130,9 +130,9 @@ double Gamepad_Handler::Button_Down(std::initializer_list<Sint32> args)
 	return false;
 }
 
-double Gamepad_Handler::Button_Up(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Button_Up(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 
 	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Up : Button not supplied\n"; return 0.0; }
 	Sint32 button = (Sint32)*it++;
@@ -149,9 +149,9 @@ double Gamepad_Handler::Button_Up(std::initializer_list<Sint32> args)
 	return false;
 }
 
-double Gamepad_Handler::Button_Held(std::initializer_list<Sint32> args)
+double Gamepad_Handler::Button_Held(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 
 	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Held : Button not supplied\n"; return 0.0; }
 	Sint32 button = (Sint32)*it++;

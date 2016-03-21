@@ -23,30 +23,34 @@ void Man::Create()
 }
 void Man::Update()
 {
-	double vx1 = 0;
-	double vy1 = 0;
-	double vx2 = 0;
-	double vy2 = 0;
-	double(*foo)(std::initializer_list<Sint32>) = &Gamepad_Handler::Get_Axis_State_Positive;
+	//double vx1 = 0;
+	//double vy1 = 0;
+	//double vx2 = 0;
+	//double vy2 = 0;
+	//double(*foo)(std::initializer_list<Sint32>) = &Gamepad_Handler::Get_Axis_State_Positive;
 
-	if (Gamepad_Handler::Get(0))
-	{
-		vy1 += Gamepad_Handler::Get_Axis_State_Positive({ 1, 0 });
-		vy1 -= Gamepad_Handler::Get_Axis_State_Negative({ 1, 0 });
-		vx1 += Gamepad_Handler::Get_Axis_State_Positive({ 0, 0 });
-		vx1 -= Gamepad_Handler::Get_Axis_State_Negative({ 0, 0 });
-		if (Gamepad_Handler::Button_Down({ SDL_CONTROLLER_BUTTON_X, 0 }))
-		{
-			X = 20;
-			Y = 20;
-		}
-	}
+	//if (Gamepad_Handler::Get(0))
+	//{
+	//	vy1 += Gamepad_Handler::Get_Axis_State_Positive({ 1, 0 });
+	//	vy1 -= Gamepad_Handler::Get_Axis_State_Negative({ 1, 0 });
+	//	vx1 += Gamepad_Handler::Get_Axis_State_Positive({ 0, 0 });
+	//	vx1 -= Gamepad_Handler::Get_Axis_State_Negative({ 0, 0 });
+	//	if (Gamepad_Handler::Button_Down({ SDL_CONTROLLER_BUTTON_X, 0 }))
+	//	{
+	//		X = 20;
+	//		Y = 20;
+	//	}
+	//}
 
-	vy1 -= Keyboard_Handler::Key_Held({ SDLK_w });
-	vy1 += Keyboard_Handler::Key_Held({ SDLK_s });
-	vx1 -= Keyboard_Handler::Key_Held({ SDLK_a });
-	vx1 += Keyboard_Handler::Key_Held({ SDLK_d });
-	Movement::Move(this, vx1, vy1, 0.02);
+	//vy1 -= Keyboard_Handler::Key_Held({ SDLK_w });
+	//vy1 += Keyboard_Handler::Key_Held({ SDLK_s });
+	//vx1 -= Keyboard_Handler::Key_Held({ SDLK_a });
+	//vx1 += Keyboard_Handler::Key_Held({ SDLK_d });
+
+	//if (vx1 > 0) Get_Sprite()->Flip = SDL_FLIP_NONE;
+	//if (vx1 < 0) Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
+
+	//Movement::Move(this, vx1, vy1, 0.02);
 }
 void Man::Events()
 {

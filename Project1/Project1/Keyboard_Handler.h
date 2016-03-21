@@ -12,14 +12,14 @@ class Keyboard_Handler
 public:
 	//*** Returns true if supplied key is being pushed
 	//*** - (1st arg) key - the keyboard key to check
-	static double Key_Down(std::initializer_list<Sint32> args);
+	static double Key_Down(std::vector<Sint32> args);
 	//*** Returns true if supplied key is being released
 	//*** - (1st arg) key - the keyboard key to check
-	static double Key_Up(std::initializer_list<Sint32> args);
+	static double Key_Up(std::vector<Sint32> args);
 	//*** Returns true if supplied key is being held for the given ammount of time in milisecounds
 	//*** - (1st arg) key - the keyboard key to check
 	//*** - (2nd arg) time - the time in which the condition is check; true if time passes
-	static double Key_Held(std::initializer_list<Sint32> args);
+	static double Key_Held(std::vector<Sint32> args);
 private:
 	//*** Updates every event, cares for key pushes and releases
 	static void __Events();

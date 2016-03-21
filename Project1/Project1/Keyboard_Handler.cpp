@@ -3,9 +3,9 @@
 
 std::map<SDL_Keycode, int> Keyboard_Handler::__Map;
 
-double Keyboard_Handler::Key_Down(std::initializer_list<Sint32> args)
+double Keyboard_Handler::Key_Down(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Down : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
 	Sint32 key = (Sint32)*it;
 
@@ -15,9 +15,9 @@ double Keyboard_Handler::Key_Down(std::initializer_list<Sint32> args)
 	return 0.0;
 }
 
-double Keyboard_Handler::Key_Up(std::initializer_list<Sint32> args)
+double Keyboard_Handler::Key_Up(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Up : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
 	Sint32 key = (Sint32)*it;
 
@@ -27,9 +27,9 @@ double Keyboard_Handler::Key_Up(std::initializer_list<Sint32> args)
 	return 0.0;
 }
 
-double Keyboard_Handler::Key_Held(std::initializer_list<Sint32> args)
+double Keyboard_Handler::Key_Held(std::vector<Sint32> args)
 {
-	auto* it = args.begin();
+	auto it = args.begin();
 	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Held : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
 	Sint32 key = (Sint32)*it++;
 

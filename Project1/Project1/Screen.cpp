@@ -7,8 +7,8 @@ bool Screen::__Initialized = false;
 SDL_Window* Screen::Window;
 SDL_Renderer* Screen::Renderer;
 
-unsigned Screen::Screen_Width = 200;
-unsigned Screen::Screen_Height = 150;
+unsigned Screen::Screen_Width = 800;
+unsigned Screen::Screen_Height = 600;
 
 std::vector<Sprite*> Screen::__Sprites;
 std::vector<std::pair<double, double>> Screen::__Entity_Pos;
