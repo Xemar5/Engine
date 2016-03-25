@@ -10,6 +10,7 @@ class Hitbox;
 class Stats;
 class Movement;
 
+
 //All your Entities should NOT override this class, deriver Entity class instead.
 class Entity
 {

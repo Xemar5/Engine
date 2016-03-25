@@ -33,8 +33,21 @@ public:
 	//*** Sets the frame to the next one in the frame sequence
 	static unsigned Next_Frame(Entity* ent);
 	//*** Sets the currently playing animation to the given one
+	//*** Does nothing if given animation is already playing
 	//*** If no name supplied or animation doesn't exist, frame 0 will be played
-	static Animation* Play(Entity* ent, std::string name = "");
+	static Animation* Play(Entity* ent, std::string name = "idle");
+	//*** Sets the currently playing animation to the given one
+	//*** Does nothing if an animation is being played
+	//*** If no name supplied or animation doesn't exist, frame 0 will be played
+	static Animation* Soft_Play(Entity* ent, std::string name = "idle");
+	//*** Sets the currently playing animation to the given one
+	//*** Stops the current animaiton and forces the given one
+	//*** If no name supplied or animation doesn't exist, frame 0 will be played
+	static Animation* Force_Play(Entity* ent, std::string name = "idle");
+	//*** Sets the currently playing animation nullptr
+	//*** Does nothing if given animation is not being played
+	//*** Leave blank if terminate any currently playing animation
+	static bool Terminate(Entity* ent, std::string name = "");
 	//*** Decodes the given code into a vector of unsigned ints
 	//*** Code details:
 	//*** 0x5    ==  frame 0 will be played 5 times

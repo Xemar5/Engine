@@ -31,7 +31,7 @@ Texture* Texture::Load(std::string path, unsigned width, unsigned height, int fr
 	Texture::__Loaded.back()->__Height = height;
 	Texture::__Loaded.back()->Set_Starting_Point(starting_point_x, starting_point_y);
 	Texture::__Loaded.back()->Set_Frame_Size(frame_width, frame_height);
-	//Animation::Add(Texture::__Loaded.back().get(), "default", { 0 });
+	Animation::Add(Texture::__Loaded.back().get(), "idle", { 0 });
 	return Texture::__Loaded.back().get();
 }
 
@@ -135,16 +135,29 @@ inline std::pair<float, float> Texture::Get_Starting_Point()
 {
 	return std::make_pair(__Starting_Point_X, __Starting_Point_Y);
 }
+SDL_Point Texture::Get_SDL_Starting_Point()
+{
+	if (!this)
+	{
+		std::cerr << "ERR Texure::Get_SDL_Starting_Point : No this Texture\n";
+		return { 0,0 };
+	}
+	return 
+	{
+		(int)((1.0 + __Starting_Point_X) / 2 * __Frame_Width) ,
+		(int)((1.0 + __Starting_Point_Y) / 2 * __Frame_Height)
+	};
+}
 SDL_Texture * Texture::Get_SDL_Texture()
 {
 	return this->__Texture;
 }
 std::pair<float, float> Texture::Set_Starting_Point(float x, float y)
 {
-	if (x > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1; Setting to 1\n"; x = 1.0; }
-	if (x < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1; Setting to -1\n"; x = -1.0; }
-	if (y > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1; Setting to 1\n";  y = 1.0; }
-	if (y < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1; Setting to -1\n"; y = -1.0; }
+	if (x > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1;\n"; }
+	if (x < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1;\n"; }
+	if (y > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1;\n"; }
+	if (y < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1;\n"; }
 	__Starting_Point_X = x;
 	__Starting_Point_Y = y;
 	return std::make_pair(x, y);

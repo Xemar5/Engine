@@ -3,6 +3,7 @@
 #include "Screen.h"
 #include "Sprite.h"
 #include "Animation.h"
+#include "Movement.h"
 
 std::vector<std::shared_ptr<State>> State::Built;
 std::vector<unsigned> State::Deleted;
@@ -16,9 +17,16 @@ void State::Update()
 			{
 				if (Animation::Next_Frame(ent.get()) != -1)
 					Animation::Set_Frame(ent.get(), ent->Get_Sprite()->Get_Current_Frame());
+				
 				ent->Update();
+
+				if (ent->Get_Movement())
+					if (Movement::__Resolve_Movement(ent.get()))
+						Animation::Play(ent.get(), "move");
+					else Animation::Terminate(ent.get(), "move");
+
 				if (!ent->Get_Sprite()->Get_Current_Animation()) Animation::Play(ent.get());
-				Screen::Add(ent->Get_Sprite(), ent->X, ent->Y);
+				Screen::Add(ent.get());
 			}
 	Screen::Draw();
 }

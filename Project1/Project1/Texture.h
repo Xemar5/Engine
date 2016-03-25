@@ -32,6 +32,8 @@ public:
 
 	//*** Returns pair of x and y of Sprite starting position
 	std::pair<float, float> Get_Starting_Point();
+	//*** Returns pair of x and y of Sprite starting position in SDL_Point format
+	SDL_Point Get_SDL_Starting_Point();
 	//*** Returns the SDL_Texture of sprite
 	SDL_Texture* Get_SDL_Texture();
 

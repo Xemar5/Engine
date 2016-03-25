@@ -31,6 +31,9 @@ public:
 	Animation* Get_Current_Animation();
 	//*** Horizontal or vertical flip of this sprite
 	SDL_RendererFlip Flip;
+	//*** The angle in radians of this entity to be drawn
+	//*** If set to 0, sprite will be displayed without rotation
+	double Rotation = 0;
 private:
 	//*** Loaded Texture of this entity
 	Texture* __Texture = nullptr;

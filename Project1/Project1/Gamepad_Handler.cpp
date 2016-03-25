@@ -60,7 +60,7 @@ double Gamepad_Handler::Get_Axis_State(std::vector<Sint32> args)
 
 	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Get_Axis_State : Gamepad not supplied \n"; return 0.0; }
 	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
-	if (!joy) { std::cerr << "ERR Gamepad_Handler::Get_Axis_State : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	if (!joy) { /*std::cerr << "ERR Gamepad_Handler::Get_Axis_State : Gamepad not set (use Gamepad_Handler::Set function)\n";*/ return 0.0; }
 	if (!joy->Get_Joystick()) { std::cerr << "ERR Gamepad_Handler::Get_Axis_State : No gamepad supplied\n"; return 0.0; }
 
 	auto stt = SDL_JoystickGetAxis(joy->Get_Joystick(), axis);

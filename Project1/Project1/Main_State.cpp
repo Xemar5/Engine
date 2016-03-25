@@ -6,8 +6,9 @@
 #include "Player.h"
 #include "Input_Handler.h"
 #include "Keyboard_Handler.h"
+#include "Gamepad_Handler.h"
+#include "Sword.h"
 
-Timer tmrr;
 void Main_Menu::Create()
 {
 	Man* m = State::Add_Entity<Man>(0);
@@ -23,6 +24,7 @@ void Main_Menu::Create()
 	m2->Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
 
 	auto p1 = Player::Set();
+	Player::Set_Entity(p1, m2);
 	Player::Set_Keys(p1,
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_w }),
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_s }),
@@ -30,18 +32,20 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_d })
 		);
 
-	p1->Set_Entity(m2);
-	tmrr.Start();
+	auto p2 = Player::Set();
+	Player::Set_Entity(p2, m2);
+	Player::Set_Keys(p2,
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,0 }),
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 1,0 }),
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,0 }),
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,0 })
+		);
+
+	Sword* s1 = State::Add_Entity<Sword>(0);
+	s1->Wealder = m2;
 }
 void Main_Menu::Update()
 {
-	auto pp = Player::Get(0);
-	if (tmrr.Is_Started() && tmrr.Get() > 1000)
-	{
-		tmrr.Stop();
-		Animation::Play(Layers[0]->Entities[1].get(), "idle");
-	}
-
 	State::Update();
 }
 void Main_Menu::Events()

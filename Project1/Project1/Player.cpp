@@ -3,6 +3,7 @@
 #include "Movement.h"
 #include "Entity.h"
 #include "Sprite.h"
+#include "Animation.h"
 #include <iostream>
 
 std::vector<std::shared_ptr<Player>> Player::__Players;
@@ -82,15 +83,35 @@ int Player::Get_First_Unused_Index()
 	return index;
 }
 
-bool Player::Set_Entity(Entity * ent)
+bool Player::Set_Entity(Player* player, Entity * ent)
 {
+	if (!player)
+	{
+		std::cerr << "ERR Player::Set_Entity : No Player Supplied\n";
+		return false;
+	}
 	if (!ent)
 	{
 		std::cerr << "ERR Player::Set_Entity : No Entity supplied\n";
 		return false;
 	}
-	__Entity = ent;
+	player->__Entity = ent;
 	return true;
+}
+
+Entity * Player::Get_Entity(Player* player)
+{
+	if (!player)
+	{
+		std::cerr << "ERR Player::Get_Entity : No Player supplied\n";
+		return nullptr;
+	}
+	if (!player->__Entity)
+	{
+		std::cerr << "ERR Player::Get_Entity : Given player controlls no Entity\n";
+		return nullptr;
+	}
+	return player->__Entity;
 }
 
 void Player::__Update()
@@ -98,13 +119,13 @@ void Player::__Update()
 	for (unsigned i = 0; i < Player::__Players.size(); i++)
 	{
 		double vx = 0, vy = 0;
-		if (Player::__Players[i]->__Down->Check()) vy += 1.0;
-		if (Player::__Players[i]->__Up->Check()) vy -= 1.0;
-		if (Player::__Players[i]->__Right->Check()) vx += 1.0;
-		if (Player::__Players[i]->__Left->Check()) vx -= 1.0;
-		Movement::Move(Player::__Players[i]->__Entity, vx, vy, 0.2);
+		vy += Player::__Players[i]->__Down->Check();
+		vy -= Player::__Players[i]->__Up->Check();
+		vx += Player::__Players[i]->__Right->Check();
+		vx -= Player::__Players[i]->__Left->Check();
 		if (vx < 0) Player::__Players[i]->__Entity->Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
 		if (vx > 0) Player::__Players[i]->__Entity->Get_Sprite()->Flip = SDL_FLIP_NONE;
+		Movement::Add_Force(Player::__Players[i]->__Entity, vx, vy);
 	}
 }
 

@@ -122,6 +122,7 @@
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Sword.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="State.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Action.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Screen.h" />
+    <ClInclude Include="Sword.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />
