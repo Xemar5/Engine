@@ -73,6 +73,7 @@ T* State::Add_Entity(unsigned layer)
 	while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<Layer>());
 	Layers[layer]->Entities.emplace_back(std::make_shared<T>());
 	Layers[layer]->Entities.back()->Create();
+	Layers[layer]->Entities.back()->__Layer = layer;
 	return dynamic_cast<T*>(Layers[layer]->Entities.back().get());
 }
 

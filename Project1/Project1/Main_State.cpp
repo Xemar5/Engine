@@ -41,7 +41,7 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,0 })
 		);
 
-	Sword* s1 = State::Add_Entity<Sword>(0);
+	Sword* s1 = State::Add_Entity<Sword>(1);
 	s1->Wealder = m2;
 }
 void Main_Menu::Update()

@@ -46,7 +46,8 @@ private:
 	static bool __Initialized;
 
 	//*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
-	//*** It empties itself every frame update
-	static std::vector<Entity*> __Entities;
+	//*** It empties itself every frame update\
+	//*** Each sub-vector represents a layer
+	static std::vector<std::vector<Entity*>> __Entities;
 
 };

@@ -29,3 +29,8 @@ Movement * Entity::Get_Movement()
 {
 	return __Movement.get();
 }
+
+unsigned Entity::Get_Layer()
+{
+	return __Layer;
+}

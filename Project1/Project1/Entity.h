@@ -37,6 +37,8 @@ public:
 	//*** Returns the Movement pointer if it exists
 	Movement* Get_Movement();
 
+	//*** Returns the layer this entity is added to
+	unsigned Get_Layer();
 
 	//*** X coordinate of this entity position
 	double X = 0;
@@ -66,9 +68,13 @@ protected:
 	//*** An entity doesn't have to has all the statistics;
 	std::shared_ptr<Movement> __Movement = nullptr;
 
+	//*** Represents the layer this entity is added to
+	int __Layer = -1;
+
 	friend class Sprite;
 	friend class Hitbox;
 	friend class Movement;
+	friend class State;
 };
 
 
