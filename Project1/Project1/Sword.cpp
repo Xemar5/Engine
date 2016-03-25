@@ -23,7 +23,7 @@ void Sword::Update()
 	SDL_GetMouseState(&a, &b);
 	double ang = (atan2(b - Y, a - X) * 180 / M_PI) + 90;
 	Get_Sprite()->Rotation = ang;
-	if (abs(ang - Old_Angle) > 10)
+	if (abs(ang - Old_Angle) > 5)
 	{
 		if (ang < Old_Angle) Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
 		if (ang > Old_Angle) Get_Sprite()->Flip = SDL_FLIP_NONE;
