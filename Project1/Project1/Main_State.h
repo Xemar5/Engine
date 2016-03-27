@@ -1,7 +1,6 @@
 #pragma once
 
 #include "State.h"
-#include "Man.h"
 
 class Main_Menu : public State
 {

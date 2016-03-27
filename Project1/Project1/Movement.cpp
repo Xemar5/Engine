@@ -83,6 +83,11 @@ double Movement::Get_Velocity_Y()
 	return __vy;
 }
 
+double Movement::Set_Speed(double speed)
+{
+	return __Speed = speed;
+}
+
 
 bool Movement::__Resolve_Movement(Movement * movement)
 {

@@ -56,6 +56,18 @@ public:
 	//*** Returns pointer to it if created or already existing
 	static Texture* Load(std::string path, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
 
+	//*** Load new sprite from a path
+	//*** - texture - created SDL_Texture that has no path
+	//*** - width - of loading texture
+	//*** - height - of loading texture
+	//*** - frame_width - of loading texture; leave 0 to set to max; set to negative to devide texture into n segments
+	//*** - frame_height - of loading texture; leave 0 to set to max; set to negative to devide texture into n segments
+	//*** - starting_point_x - x of point where texture starts
+	//*** - starting_point_y - y of point where texture starts
+	//*** Adds a default "idle" animation
+	//*** Returns pointer to it if created or already existing
+	static Texture* Load(SDL_Texture* texture, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
+
 	//*** Returns all loaded sprites in this session
 	static std::vector<std::shared_ptr<Texture>> Get_Loaded();
 
@@ -73,7 +85,7 @@ public:
 	std::pair<unsigned, unsigned> Get_Frame_Pos(unsigned frame);
 private:
 	//*** Path to the image
-	std::string __Path;
+	std::string __Path = "";
 
 	//*** Width of the image
 	unsigned __Width;

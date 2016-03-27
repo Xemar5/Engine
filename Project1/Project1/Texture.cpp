@@ -18,15 +18,26 @@ Texture* Texture::Load(std::string path, unsigned width, unsigned height, int fr
 		std::cerr << "MSG Texture::Load : Texture already loaded, returning loaded version\n";
 		return sprite.get();
 	}
-	Texture::__Loaded.emplace_back(std::make_shared<Texture>());
-	Texture::__Loaded.back()->__Texture = IMG_LoadTexture(Screen::Renderer, path.c_str());
-	if (!Texture::__Loaded.back()->__Texture)
+	SDL_Texture* tr = IMG_LoadTexture(Screen::Renderer, path.c_str());
+	if (!tr)
 	{
 		std::cerr << "ERR Texture::Load : No valid texture file supplied\n";
-		Texture::__Loaded.pop_back();
 		return nullptr;
 	}
-	Texture::__Loaded.back()->__Path = path;
+	Texture* texture = Texture::Load(tr, width, height, frame_width, frame_height, starting_point_x, starting_point_y);
+	texture->__Path = path;
+	return texture;
+}
+
+Texture * Texture::Load(SDL_Texture * texture, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
+{
+	if (!texture)
+	{
+		std::cerr << "ERR Texture::Load : No SDL_Texture supplied\n";
+		return nullptr;
+	}
+	Texture::__Loaded.emplace_back(std::make_shared<Texture>());
+	Texture::__Loaded.back()->__Texture = texture;
 	Texture::__Loaded.back()->__Width = width;
 	Texture::__Loaded.back()->__Height = height;
 	Texture::__Loaded.back()->Set_Starting_Point(starting_point_x, starting_point_y);
@@ -124,14 +135,14 @@ std::pair<unsigned, unsigned> Texture::Set_Frame_Size(int w, int h)
 	return std::make_pair(w, h);
 }
 
-inline unsigned Texture::Max_Frames()
+unsigned Texture::Max_Frames()
 {
 	return (__Width / __Frame_Width) * (__Height / __Frame_Height);
 }
 
 
 
-inline std::pair<float, float> Texture::Get_Starting_Point()
+std::pair<float, float> Texture::Get_Starting_Point()
 {
 	return std::make_pair(__Starting_Point_X, __Starting_Point_Y);
 }

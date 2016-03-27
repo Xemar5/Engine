@@ -20,7 +20,11 @@ Sprite * Sprite::Create(Entity* ent, Texture * texture)
 	Sprite::__Sprites.emplace_back(std::make_shared<Sprite>());
 	Sprite::__Sprites.back()->__Texture = texture;
 	Sprite::__Sprites.back()->Flip = SDL_FLIP_NONE;
-	if (ent) ent->__Sprite = Sprite::__Sprites.back().get();
+	if (ent)
+	{
+		ent->__Sprite = Sprite::__Sprites.back().get();
+		Sprite::__Sprites.back()->__Current_Animation = Animation::Play(ent, "idle");
+	}
 	return Sprite::__Sprites.back().get();
 }
 
@@ -53,6 +57,11 @@ std::pair<unsigned, unsigned> Sprite::Get_Frame_Size()
 
 std::pair<unsigned, unsigned> Sprite::Get_Frame_Pos()
 {
+	if (!this)
+	{
+		std::cerr << "ERR Sprite::Get_Frame_Pos : No this Sprite\n";
+		return{ 0,0 };
+	}
 	return std::make_pair(__Frame_Pos_X, __Frame_Pos_Y);
 }
 

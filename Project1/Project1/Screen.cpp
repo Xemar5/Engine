@@ -2,6 +2,7 @@
 #include "Entity.h"
 #include "Sprite.h"
 #include "Texture.h"
+#include "Tileset.h"
 
 bool Screen::__Initialized = false;
 
@@ -10,9 +11,16 @@ SDL_Renderer* Screen::Renderer;
 
 unsigned Screen::Screen_Width = 800;
 unsigned Screen::Screen_Height = 600;
+unsigned Screen::__Scale = 2;
 
 std::vector<std::vector<Entity*>> Screen::__Entities;
+Tileset* Screen::__Tileset = nullptr;
 
+
+unsigned Screen::Get_Scale()
+{
+	return __Scale;
+}
 
 bool Screen::Start()
 {
@@ -44,9 +52,28 @@ bool Screen::Add(Entity* ent)
 	return true;
 }
 
+bool Screen::Add(Tileset * tileset)
+{
+	if (!tileset) { std::cerr << "ERR Screen::Add : No tileset supplied\n"; return false; }
+	if (!tileset->Get_SDL_Texture()) { std::cerr << "ERR Screen::Add : Given tileset has no SDL_Texture supplied\n"; return false; }
+	Screen::__Tileset = tileset;
+	return true;
+}
+
 unsigned Screen::Draw()
 {
 	unsigned count = 0;
+	if (__Tileset)
+	{
+		SDL_Rect src = { 0,0, (int)__Tileset->Get_Size().first, (int)__Tileset->Get_Size().second };
+		SDL_Rect dst = { 
+			(int)__Tileset->Get_Pos().first * (int)Screen::Get_Scale(),
+			(int)__Tileset->Get_Pos().second * (int)Screen::Get_Scale(),
+			(int)__Tileset->Get_Size().first * (int)Screen::Get_Scale(),
+			(int)__Tileset->Get_Size().second * (int)Screen::Get_Scale()
+		};
+		SDL_RenderCopy(Screen::Renderer, __Tileset->Get_SDL_Texture(), &src, &dst);
+	}
 	for (auto layer : Screen::__Entities)
 	{
 		while (count < layer.size())
@@ -64,14 +91,14 @@ unsigned Screen::Draw()
 				(int)sh->Get_Frame_Size().second,
 			};
 			SDL_Rect draw_rect = {
-				(int)layer[count]->X - layer[count]->Get_Sprite()->Get_Texture()->Get_SDL_Starting_Point().x * 3,
-				(int)layer[count]->Y - layer[count]->Get_Sprite()->Get_Texture()->Get_SDL_Starting_Point().y * 3,
-				(int)sh->Get_Frame_Size().first * 3,
-				(int)sh->Get_Frame_Size().second * 3,
+				(int)layer[count]->X - layer[count]->Get_Sprite()->Get_Texture()->Get_SDL_Starting_Point().x * (int)Screen::Get_Scale(),
+				(int)layer[count]->Y - layer[count]->Get_Sprite()->Get_Texture()->Get_SDL_Starting_Point().y * (int)Screen::Get_Scale(),
+				(int)sh->Get_Frame_Size().first * (int)Screen::Get_Scale(),
+				(int)sh->Get_Frame_Size().second * (int)Screen::Get_Scale(),
 			};
 			auto sp = sh->Get_Texture()->Get_SDL_Starting_Point();
-			sp.x *= 3;
-			sp.y *= 3;
+			sp.x *= Screen::Get_Scale();
+			sp.y *= Screen::Get_Scale();
 			SDL_RenderCopyEx
 				(
 					Screen::Renderer,

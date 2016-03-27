@@ -45,6 +45,9 @@ public:
 	//*** Returns the y-dimension velocity
 	double Get_Velocity_Y();
 
+	//*** Sets the max speed of this Entity
+	double Set_Speed(double speed);
+
 private:
 	//*** The max amount of pixels the entity is moving each frame
 	//*** How fast the entity gets to that speed is defined by it's mass

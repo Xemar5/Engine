@@ -65,6 +65,7 @@ double Gamepad_Handler::Get_Axis_State(std::vector<Sint32> args)
 
 	auto stt = SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
 	if (stt == 32767) return 1;
+	if (abs(stt) < 6000) return 0;
 	return (double)stt / 32768.0;
 }
 
@@ -94,7 +95,9 @@ double Gamepad_Handler::Get_Absolute_Axis_State(std::vector<Sint32> args)
 	if (!joy) { std::cerr << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
 	if (!joy->Get_Joystick()) { std::cerr << "ERR Gamepad_Handler::Get_Absolute_Axis_State : No gamepad supplied\n"; return 0.0; }
 
-	return SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
+	auto as = SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
+	if (abs(as) < 6000) return 0;
+	return as;
 }
 
 double Gamepad_Handler::Get_Absolute_Axis_State_Positive(std::vector<Sint32> args)

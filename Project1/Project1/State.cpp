@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "Animation.h"
 #include "Movement.h"
+#include "Tileset.h"
 
 std::vector<std::shared_ptr<State>> State::Built;
 std::vector<unsigned> State::Deleted;
@@ -11,6 +12,7 @@ std::vector<unsigned> State::Deleted;
 
 void State::Update()
 {
+	if (Tile_Set) Screen::Add(Tile_Set.get());
 	for (auto layer : Layers)
 		if (layer->Update_Entities)
 			for (auto ent : layer->Entities)

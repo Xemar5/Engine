@@ -2,7 +2,7 @@
 #include <vector>
 #include <memory>
 
-
+class Tileset;
 class Entity;
 
 class Layer
@@ -48,6 +48,7 @@ public:
 	//*** 	if the layer doesn't exist yet, this function will create all layers between
 	template<typename T> T * Add_Entity(unsigned layer = unsigned(0));
 
+
 	//*** Builds and creates a new state of given type
 	//*** Deletes all previously built states and state layers
 	template <typename T> static T* New();
@@ -65,6 +66,9 @@ public:
 	//*** If true, System will update all state layers aswell as the main state built before
 	//*** Else only this state layer will be updated
 	bool Update_Underneath = false;
+
+	//*** The Tileset of this State
+	std::shared_ptr<Tileset> Tile_Set = nullptr;
 };
 
 template <typename T>

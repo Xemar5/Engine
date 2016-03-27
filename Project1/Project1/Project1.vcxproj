@@ -90,7 +90,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -113,22 +113,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Dreg.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Gamepad_Handler.cpp" />
     <ClCompile Include="Hitbox.cpp" />
     <ClCompile Include="Input_Handler.cpp" />
     <ClCompile Include="Keyboard_Handler.cpp" />
     <ClCompile Include="Main_State.cpp" />
-    <ClCompile Include="Man.cpp" />
+    <ClCompile Include="Mosh.cpp" />
+    <ClCompile Include="Nerk.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Raiden.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sword.cpp" />
+    <ClCompile Include="Tar.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="Tileset.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="__Source.cpp" />
   </ItemGroup>
@@ -140,7 +145,7 @@
     <ClInclude Include="Input_Handler.h" />
     <ClInclude Include="Keyboard_Handler.h" />
     <ClInclude Include="Main_State.h" />
-    <ClInclude Include="Man.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Action.h" />
     <ClInclude Include="Player.h" />
@@ -150,6 +155,7 @@
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="Tileset.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
