@@ -9,6 +9,8 @@ class Texture;
 class Layer
 {
 public:
+	double X = 0;
+	double Y = 0;
 	//*** If true, all entities of this layer will be updated every update tick
 	bool Update_Entities = true;
 	//*** If true, all entities of this layer will be updated every event

@@ -12,8 +12,8 @@ std::vector<unsigned> State::Deleted;
 
 void State::Update()
 {
-	for (auto tileset : __Tilesets)
-		Screen::Add(tileset.get());
+	//for (auto tileset : __Tilesets)
+	//	Screen::Add(tileset.get());
 	for (auto layer : Layers)
 		if (layer->Update_Entities)
 			for (auto ent : layer->Entities)
@@ -29,7 +29,7 @@ void State::Update()
 					else Animation::Terminate(ent.get(), "move");
 
 				if (!ent->Get_Sprite()->Get_Current_Animation()) Animation::Play(ent.get());
-				Screen::Add(ent.get());
+				//Screen::Add(ent.get());
 			}
 	Screen::Draw();
 }
