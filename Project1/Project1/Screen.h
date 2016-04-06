@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include <SDL.h>
 
 class Entity;
@@ -27,11 +28,11 @@ public:
 	//*** Use only once at the start of the System
 	static bool Start();
 
-	////*** Adds the entity to screen renderer queue
-	//static bool Add(Entity* ent);
+	//*** Adds the entity to screen renderer queue
+	static bool Add(std::shared_ptr<Entity> ent);
 
-	////*** Adds the Tileset to screen renderer queue
-	//static bool Add(Tileset* tileset);
+	//*** Adds the Tileset to screen renderer queue
+	static bool Add(std::shared_ptr<Tileset> tileset);
 
 	//*** Draws the screen renderer to the screen
 	//*** Use when all entities are added to the renderer
@@ -45,16 +46,22 @@ private:
 	//*** If true, prevents the user from additional, unnecessary initializations
 	//*** Screen::Start should be called only once
 	static bool __Initialized;
-
+	
+	//*** The global scale ratio of all displayed textures
 	static unsigned __Scale;
 
-	////*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
-	////*** It empties itself every frame update\
-	//	//*** Each sub-vector represents a layer
-	//static std::vector<std::vector<Entity*>> __Entities;
+	//*** Reorders all entities stored in Screen::__Entities
+	//*** The greater the Y value of an entity, the greater its index in __Entity
+	//*** The greater the index, the later it's printed to the screen
+	static bool __Reorder();
+
+	//*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
+	//*** It empties itself every frame update\
+	//*** Each sub-vector represents a layer
+	static std::vector<std::vector<std::shared_ptr<Entity>>> __Entities;
 
 	//*** A pointer to the Tileset which is to be drawn on the screen the next frame update
 	//*** It empties itself every frame update
-	static Tileset* __Tileset;
+	static std::vector<std::shared_ptr<Tileset>> __Tilesets;
 
 };

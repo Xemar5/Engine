@@ -89,6 +89,7 @@ T* State::Add_Entity(unsigned layer)
 	Layers[layer]->Entities.emplace_back(std::make_shared<T>());
 	Layers[layer]->Entities.back()->Create();
 	Layers[layer]->Entities.back()->__Layer = layer;
+	Screen::Add(Layers[layer]->Entities.back());
 	return dynamic_cast<T*>(Layers[layer]->Entities.back().get());
 }
 

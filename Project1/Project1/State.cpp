@@ -54,6 +54,7 @@ bool State::Add_Tileset(Texture * texture, std::pair<int, int> pos, std::vector<
 		return false;
 	}
 	__Tilesets.push_back(Tileset::Set(texture, pos, map));
+	Screen::Add(__Tilesets.back());
 	return true;
 }
 
