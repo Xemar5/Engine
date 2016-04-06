@@ -36,7 +36,6 @@ public:
 
 	//*** Returns the Movement pointer if it exists
 	Movement* Get_Movement();
-
 	//*** Returns the layer this entity is added to
 	unsigned Get_Layer();
 

@@ -22,7 +22,7 @@ Animation* Animation::Add(Texture* sprite, std::string name, std::string frame_s
 	}
 	if (auto* anim = Animation::Exists(sprite, name))
 	{
-		if(name != "idle") std::cout << "MSG Animation::Add : Animation " << name << " already exists, replacing\n";
+		//if(name != "idle") std::cout << "MSG Animation::Add : Animation " << name << " already exists, replacing\n";
 		anim->__Frame_Sequence = Animation::Decode(frame_sequence);
 		anim->__Name = name;
 		anim->__Repeat = repeat;

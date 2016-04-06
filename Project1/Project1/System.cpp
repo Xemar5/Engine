@@ -13,7 +13,6 @@ void System::_System_Update()
 {
 	bool Quit_System = false;
 
-
 	FPS_Clock.Start();
 	if (!System::FPS || System::FPS > 1000) System::FPS = 60;
 

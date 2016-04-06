@@ -40,7 +40,7 @@ void Sword::Update()
 		Get_Sprite()->Rotation = ang;
 		X = Wealder->X - cos(ang * M_PI / 180 + M_PI / 2) * 40;
 		Y = Wealder->Y - 8 * Screen::Get_Scale() - sin(ang * M_PI / 180 + M_PI / 2) * 40;
-		if (abs(ang - __Old_Angle) > 5)
+		if (abs(ang - __Old_Angle) > 5  && abs(ang - __Old_Angle) < 180)
 		{
 			if (ang < __Old_Angle) Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
 			if (ang > __Old_Angle) Get_Sprite()->Flip = SDL_FLIP_NONE;

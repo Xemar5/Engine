@@ -1,7 +1,7 @@
 #pragma once
 
 
-enum Character_Enums
+enum class Character_Enum
 {
 	Nerk,
 	Mosh,
@@ -11,13 +11,12 @@ enum Character_Enums
 };
 
 #include "Entity.h"
-#include <string>
 
-template <Character_Enums type>
+template <Character_Enum type>
 class Character : public Entity
 {
 public:
-	Character_Enums Number = type;
+	Character_Enum Type = type;
 	void Create() override;
 	void Update() override;
 	void Events() override;

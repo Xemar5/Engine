@@ -12,7 +12,8 @@ std::vector<unsigned> State::Deleted;
 
 void State::Update()
 {
-	if (Tile_Set) Screen::Add(Tile_Set.get());
+	for (auto tileset : __Tilesets)
+		Screen::Add(tileset.get());
 	for (auto layer : Layers)
 		if (layer->Update_Entities)
 			for (auto ent : layer->Entities)
@@ -38,6 +39,27 @@ void State::Events()
 		if (layer->Events_Entities)
 			for (auto ent : layer->Entities)
 				ent->Events();
+}
+
+bool State::Add_Tileset(Texture * texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map)
+{
+	if (!this)
+	{
+		std::cerr << "ERR State::Add_Tileset : No this State\n";
+		return false;
+	}
+	if (!texture)
+	{
+		std::cerr << "ERR State::Add_Tileset : No texture supplied\n";
+		return false;
+	}
+	__Tilesets.push_back(Tileset::Set(texture, pos, map));
+	return true;
+}
+
+std::vector<std::shared_ptr<Tileset>> State::Get_Tilesets()
+{
+	return __Tilesets;
 }
 
 

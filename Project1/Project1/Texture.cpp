@@ -15,7 +15,7 @@ Texture* Texture::Load(std::string path, unsigned width, unsigned height, int fr
 	}
 	for (auto sprite : Texture::__Loaded) if (path == sprite->__Path)
 	{
-		std::cerr << "MSG Texture::Load : Texture already loaded, returning loaded version\n";
+		//std::cerr << "MSG Texture::Load : Texture already loaded, returning loaded version\n";
 		return sprite.get();
 	}
 	SDL_Texture* tr = IMG_LoadTexture(Screen::Renderer, path.c_str());

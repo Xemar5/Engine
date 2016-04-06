@@ -4,6 +4,7 @@
 
 class Tileset;
 class Entity;
+class Texture;
 
 class Layer
 {
@@ -67,8 +68,16 @@ public:
 	//*** Else only this state layer will be updated
 	bool Update_Underneath = false;
 
-	//*** The Tileset of this State
-	std::shared_ptr<Tileset> Tile_Set = nullptr;
+	//*** Creates a Tileset with supplied mapping and adds it to this State's Tilesets container
+	//*** - texture - the Texture class containing image file of all tiles
+	//*** - pos - the position of this tileset in this State
+	//*** - map - the mapping of all tiles
+	bool Add_Tileset(Texture* texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
+	//*** Returns the container of all Tilesets in this State
+	std::vector<std::shared_ptr<Tileset>> Get_Tilesets();
+private:
+	//*** The container of all Tilesets of this State
+	std::vector<std::shared_ptr<Tileset>> __Tilesets;
 };
 
 template <typename T>

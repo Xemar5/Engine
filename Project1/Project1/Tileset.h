@@ -17,7 +17,11 @@ public:
 	//*** Returns the tile that contains the given coordinates
 	unsigned Which_Tile(int x, int y);
 	//*** Returns the position of this Tileset
-	std::pair<unsigned, unsigned> Get_Pos();
+	std::pair<int, int> Get_Pos();
+	//*** Sets the x and y coordinates of this tileset to the given ones
+	bool Set_Pos(int x, int y);
+	//*** Moves the tileset by x and y ammount of pixels
+	bool Set_Pos_Relative(int x, int y);
 	//*** Returns the size of whole Tilemap
 	std::pair<unsigned, unsigned> Get_Size();
 	//*** Returns the texture containing tiles
@@ -29,6 +33,10 @@ public:
 	//*** Not all tiles needs to be filled; leave black if unused
 	unsigned Get_Tiles_Count();
 
+	//*** Returns the container of all Wall Placeholders created in this Tileset
+	//*** A Wall Placeholder is created when int 1 occurs in Tileset mapping
+	std::vector<std::pair<int, int>> Get_Wall_Placeholders();
+
 private:
 	std::pair<int, int> __Pos;
 	//*** The texture containing tiles
@@ -38,4 +46,6 @@ private:
 	SDL_Texture* __SDL_Texture = nullptr;
 	//*** The matrix of this Tileset containing all tiles
 	std::vector<std::vector<unsigned>> __Tilemap;
+	//*** The container of positions of all wall placeholders
+	std::vector<std::pair<int, int>> __Wall_Placeholders;
 };

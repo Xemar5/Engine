@@ -38,6 +38,10 @@ std::shared_ptr<Tileset> Tileset::Set(Texture * texture, std::pair<int, int> pos
 	{
 		for (unsigned j = 0; j < map[i].size(); j++)
 		{
+			if (map[i][j] == 1)
+			{
+				ts->__Wall_Placeholders.push_back(std::make_pair(dst.x, dst.y));
+			}
 			if (map[i][j] < texture->Max_Frames())
 			{
 				auto frame_pos = texture->Get_Frame_Pos(map[i][j]);
@@ -46,11 +50,12 @@ std::shared_ptr<Tileset> Tileset::Set(Texture * texture, std::pair<int, int> pos
 			}
 			else
 			{
-				std::cout << "MSG Tileset::Set : Tile " << map[i][j] << " doesn't exist (max " << texture->Max_Frames() - 1 << "); setting to tile 0\n";
+				std::cout << "MSG Tileset::Set : Tile " << map[i][j] << " doesn't exist (max " << texture->Max_Frames() - 1 << "); no tile is drawn\n";
 				src.x = 0;
 				src.y = 0;
 			}
-			SDL_RenderCopy(Screen::Renderer, texture->Get_SDL_Texture(), &src, &dst);
+			if(src.x || src.y)
+				SDL_RenderCopy(Screen::Renderer, texture->Get_SDL_Texture(), &src, &dst);
 			dst.x += frame_size.first;
 		}
 		dst.y += frame_size.second;
@@ -66,25 +71,49 @@ unsigned Tileset::Which_Tile(int x, int y)
 {
 	if (!this) { std::cerr << "ERR Tileset::Which_Tile : No this Tileset\n"; return 0; }
 	if (!__Texture) { std::cerr << "ERR Tileset::Which_Tile : No Sprite supplied\n"; return 0; }
-	auto sz = __Texture->Get_Frame_Size();
-	if(!sz.first || !sz.second) { std::cerr << "ERR Tileset::Which_Tile : Frame size has width/height equal to 0\n"; return 0; }
+	std::pair<unsigned, unsigned> frame_size = __Texture->Get_Frame_Size();
+	if(!frame_size.first || !frame_size.second) { std::cerr << "ERR Tileset::Which_Tile : Frame size has width/height equal to 0\n"; return 0; }
 	x -= __Pos.first;
 	y -= __Pos.second;
 
-	x /= sz.first;
-	y /= sz.second;
+	x /= frame_size.first * Screen::Get_Scale();
+	y /= frame_size.second * Screen::Get_Scale();
 
-	if (x < 0 || x >= (int)Get_Size().first ||
-		y < 0 || y >= (int)Get_Size().second)
+	if (x < 0 || x >= (int)Get_Size().first / frame_size.first ||
+		y < 0 || y >= (int)Get_Size().second / frame_size.second)
 	{
 		return 0;
 	}
-	return __Tilemap[x][y];
+	return __Tilemap[y][x];
 }
 
-std::pair<unsigned, unsigned> Tileset::Get_Pos()
+std::pair<int, int> Tileset::Get_Pos()
 {
 	return __Pos;
+}
+
+bool Tileset::Set_Pos(int x, int y)
+{
+	if (!this)
+	{
+		std::cerr << "ERR Tileset::Set_Pos : No this Tileset\n";
+		return false;
+	}
+	__Pos.first = x;
+	__Pos.second = y;
+	return true;
+}
+
+bool Tileset::Set_Pos_Relative(int x, int y)
+{
+	if (!this)
+	{
+		std::cerr << "ERR Tileset::Set_Pos_Relative : No this Tileset\n";
+		return false;
+	}
+	__Pos.first += x;
+	__Pos.second += y;
+	return true;
 }
 
 std::pair<unsigned, unsigned> Tileset::Get_Size()
@@ -132,5 +161,10 @@ unsigned Tileset::Get_Tiles_Count()
 		return 0;
 	}
 	return Get_Texture()->Max_Frames();
+}
+
+std::vector<std::pair<int, int>> Tileset::Get_Wall_Placeholders()
+{
+	return __Wall_Placeholders;
 }
 
