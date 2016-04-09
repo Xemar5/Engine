@@ -1,6 +1,7 @@
 #include "Input_Handler.h"
 #include "Keyboard_Handler.h"
 #include "Gamepad_Handler.h"
+#include "Mouse_Handler.h"
 #include "Player.h"
 #include <iostream>
 
@@ -69,6 +70,7 @@ bool Input_Handler::Change_Arg_List(std::vector<Sint32> arg_list)
 void Input_Handler::__Update()
 {
 	Keyboard_Handler::__Update();
+	Mouse_Handler::__Update();
 	Gamepad_Handler::__Update();
 	Player::__Update();
 }
@@ -76,6 +78,7 @@ void Input_Handler::__Update()
 void Input_Handler::__Events()
 {
 	Keyboard_Handler::__Events();
+	Mouse_Handler::__Events();
 	Gamepad_Handler::__Events();
 	Player::__Events();
 }

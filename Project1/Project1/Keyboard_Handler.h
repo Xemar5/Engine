@@ -1,10 +1,8 @@
 #pragma once
 #include <SDL.h>
 #include <map>
-#include <iostream>
 #include <vector>
 #include <memory>
-#include <initializer_list>
 
 
 class Keyboard_Handler

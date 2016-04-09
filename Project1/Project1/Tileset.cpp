@@ -79,8 +79,8 @@ unsigned Tileset::Which_Tile(int x, int y)
 	x /= frame_size.first * Screen::Get_Scale();
 	y /= frame_size.second * Screen::Get_Scale();
 
-	if (x < 0 || x >= (int)Get_Size().first / frame_size.first ||
-		y < 0 || y >= (int)Get_Size().second / frame_size.second)
+	if (x < 0 || x >= (int)Get_Size().first / (int)frame_size.first ||
+		y < 0 || y >= (int)Get_Size().second / (int)frame_size.second)
 	{
 		return 0;
 	}

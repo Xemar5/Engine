@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Input_Handler.h"
 #include "Keyboard_Handler.h"
+#include "Mouse_Handler.h"
 #include "Gamepad_Handler.h"
 #include "Sword.h"
 #include "Movement.h"
@@ -33,7 +34,7 @@ void Main_Menu::Create()
 			{ 0,0,6,6,8,9,0,3,0,4,0,0,6,3,6,0,0 },
 			{ 0,0,0,4,2,5,0,2,0,2,3,4,0,3,4,0,0 },
 			{ 0,0,0,3,6,5,3,4,0,6,9,5,0,6,2,0,0 },
-			{ 4,2,4,3,0,6,9,6,0,0,0,2,2,4,2,0,0 },
+			{ 4,2,3,3,0,6,9,6,0,0,0,2,2,4,2,0,0 },
 			{ 6,7,7,9,0,0,0,0,0,0,0,7,8,8,6,0,0 },
 			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
 		}
@@ -68,7 +69,10 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_w }),
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_s }),
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_a }),
-		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_d })
+		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_d }),
+
+		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
+		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
 		);
 
 	auto p2 = Player::Set();
@@ -77,7 +81,10 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,0 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 1,0 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,0 }),
-		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,0 })
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,0 }),
+
+		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
+		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
 		);
 
 	auto p3 = Player::Set();
@@ -86,7 +93,10 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,1 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 1,1 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,1 }),
-		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,1 })
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,1 }),
+
+		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
+		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
 		);
 
 	auto p4 = Player::Set();
@@ -95,7 +105,10 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,2 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 1,2 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,2 }),
-		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,2 })
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,2 }),
+
+		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
+		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
 		);
 
 	Sword* s1 = State::Add_Entity<Sword>(1);
@@ -130,6 +143,7 @@ void Main_Menu::Update()
 			ent->Y = 550;
 		}
 	}
+	if()
 	//for(auto layer : State::Layers)
 	//	for (auto ent : layer->Entities)
 	//	{

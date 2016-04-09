@@ -23,8 +23,14 @@ Player* Player::Set(int index)
 	return Player::__Players.back().get();
 }
 
-bool Player::Set_Keys(Player * player, std::shared_ptr<Input_Handler> up, std::shared_ptr<Input_Handler> down, std::shared_ptr<Input_Handler> left, std::shared_ptr<Input_Handler> right)
-{
+bool Player::Set_Keys(Player * player,
+	std::shared_ptr<Input_Handler> up,
+	std::shared_ptr<Input_Handler> down,
+	std::shared_ptr<Input_Handler> left,
+	std::shared_ptr<Input_Handler> right,
+	std::shared_ptr<Input_Handler> aim_v,
+	std::shared_ptr<Input_Handler> aim_h)
+	{
 	if (!player)
 	{
 		std::cerr << "ERR Player::Set_Keys : No Player supplied\n";
@@ -32,22 +38,32 @@ bool Player::Set_Keys(Player * player, std::shared_ptr<Input_Handler> up, std::s
 	}
 	if (!up)
 	{
-		std::cerr << "ERR Player::Set_Keys : No up key supplied\n";
+		std::cerr << "ERR Player::Set_Keys : No up input supplied\n";
 		return false;
 	}
 	if (!down)
 	{
-		std::cerr << "ERR Player::Set_Keys : No down key supplied\n";
+		std::cerr << "ERR Player::Set_Keys : No down input supplied\n";
 		return false;
 	}
 	if (!left)
 	{
-		std::cerr << "ERR Player::Set_Keys : No left key supplied\n";
+		std::cerr << "ERR Player::Set_Keys : No left input supplied\n";
 		return false;
 	}
 	if (!right)
 	{
-		std::cerr << "ERR Player::Set_Keys : No right key supplied\n";
+		std::cerr << "ERR Player::Set_Keys : No right input supplied\n";
+		return false;
+	}
+	if (!aim_v)
+	{
+		std::cerr << "ERR Player::Set_Keys : No Aim Vertical input supplied\n";
+		return false;
+	}
+	if (!aim_h)
+	{
+		std::cerr << "ERR Player::Set_Keys : No Aim Horizontal input supplied\n";
 		return false;
 	}
 
@@ -55,6 +71,8 @@ bool Player::Set_Keys(Player * player, std::shared_ptr<Input_Handler> up, std::s
 	player->__Down = down;
 	player->__Left = left;
 	player->__Right = right;
+	player->__Aim_V = aim_v;
+	player->__Aim_H = aim_h;
 
 	return true;
 }

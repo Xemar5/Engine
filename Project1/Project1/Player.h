@@ -21,8 +21,10 @@ public:
 			std::shared_ptr<Input_Handler> up,
 			std::shared_ptr<Input_Handler> down,
 			std::shared_ptr<Input_Handler> left,
-			std::shared_ptr<Input_Handler> right
-		);
+			std::shared_ptr<Input_Handler> right,
+			std::shared_ptr<Input_Handler> aim_v,
+			std::shared_ptr<Input_Handler> aim_h
+	);
 	//*** Returns an existing player with a given index if it exists
 	static Player* Get(int index);
 	//*** Returns an existing player with a given index if it exists
@@ -38,18 +40,18 @@ private:
 	//*** The entity this Player controlls
 	Entity* __Entity = nullptr;
 
-	//*** The up key function
-	//*** Use with Gamepad_Handler or Keyboard_Handler
+	//*** The up input function
 	std::shared_ptr<Input_Handler> __Up = nullptr;
-	//*** The down key function
-	//*** Use with Gamepad_Handler or Keyboard_Handler
+	//*** The down input function
 	std::shared_ptr<Input_Handler>__Down = nullptr;
-	//*** The left key function
-	//*** Use with Gamepad_Handler or Keyboard_Handler
+	//*** The left input function
 	std::shared_ptr<Input_Handler>__Left = nullptr;
-	//*** The right key function
-	//*** Use with Gamepad_Handler or Keyboard_Handler
+	//*** The right input function
 	std::shared_ptr<Input_Handler>__Right = nullptr;
+	//*** The aim vertical input function
+	std::shared_ptr<Input_Handler>__Aim_V = nullptr;
+	//*** The aim horizontal input function
+	std::shared_ptr<Input_Handler>__Aim_H = nullptr;
 
 	//*** The container of all the Player objectss
 	static std::vector<std::shared_ptr<Player>> __Players;
@@ -60,5 +62,3 @@ private:
 	friend class Input_Handler;
 };
 
-
-#undef PLAYER_KEYBIND

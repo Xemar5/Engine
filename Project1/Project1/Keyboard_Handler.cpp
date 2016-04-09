@@ -1,5 +1,6 @@
 #include "Keyboard_Handler.h"
 #include "System.h"
+#include <iostream>
 
 std::map<SDL_Keycode, int> Keyboard_Handler::__Map;
 
