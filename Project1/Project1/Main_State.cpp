@@ -143,7 +143,6 @@ void Main_Menu::Update()
 			ent->Y = 550;
 		}
 	}
-	if()
 	//for(auto layer : State::Layers)
 	//	for (auto ent : layer->Entities)
 	//	{
