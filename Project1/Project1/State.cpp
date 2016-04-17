@@ -41,7 +41,7 @@ void State::Events()
 				ent->Events();
 }
 
-bool State::Add_Tileset(Texture * texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map)
+bool State::Add_Tileset(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map)
 {
 	if (!this)
 	{

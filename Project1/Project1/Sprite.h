@@ -16,9 +16,9 @@ public:
 	//*** Creates new Sprite Handler and sets its Sprite
 	//*** - ent - the entity this sprite will be given to; leave nullptr if no entity wanted
 	//*** - texture - a pointer to an existing texture class; can't be nullptr
-	static Sprite* Create(Entity* ent, Texture* texture);
+	static Sprite* Create(Entity* ent, std::shared_ptr<Texture> texture);
 	//*** Returns the sprite of this Sprite Handler
-	Texture* Get_Texture();
+	std::shared_ptr<Texture> Get_Texture();
 	//*** Returns SDL_Texture stored in Texture of this Sprite
 	SDL_Texture* Get_SDL_Texture();
 	//*** Returns the size of a frame in the sprite stored in this Sprite Handler
@@ -36,7 +36,7 @@ public:
 	double Rotation = 0;
 private:
 	//*** Loaded Texture of this entity
-	Texture* __Texture = nullptr;
+	std::shared_ptr<Texture> __Texture = nullptr;
 	//*** The X coordinate of this entity frame position
 	unsigned __Frame_Pos_X = 0;
 	//*** The Y coordinate of this entity frame position

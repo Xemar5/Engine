@@ -108,11 +108,11 @@ bool Player::Set_Entity(Player* player, Entity * ent)
 		std::cerr << "ERR Player::Set_Entity : No Player Supplied\n";
 		return false;
 	}
-	if (!ent)
-	{
-		std::cerr << "ERR Player::Set_Entity : No Entity supplied\n";
-		return false;
-	}
+	//if (!ent)
+	//{
+	//	std::cerr << "ERR Player::Set_Entity : No Entity supplied\n";
+	//	return false;
+	//}
 	player->__Entity = ent;
 	return true;
 }
@@ -132,18 +132,26 @@ Entity * Player::Get_Entity(Player* player)
 	return player->__Entity;
 }
 
+std::vector<std::shared_ptr<Player>> Player::Get_Players()
+{
+	return __Players;
+}
+
 void Player::__Update()
 {
 	for (unsigned i = 0; i < Player::__Players.size(); i++)
 	{
-		double vx = 0, vy = 0;
-		vy += Player::__Players[i]->__Down->Check();
-		vy -= Player::__Players[i]->__Up->Check();
-		vx += Player::__Players[i]->__Right->Check();
-		vx -= Player::__Players[i]->__Left->Check();
-		if (vx < 0) Player::__Players[i]->__Entity->Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
-		if (vx > 0) Player::__Players[i]->__Entity->Get_Sprite()->Flip = SDL_FLIP_NONE;
-		Movement::Add_Force(Player::__Players[i]->__Entity, vx, vy);
+		if (Get_Entity(__Players[i].get()))
+		{
+			double vx = 0, vy = 0;
+			vy += Player::__Players[i]->__Down->Check();
+			vy -= Player::__Players[i]->__Up->Check();
+			vx += Player::__Players[i]->__Right->Check();
+			vx -= Player::__Players[i]->__Left->Check();
+			if (vx < 0) Player::__Players[i]->__Entity->Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
+			if (vx > 0) Player::__Players[i]->__Entity->Get_Sprite()->Flip = SDL_FLIP_NONE;
+			Movement::Add_Force(Player::__Players[i]->__Entity, vx, vy);
+		}
 	}
 }
 

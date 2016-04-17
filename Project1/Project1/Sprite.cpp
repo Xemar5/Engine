@@ -6,7 +6,7 @@
 std::vector<std::shared_ptr<Sprite>> Sprite::__Sprites;
 
 
-Sprite * Sprite::Create(Entity* ent, Texture * texture)
+Sprite * Sprite::Create(Entity* ent, std::shared_ptr<Texture> texture)
 {
 	if (!ent)
 	{
@@ -22,14 +22,14 @@ Sprite * Sprite::Create(Entity* ent, Texture * texture)
 	Sprite::__Sprites.back()->Flip = SDL_FLIP_NONE;
 	if (ent)
 	{
-		ent->__Sprite = Sprite::__Sprites.back().get();
+		ent->__Sprite = Sprite::__Sprites.back();
 		Sprite::__Sprites.back()->__Current_Animation = Animation::Play(ent, "idle");
 	}
 	return Sprite::__Sprites.back().get();
 }
 
 
-Texture * Sprite::Get_Texture()
+std::shared_ptr<Texture> Sprite::Get_Texture()
 {
 	if (!this)
 	{

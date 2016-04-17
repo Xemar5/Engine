@@ -54,7 +54,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static Texture* Load(std::string path, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> Load(std::string path, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
 
 	//*** Load new sprite from a path
 	//*** - texture - created SDL_Texture that has no path
@@ -66,7 +66,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static Texture* Load(SDL_Texture* texture, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> Load(SDL_Texture* texture, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
 
 	//*** Returns all loaded sprites in this session
 	static std::vector<std::shared_ptr<Texture>> Get_Loaded();

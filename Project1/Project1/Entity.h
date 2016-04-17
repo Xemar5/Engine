@@ -16,17 +16,17 @@ class Entity
 {
 public:
 	//***  Virtual Create function, should be overriden by derivering entites
-	virtual void Create() = 0;
+	virtual void Create();
 	//***  Virtual Update function, should be overriden by derivering entites
-	virtual void Update() = 0;
+	virtual void Update();
 	//***  Virtual Events function, should be overriden by derivering entites
-	virtual void Events() = 0;
+	virtual void Events();
 
 	//*** Returns the Hitbox pointer if it exists
 	Hitbox* Get_Hitbox();
 
 	//*** Returns the Sprite pointer if it exists
-	Sprite* Get_Sprite();
+	std::shared_ptr<Sprite> Get_Sprite();
 
 	//*** Returns the Actions vector
 	std::vector<std::shared_ptr<Action>> Get_Actions();
@@ -51,7 +51,7 @@ protected:
 
 	//*** A class containing all compounds needed for a sprite to be rendered
 	//*** If nullptr, entity wont be displayed, but still can has usage (Actions)
-	Sprite* __Sprite = nullptr;
+	std::shared_ptr<Sprite> __Sprite = nullptr;
 
 	//*** Container of all actions controling the movement, abilities and/or usage of this entity
 	//*** If nullptr, entiti has no usage, but still can has sprite (Sprite)

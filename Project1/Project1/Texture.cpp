@@ -6,7 +6,7 @@
 std::vector<std::shared_ptr<Texture>> Texture::__Loaded;
 
 
-Texture* Texture::Load(std::string path, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
+std::shared_ptr<Texture> Texture::Load(std::string path, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
 {
 	if (!path.size())
 	{
@@ -16,7 +16,7 @@ Texture* Texture::Load(std::string path, unsigned width, unsigned height, int fr
 	for (auto sprite : Texture::__Loaded) if (path == sprite->__Path)
 	{
 		//std::cerr << "MSG Texture::Load : Texture already loaded, returning loaded version\n";
-		return sprite.get();
+		return sprite;
 	}
 	SDL_Texture* tr = IMG_LoadTexture(Screen::Renderer, path.c_str());
 	if (!tr)
@@ -24,12 +24,12 @@ Texture* Texture::Load(std::string path, unsigned width, unsigned height, int fr
 		std::cerr << "ERR Texture::Load : No valid texture file supplied\n";
 		return nullptr;
 	}
-	Texture* texture = Texture::Load(tr, width, height, frame_width, frame_height, starting_point_x, starting_point_y);
+	std::shared_ptr<Texture> texture = Texture::Load(tr, width, height, frame_width, frame_height, starting_point_x, starting_point_y);
 	texture->__Path = path;
 	return texture;
 }
 
-Texture * Texture::Load(SDL_Texture * texture, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
+std::shared_ptr<Texture> Texture::Load(SDL_Texture * texture, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
 {
 	if (!texture)
 	{
@@ -43,7 +43,7 @@ Texture * Texture::Load(SDL_Texture * texture, unsigned width, unsigned height, 
 	Texture::__Loaded.back()->Set_Starting_Point(starting_point_x, starting_point_y);
 	Texture::__Loaded.back()->Set_Frame_Size(frame_width, frame_height);
 	Animation::Add(Texture::__Loaded.back().get(), "idle", { 0 });
-	return Texture::__Loaded.back().get();
+	return Texture::__Loaded.back();
 }
 
 inline std::vector<std::shared_ptr<Texture>> Texture::Get_Loaded()
@@ -155,7 +155,7 @@ SDL_Point Texture::Get_SDL_Starting_Point()
 	}
 	return 
 	{
-		(int)((1.0 + __Starting_Point_X) / 2 * __Frame_Width) ,
+		(int)((1.0 + __Starting_Point_X) / 2 * __Frame_Width),
 		(int)((1.0 + __Starting_Point_Y) / 2 * __Frame_Height)
 	};
 }

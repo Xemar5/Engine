@@ -1,23 +1,16 @@
 #pragma once
-
-
-enum class Character_Enum
-{
-	Nerk,
-	Mosh,
-	Dreg,
-	Tar,
-	Raiden
-};
-
 #include "Entity.h"
 
-template <Character_Enum type>
+class State;
+
 class Character : public Entity
 {
 public:
-	Character_Enum Type = type;
 	void Create() override;
 	void Update() override;
 	void Events() override;
+	//*** Creates the character of given name in specific coordinates
+	//*** if given name is not registered, no character will be created
+	static Character* Add(State* stt, std::string name, int x, int y, unsigned layer);
 };
+

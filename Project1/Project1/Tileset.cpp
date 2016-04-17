@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-std::shared_ptr<Tileset> Tileset::Set(Texture * texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map)
+std::shared_ptr<Tileset> Tileset::Set(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map)
 {
 	if (!texture)
 	{
@@ -24,6 +24,7 @@ std::shared_ptr<Tileset> Tileset::Set(Texture * texture, std::pair<int, int> pos
 		texture->Get_Frame_Size().first * map[0].size(),
 		texture->Get_Frame_Size().second * map.size());
 
+	SDL_SetTextureBlendMode(ts->__SDL_Texture, SDL_BLENDMODE_BLEND);
 	SDL_SetRenderTarget(Screen::Renderer, ts->__SDL_Texture);
 
 	ts->__Texture = texture;
@@ -73,8 +74,8 @@ unsigned Tileset::Which_Tile(int x, int y)
 	if (!__Texture) { std::cerr << "ERR Tileset::Which_Tile : No Sprite supplied\n"; return 0; }
 	std::pair<unsigned, unsigned> frame_size = __Texture->Get_Frame_Size();
 	if(!frame_size.first || !frame_size.second) { std::cerr << "ERR Tileset::Which_Tile : Frame size has width/height equal to 0\n"; return 0; }
-	x -= __Pos.first;
-	y -= __Pos.second;
+	x -= Get_Real_Pos().first;
+	y -= Get_Real_Pos().second;
 
 	x /= frame_size.first * Screen::Get_Scale();
 	y /= frame_size.second * Screen::Get_Scale();
@@ -87,9 +88,19 @@ unsigned Tileset::Which_Tile(int x, int y)
 	return __Tilemap[y][x];
 }
 
+
 std::pair<int, int> Tileset::Get_Pos()
 {
 	return __Pos;
+}
+
+std::pair<int, int> Tileset::Get_Real_Pos()
+{
+	return
+	{
+		Get_Pos().first - (double)(Get_Texture()->Get_Starting_Point().first + 1) / 2 * Get_Size().first  * Screen::Get_Scale(),
+		Get_Pos().second - (double)(Get_Texture()->Get_Starting_Point().second + 1) / 2 * Get_Size().second * Screen::Get_Scale()
+	};
 }
 
 bool Tileset::Set_Pos(int x, int y)
@@ -126,7 +137,7 @@ std::pair<unsigned, unsigned> Tileset::Get_Size()
 	return std::make_pair(__Tilemap[0].size() * __Texture->Get_Frame_Size().first,__Tilemap.size() * __Texture->Get_Frame_Size().second);
 }
 
-Texture * Tileset::Get_Texture()
+std::shared_ptr<Texture> Tileset::Get_Texture()
 {
 	if (!this)
 	{

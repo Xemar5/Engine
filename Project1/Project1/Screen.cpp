@@ -11,13 +11,50 @@ bool Screen::__Initialized = false;
 SDL_Window* Screen::Window;
 SDL_Renderer* Screen::Renderer;
 
-unsigned Screen::Screen_Width = 800;
-unsigned Screen::Screen_Height = 600;
+unsigned Screen::Width = 800;
+unsigned Screen::Height = 600;
 unsigned Screen::__Scale = 2;
+bool Screen::__Windowed = true;
 
 std::vector<std::vector<std::shared_ptr<Entity>>> Screen::__Entities;
 std::vector<std::shared_ptr<Tileset>> Screen::__Tilesets;
 
+
+bool Screen::Is_Windowed()
+{
+	return __Windowed;
+}
+
+bool Screen::Change_Window_State()
+{
+	if (!Screen::Is_Windowed()) return Screen::Set_Windowed();
+	return Screen::Set_Fullscreen();
+}
+
+bool Screen::Set_Fullscreen()
+{
+	SDL_DisplayMode mode;
+	if (!SDL_GetCurrentDisplayMode(0, &mode))
+	{
+		//SDL_SetWindowSize(Screen::Window, mode.w, mode.h);
+		Screen::Width = mode.w;
+		Screen::Height = mode.h;
+		SDL_SetWindowFullscreen(Screen::Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+		__Windowed = false;
+		return true;
+	}
+	return false;
+}
+
+bool Screen::Set_Windowed()
+{
+	//SDL_SetWindowSize(Screen::Window, Screen::Width, Screen::Height);
+	Screen::Width = 800;
+	Screen::Height = 600;
+	SDL_SetWindowFullscreen(Screen::Window, 0);
+	__Windowed = true;
+	return true;
+}
 
 unsigned Screen::Get_Scale()
 {
@@ -32,7 +69,7 @@ bool Screen::Start()
 		return false;
 	}
 	Screen::__Initialized = true;
-	Screen::Window = SDL_CreateWindow("Gmae", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Screen::Screen_Width, Screen::Screen_Height, SDL_WINDOW_SHOWN);
+	Screen::Window = SDL_CreateWindow("Gmae", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Screen::Width, Screen::Height, SDL_WINDOW_SHOWN);
 	Screen::Renderer = SDL_CreateRenderer(Screen::Window, -1, SDL_RENDERER_ACCELERATED);
 	return true;
 }
@@ -41,7 +78,7 @@ bool Screen::Start()
 bool Screen::Add(std::shared_ptr<Entity> ent)
 {
 	if (!ent) { std::cerr << "ERR Screen::Add : No entity supplied\n"; return false; }
-	if (!ent->Get_Sprite()) { std::cerr << "ERR Screen::Add : Given entity has no sprite supplied\n"; return false; }
+	if (!ent->Get_Sprite()) { std::cout << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
 
 	if (ent->Get_Layer() >= Screen::__Entities.size())
 		Screen::__Entities.resize(ent->Get_Layer() + 1);
@@ -65,6 +102,8 @@ bool Screen::Add(std::shared_ptr<Tileset> tileset)
 
 unsigned Screen::Draw()
 {
+	SDL_RenderClear(Screen::Renderer);
+
 	for (unsigned i = 0; i < Screen::__Tilesets.size(); ++i)
 	{
 		auto& tile = Screen::__Tilesets[i];
@@ -74,10 +113,11 @@ unsigned Screen::Draw()
 			--i;
 			continue;
 		}
+
 		SDL_Rect src = { 0,0, (int)tile->Get_Size().first, (int)tile->Get_Size().second };
 		SDL_Rect dst = {
-			(int)tile->Get_Pos().first * (int)Screen::Get_Scale(),
-			(int)tile->Get_Pos().second * (int)Screen::Get_Scale(),
+			(int)tile->Get_Real_Pos().first,
+			(int)tile->Get_Real_Pos().second,
 			(int)tile->Get_Size().first * (int)Screen::Get_Scale(),
 			(int)tile->Get_Size().second * (int)Screen::Get_Scale()
 		};
@@ -88,22 +128,35 @@ unsigned Screen::Draw()
 	Screen::__Reorder();
 	for (unsigned layer = 0; layer < Screen::__Entities.size(); ++layer)
 	{
+		if (!Screen::__Entities[layer].size())
+		{
+			Screen::__Entities.erase(Screen::__Entities.begin() + layer);
+			layer--;
+			continue;
+		}
+
 		for (unsigned ent = 0; ent < Screen::__Entities[layer].size(); ++ent)
 		{
 			auto& e = Screen::__Entities[layer][ent];
 			if (e.unique())
 			{
-				Screen::__Entities.erase(Screen::__Entities.begin() + ent);
+				Screen::__Entities[layer].erase(Screen::__Entities[layer].begin() + ent);
 				--ent;
 				continue;
 			}
-			auto* spr = e->Get_Sprite();
+
+			auto* spr = e->Get_Sprite().get();
 			if (!spr)
 			{
 				std::cerr << "ERR Screen::Draw : Given Entity has no sprite supplied\n";
 				return 0;
 			}
 			++count;
+
+			auto p = spr->Get_Texture()->Get_SDL_Starting_Point();
+			p.x *= Screen::Get_Scale();
+			p.y *= Screen::Get_Scale();
+
 			SDL_Rect frame_rect = {
 				(int)spr->Get_Frame_Pos().first,
 				(int)spr->Get_Frame_Pos().second,
@@ -111,15 +164,12 @@ unsigned Screen::Draw()
 				(int)spr->Get_Frame_Size().second,
 			};
 			SDL_Rect draw_rect = {
-				(int)e->X - e->Get_Sprite()->Get_Texture()->Get_SDL_Starting_Point().x * (int)Screen::Get_Scale(),
-				(int)e->Y - e->Get_Sprite()->Get_Texture()->Get_SDL_Starting_Point().y * (int)Screen::Get_Scale(),
+				(int)e->X - p.x,
+				(int)e->Y - p.y,
 				(int)spr->Get_Frame_Size().first * (int)Screen::Get_Scale(),
 				(int)spr->Get_Frame_Size().second * (int)Screen::Get_Scale(),
 			};
 
-			auto p = spr->Get_Texture()->Get_SDL_Starting_Point();
-			p.x *= Screen::Get_Scale();
-			p.y *= Screen::Get_Scale();
 			SDL_RenderCopyEx
 				(
 					Screen::Renderer,
@@ -131,9 +181,8 @@ unsigned Screen::Draw()
 					);
 		}
 	}
-	
+
 	SDL_RenderPresent(Screen::Renderer);
-	SDL_RenderClear(Screen::Renderer);
 	//Screen::__Entities.clear();
 	return count;
 }

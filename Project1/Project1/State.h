@@ -45,11 +45,12 @@ public:
 	static std::vector<unsigned> Deleted;
 
 
-	//*** Adds an entity of supplied type to this state and creates it
+	//*** Creates an entity of supplied type to this state and creates it
 	//*** Supplied entity has to deriver from Entity class
 	//*** - layer - adds the entity to given layer
-	//*** 	if the layer doesn't exist yet, this function will create all layers between
-	template<typename T> T * Add_Entity(unsigned layer = unsigned(0));
+	//*** 			if the layer doesn't exist yet, this function will create all layers between
+	template<typename T = Entity> T * Add_Entity(unsigned layer = unsigned(0));
+
 
 
 	//*** Builds and creates a new state of given type
@@ -74,13 +75,15 @@ public:
 	//*** - texture - the Texture class containing image file of all tiles
 	//*** - pos - the position of this tileset in this State
 	//*** - map - the mapping of all tiles
-	bool Add_Tileset(Texture* texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
+	bool Add_Tileset(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
 	//*** Returns the container of all Tilesets in this State
 	std::vector<std::shared_ptr<Tileset>> Get_Tilesets();
 private:
 	//*** The container of all Tilesets of this State
 	std::vector<std::shared_ptr<Tileset>> __Tilesets;
 };
+
+#include "Screen.h"
 
 template <typename T>
 T* State::Add_Entity(unsigned layer)

@@ -33,7 +33,8 @@ public:
 	static bool Set_Entity(Player* player, Entity* ent);
 	//*** Returns the entity given player controlls
 	static Entity* Get_Entity(Player* player);
-
+	//*** Returns the container of all created Players
+	static std::vector<std::shared_ptr<Player>> Get_Players();
 private:
 	//*** The index of this Player
 	int __Index = -1;

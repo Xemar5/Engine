@@ -16,9 +16,21 @@ public:
 	static SDL_Renderer* Renderer;
 
 	//*** Width of the window screen
-	static unsigned Screen_Width;
+	static unsigned Width;
 	//*** Height of the window screen
-	static unsigned Screen_Height;
+	static unsigned Height;
+
+	//*** Returns true if the screen is windowed
+	static bool Is_Windowed();
+	//*** If __Windowed is set to True, this changes the window state to fullscreen
+	//*** Otherwise changes to windowed
+	static bool Change_Window_State();
+	//*** Changes the current state of the window to fullscren
+	//*** Returns false if the screen is already fullscreen
+	static bool Set_Fullscreen();
+	//*** Changes the current state of the window to windowed
+	//*** Returns false if the screen is already windowed
+	static bool Set_Windowed();
 
 	//*** Returns the scale of the whole screen
 	static unsigned Get_Scale();
@@ -49,6 +61,9 @@ private:
 	
 	//*** The global scale ratio of all displayed textures
 	static unsigned __Scale;
+
+	//*** If true, the state of the window is set to windowed
+	static bool __Windowed;
 
 	//*** Reorders all entities stored in Screen::__Entities
 	//*** The greater the Y value of an entity, the greater its index in __Entity

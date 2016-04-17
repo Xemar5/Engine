@@ -12,20 +12,26 @@ public:
 	//*** - texture - the texture containing all tiles used by this Tileset
 	//*** - pos - the position of the top-left corner of this Tileset
 	//*** - map - mapping of all tiles in this Tileset
-	static std::shared_ptr<Tileset> Set(Texture* texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
+	static std::shared_ptr<Tileset> Set(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
 
 	//*** Returns the tile that contains the given coordinates
 	unsigned Which_Tile(int x, int y);
-	//*** Returns the position of this Tileset
+	//*** Returns the center position of this Tileset
+	//*** Use Get_Real_Pos to get the coordinate of the top-left corner
+
 	std::pair<int, int> Get_Pos();
+	//*** Returns the top-left corner position of this Tileset
+	//*** Use Get_Pos to get the position of center
+	std::pair<int, int> Get_Real_Pos();
 	//*** Sets the x and y coordinates of this tileset to the given ones
 	bool Set_Pos(int x, int y);
 	//*** Moves the tileset by x and y ammount of pixels
 	bool Set_Pos_Relative(int x, int y);
+
 	//*** Returns the size of whole Tilemap
 	std::pair<unsigned, unsigned> Get_Size();
 	//*** Returns the texture containing tiles
-	Texture* Get_Texture();
+	std::shared_ptr<Texture> Get_Texture();
 	//*** Returns the visible SDL_Texture created by this Tileset class
 	//*** Created when Set function is called
 	SDL_Texture* Get_SDL_Texture();
@@ -40,7 +46,7 @@ public:
 private:
 	std::pair<int, int> __Pos;
 	//*** The texture containing tiles
-	Texture* __Texture = nullptr;
+	std::shared_ptr<Texture> __Texture = nullptr;
 	//*** The visible  SDL_Texture of this tileset
 	//*** Created when Set function is called
 	SDL_Texture* __SDL_Texture = nullptr;

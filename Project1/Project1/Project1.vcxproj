@@ -113,24 +113,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="CobbleWall.cpp" />
-    <ClCompile Include="Dreg.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Gamepad_Handler.cpp" />
     <ClCompile Include="Hitbox.cpp" />
     <ClCompile Include="Input_Handler.cpp" />
     <ClCompile Include="Keyboard_Handler.cpp" />
     <ClCompile Include="Main_State.cpp" />
-    <ClCompile Include="Mosh.cpp" />
+    <ClCompile Include="Menu_State.cpp" />
     <ClCompile Include="Mouse_Handler.cpp" />
-    <ClCompile Include="Nerk.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Raiden.cpp" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Sword.cpp" />
-    <ClCompile Include="Tar.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="State.cpp" />
@@ -148,6 +145,7 @@
     <ClInclude Include="Keyboard_Handler.h" />
     <ClInclude Include="Main_State.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Menu_State.h" />
     <ClInclude Include="Mouse_Handler.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Action.h" />

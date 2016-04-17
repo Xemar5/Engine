@@ -3,6 +3,7 @@
 #include "Screen.h"
 #include "Timer.h"
 #include "Input_Handler.h"
+#include <iostream>
 
 SDL_Event System::Events;
 Timer System::FPS_Clock;
@@ -65,7 +66,7 @@ void System::__Delete()
 {
 	for (unsigned del : State::Deleted)
 		for (unsigned i = 0; i < State::Built.size(); i++)
-			if (i == del) State::Built[i] = nullptr;
+			if (i == del) { State::Built[i] = nullptr; break; }
 	for (unsigned i = 0; i < State::Built.size(); i++)
 		if (State::Built[i] == nullptr) State::Built.erase(State::Built.begin() + i--);
 	State::Deleted.clear();

@@ -14,6 +14,7 @@
 #include "Texture.h"
 #include <iostream>
 #include <ctime>
+#include "Menu_State.h"
 
 #include "Character.h"
 #include "Wall.h"
@@ -21,7 +22,10 @@
 
 void Main_Menu::Create()
 {
-	State::Add_Tileset(Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, -1, -1), { 200 - 17 * 12, 150 - 13 * 12 },
+	State::Add_Tileset
+	(
+		Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
+		{ Screen::Width/2,Screen::Height / 2 },
 		{
 			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 			{ 0,0,0,0,2,2,5,0,0,0,0,0,0,5,5,3,3 },
@@ -40,30 +44,21 @@ void Main_Menu::Create()
 		}
 	);
 
+	std::cout << Get_Tilesets()[0]->Get_Pos().first;
 	
-	auto* m1 = State::Add_Entity<Character<Character_Enum::Nerk>>(0);
-	auto* m2 = State::Add_Entity<Character<Character_Enum::Mosh>>(0);
-	auto* m3 = State::Add_Entity<Character<Character_Enum::Dreg>>(0);
-	auto* m4 = State::Add_Entity<Character<Character_Enum::Tar>>(0);
-
-	m1->X = 100;
-	m1->Y = 100;
-	m2->X = 200;
-	m2->Y = 200;
-	m3->X = 300;
-	m3->Y = 300;
-	m4->X = 400;
-	m4->Y = 400;
-	//m4->X = 400;
-	//m4->Y = 400;
+	auto* m1 = Character::Add(this, "Nerk", 100, 100, 0);
+	auto* m2 = Character::Add(this, "Mosh", 200, 200, 0);
+	auto* m3 = Character::Add(this, "Dreg", 300, 300, 0);
+	auto* m4 = Character::Add(this, "Tar", 400, 400, 0);
+	auto* m5 = Character::Add(this, "Benio", 500, 500, 0);
 
 
 	for (int i = 0; i < 0; ++i)
-		State::Add_Entity<Character<Character_Enum::Nerk>>(0);
+		Character::Add(this, "Nerk", 100, 100, 0);
 
 
 
-	auto p1 = Player::Set();
+	auto p1 = Player::Set(0);
 	Player::Set_Entity(p1, m1);
 	Player::Set_Keys(p1,
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_w }),
@@ -75,7 +70,7 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
 		);
 
-	auto p2 = Player::Set();
+	auto p2 = Player::Set(1);
 	Player::Set_Entity(p2, m2);
 	Player::Set_Keys(p2,
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,0 }),
@@ -87,7 +82,7 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
 		);
 
-	auto p3 = Player::Set();
+	auto p3 = Player::Set(2);
 	Player::Set_Entity(p3, m3);
 	Player::Set_Keys(p3,
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,1 }),
@@ -99,7 +94,7 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
 		);
 
-	auto p4 = Player::Set();
+	auto p4 = Player::Set(3);
 	Player::Set_Entity(p4, m4);
 	Player::Set_Keys(p4,
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,2 }),
@@ -139,10 +134,17 @@ void Main_Menu::Update()
 		auto tile = Get_Tilesets()[0]->Which_Tile((int)ent->X, (int)ent->Y);
 		if (tile == 0 || tile >= 6)
 		{
-			ent->X = 20;
-			ent->Y = 550;
+			ent->X = Screen::Width/2 - 350;
+			ent->Y = Screen::Height/2 + 220;
 		}
 	}
+
+	SDL_Point p;
+	SDL_GetMouseState(&p.x, &p.y);
+	Uint32 px, py;
+	px = (Uint32)((double)p.x / (double)Screen::Width * 255);
+	py = (Uint32)((double)p.y / (double)Screen::Height * 255);
+	SDL_SetRenderDrawColor(Screen::Renderer, px, 255 - (px+py)/2, py, 255);
 	//for(auto layer : State::Layers)
 	//	for (auto ent : layer->Entities)
 	//	{
@@ -179,12 +181,28 @@ void Main_Menu::Events()
 			Player::Set_Entity(pl, State::Layers[0]->Entities[3].get());
 			sw->Wealder = State::Layers[0]->Entities[3].get();
 		}
+		if (System::Events.key.keysym.sym == SDLK_5)
+		{
+			Player::Set_Entity(pl, State::Layers[0]->Entities[4].get());
+			sw->Wealder = State::Layers[0]->Entities[4].get();
+		}
 		//if (System::Events.key.keysym.sym == SDLK_5)
 		//{
 		//	Player::Set_Entity(pl, State::Layers[0]->Entities[4].get());
 		//	sw->Wealder = State::Layers[0]->Entities[4].get();
 		//}
 	}
+
+
+	if (Keyboard_Handler::Key_Up({ SDLK_SPACE }))
+	{
+		for (auto pl : Player::Get_Players())
+		{
+			Player::Set_Entity(pl.get(), nullptr);
+		}
+		State::New<Menu_Menu>();
+	}
+
 	State::Events();
 }
 
