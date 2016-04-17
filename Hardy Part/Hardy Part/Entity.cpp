@@ -53,3 +53,4 @@ unsigned Entity::Get_Layer()
 	return __Layer;
 }
 
+

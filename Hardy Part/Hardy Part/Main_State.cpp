@@ -44,7 +44,6 @@ void Main_Menu::Create()
 		}
 	);
 
-	std::cout << Get_Tilesets()[0]->Get_Pos().first;
 	
 	auto* m1 = Character::Add(this, "Nerk", 100, 100, 0);
 	auto* m2 = Character::Add(this, "Mosh", 200, 200, 0);
@@ -145,6 +144,10 @@ void Main_Menu::Update()
 	px = (Uint32)((double)p.x / (double)Screen::Width * 255);
 	py = (Uint32)((double)p.y / (double)Screen::Height * 255);
 	SDL_SetRenderDrawColor(Screen::Renderer, px, 255 - (px+py)/2, py, 255);
+
+
+
+
 	//for(auto layer : State::Layers)
 	//	for (auto ent : layer->Entities)
 	//	{
@@ -157,6 +160,10 @@ void Main_Menu::Update()
 }
 void Main_Menu::Events()
 {
+	if (Keyboard_Handler::Key_Down({ SDLK_j }))
+		for (auto ttr : State::Get_Tilesets())
+			Tileset::Reset(ttr);
+
 	if (System::Events.type == SDL_KEYDOWN)
 	{
 		auto pl = Player::Get(0);

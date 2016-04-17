@@ -14,6 +14,10 @@ public:
 	//*** - map - mapping of all tiles in this Tileset
 	static std::shared_ptr<Tileset> Set(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
 
+	//*** Resets current tileset and it's texture
+	//*** Use when the tileset is not drawn properly
+	static bool Reset(std::shared_ptr<Tileset>& tileset);
+
 	//*** Returns the tile that contains the given coordinates
 	unsigned Which_Tile(int x, int y);
 	//*** Returns the center position of this Tileset

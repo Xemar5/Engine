@@ -3,6 +3,7 @@
 #include "Screen.h"
 #include "Timer.h"
 #include "Input_Handler.h"
+#include "Tileset.h"
 #include <iostream>
 
 SDL_Event System::Events;
@@ -58,6 +59,10 @@ void System::__Events()
 	{
 		if (!State::Built[i]->Update_Underneath) stt_to_events.clear();
 		stt_to_events.push_back(State::Built[i].get());
+
+		if (!Screen::Is_Windowed() && System::Events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+			for (auto ttr : State::Built[i]->Get_Tilesets())
+				Tileset::Reset(ttr);
 	}
 	for (unsigned i = 0; i < stt_to_events.size(); i++)
 		stt_to_events[i]->Events();

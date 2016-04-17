@@ -68,6 +68,18 @@ std::shared_ptr<Tileset> Tileset::Set(std::shared_ptr<Texture> texture, std::pai
 	return ts;
 }
 
+bool Tileset::Reset(std::shared_ptr<Tileset>& tileset)
+{
+	if (!tileset)
+	{
+		std::cout << "MSG Tileset::Reset : No Tileset supplied\n";
+		return false;
+	}
+	Texture::Reload(tileset->Get_Texture().get());
+	tileset->__SDL_Texture = Tileset::Set(tileset->__Texture, tileset->__Pos, tileset->__Tilemap)->__SDL_Texture;
+	return false;
+}
+
 unsigned Tileset::Which_Tile(int x, int y)
 {
 	if (!this) { std::cerr << "ERR Tileset::Which_Tile : No this Tileset\n"; return 0; }

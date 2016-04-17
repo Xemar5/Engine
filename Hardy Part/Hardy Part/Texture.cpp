@@ -46,7 +46,25 @@ std::shared_ptr<Texture> Texture::Load(SDL_Texture * texture, unsigned width, un
 	return Texture::__Loaded.back();
 }
 
-inline std::vector<std::shared_ptr<Texture>> Texture::Get_Loaded()
+bool Texture::Reload(Texture * texture)
+{
+	if (!texture)
+	{
+		std::cout << "MSG Texture::Unload : No texture supplied\n";
+		return false;
+	}
+	for (unsigned i = 0; i < Texture::__Loaded.size(); i++)
+	{
+		if (Texture::__Loaded[i].get() != texture) continue;
+		auto ttr = Texture::__Loaded[i];
+		SDL_DestroyTexture(ttr->Get_SDL_Texture());
+		ttr->__Texture = IMG_LoadTexture(Screen::Renderer, ttr->__Path.c_str());
+		break;
+	}
+	return true;
+}
+
+std::vector<std::shared_ptr<Texture>> Texture::Get_Loaded()
 {
 	return Texture::__Loaded;
 }
