@@ -31,6 +31,8 @@ public:
 	bool Set_Pos(int x, int y);
 	//*** Moves the tileset by x and y ammount of pixels
 	bool Set_Pos_Relative(int x, int y);
+	//*** The individual scale of this tileset
+	double Scale = 1;
 
 	//*** Returns the size of whole Tilemap
 	std::pair<unsigned, unsigned> Get_Size();

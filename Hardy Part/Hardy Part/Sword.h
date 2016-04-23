@@ -1,10 +1,11 @@
 #pragma once
 #include "Entity.h"
+class Player;
 
 class Sword : public Entity
 {
 public:
-	Entity* Wealder = nullptr;
+	Player* Wealder = nullptr;
 	void Create() override;
 	void Update() override;
 	void Events() override;

@@ -13,7 +13,9 @@ SDL_Renderer* Screen::Renderer;
 
 unsigned Screen::Width = 800;
 unsigned Screen::Height = 600;
-unsigned Screen::__Scale = 2;
+unsigned Screen::__Windowed_Width = 800;
+unsigned Screen::__Windowed_Height = 600;
+double Screen::__Scale = 2;
 bool Screen::__Windowed = true;
 
 std::vector<std::vector<std::shared_ptr<Entity>>> Screen::__Entities;
@@ -37,8 +39,11 @@ bool Screen::Set_Fullscreen()
 	if (!SDL_GetCurrentDisplayMode(0, &mode))
 	{
 		//SDL_SetWindowSize(Screen::Window, mode.w, mode.h);
+		//Screen::__Windowed_Width = Screen::Width;
+		//Screen::__Windowed_Height = Screen::Height;
 		Screen::Width = mode.w;
 		Screen::Height = mode.h;
+		Screen::__Scale = mode.w / 500;
 		SDL_SetWindowFullscreen(Screen::Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		__Windowed = false;
 		return true;
@@ -49,14 +54,15 @@ bool Screen::Set_Fullscreen()
 bool Screen::Set_Windowed()
 {
 	//SDL_SetWindowSize(Screen::Window, Screen::Width, Screen::Height);
-	Screen::Width = 800;
-	Screen::Height = 600;
+	Screen::Width = Screen::__Windowed_Width;
+	Screen::Height = Screen::__Windowed_Height;
+	Screen::__Scale = 2;
 	SDL_SetWindowFullscreen(Screen::Window, 0);
 	__Windowed = true;
 	return true;
 }
 
-unsigned Screen::Get_Scale()
+double Screen::Get_Scale()
 {
 	return __Scale;
 }
@@ -118,8 +124,8 @@ unsigned Screen::Draw()
 		SDL_Rect dst = {
 			(int)tile->Get_Real_Pos().first,
 			(int)tile->Get_Real_Pos().second,
-			(int)tile->Get_Size().first * (int)Screen::Get_Scale(),
-			(int)tile->Get_Size().second * (int)Screen::Get_Scale()
+			(int)((double)tile->Get_Size().first * Screen::Get_Scale() * tile->Scale),
+			(int)((double)tile->Get_Size().second * Screen::Get_Scale() * tile->Scale)
 		};
 		SDL_RenderCopy(Screen::Renderer, tile->Get_SDL_Texture(), &src, &dst);
 	}
@@ -153,9 +159,10 @@ unsigned Screen::Draw()
 			}
 			++count;
 
-			auto p = spr->Get_Texture()->Get_SDL_Starting_Point();
-			p.x *= Screen::Get_Scale();
-			p.y *= Screen::Get_Scale();
+			double px = (double)spr->Get_Texture()->Get_SDL_Starting_Point().x * Screen::Get_Scale() * spr->Scale;
+			double py = (double)spr->Get_Texture()->Get_SDL_Starting_Point().y * Screen::Get_Scale() * spr->Scale;
+
+			SDL_Point p = { (int)px, (int)py };
 
 			SDL_Rect frame_rect = {
 				(int)spr->Get_Frame_Pos().first,
@@ -164,10 +171,10 @@ unsigned Screen::Draw()
 				(int)spr->Get_Frame_Size().second,
 			};
 			SDL_Rect draw_rect = {
-				(int)e->X - p.x,
-				(int)e->Y - p.y,
-				(int)spr->Get_Frame_Size().first * (int)Screen::Get_Scale(),
-				(int)spr->Get_Frame_Size().second * (int)Screen::Get_Scale(),
+				(int)(e->X - px),
+				(int)(e->Y - py),
+				(int)((double)spr->Get_Frame_Size().first * Screen::Get_Scale() * spr->Scale),
+				(int)((double)spr->Get_Frame_Size().second * Screen::Get_Scale() * spr->Scale),
 			};
 
 			SDL_RenderCopyEx

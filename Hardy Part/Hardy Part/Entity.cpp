@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include "Animation.h"
 #include "Movement.h"
+#include "Screen.h"
 
 
 void Entity::Create()
@@ -17,10 +18,14 @@ void Entity::Events()
 {
 }
 
-Hitbox * Entity::Get_Hitbox()
+std::pair<double, double> Entity::Get_Hitbox()
 {
-	if (!this) { std::cerr << "ERR Entity::Get_Hitbox : No this Entity\n"; return nullptr; }
-	return __Hitbox.get();
+	if (!this) { std::cerr << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
+	if (!this->Get_Sprite()) { std::cerr << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
+	return std::make_pair(
+		this->Get_Sprite()->Get_Frame_Size().first * this->Get_Sprite()->Scale * Screen::Get_Scale(),
+		this->Get_Sprite()->Get_Frame_Size().second * this->Get_Sprite()->Scale * Screen::Get_Scale()
+		);
 }
 
 std::shared_ptr<Sprite> Entity::Get_Sprite()
@@ -52,5 +57,6 @@ unsigned Entity::Get_Layer()
 	if (!this) { std::cerr << "ERR Entity::Get_Layer : No this Entity\n"; return 0; }
 	return __Layer;
 }
+
 
 

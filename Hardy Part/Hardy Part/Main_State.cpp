@@ -65,8 +65,8 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_a }),
 		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_d }),
 
-		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
-		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
+		Input_Handler::Set_Dynamic(&Mouse_Handler::Get_Relative_Mouse_X_State, { &Player::Get_Entity(p1)->Get_Movement()->Xpos, &Player::Get_Entity(p1)->Get_Movement()->Ypos }),
+		Input_Handler::Set_Dynamic(&Mouse_Handler::Get_Relative_Mouse_Y_State, { &Player::Get_Entity(p1)->Get_Movement()->Xpos, &Player::Get_Entity(p1)->Get_Movement()->Ypos })
 		);
 
 	auto p2 = Player::Set(1);
@@ -77,8 +77,8 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,0 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,0 }),
 
-		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
-		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 2,0 }),
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 4,0 })
 		);
 
 	auto p3 = Player::Set(2);
@@ -89,8 +89,8 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,1 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,1 }),
 
-		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
-		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 2,1 }),
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 4,1 })
 		);
 
 	auto p4 = Player::Set(3);
@@ -101,12 +101,14 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,2 }),
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,2 }),
 
-		Input_Handler::Set(&Mouse_Handler::Button_Held, { SDL_BUTTON_LEFT }),
-		Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDL_BUTTON_RIGHT })
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 2,2 }),
+		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 4,2 })
 		);
 
 	Sword* s1 = State::Add_Entity<Sword>(1);
-	s1->Wealder = m1;
+	s1->Wealder = p2;
+	Sword* s2 = State::Add_Entity<Sword>(1);
+	s2->Wealder = p1;
 
 	srand((unsigned)time(0));
 	if (Get_Tilesets().size())
@@ -160,39 +162,20 @@ void Main_Menu::Update()
 }
 void Main_Menu::Events()
 {
-	if (Keyboard_Handler::Key_Down({ SDLK_j }))
-		for (auto ttr : State::Get_Tilesets())
-			Tileset::Reset(ttr);
-
 	if (System::Events.type == SDL_KEYDOWN)
 	{
 		auto pl = Player::Get(0);
 		auto sw = dynamic_cast<Sword*>(State::Layers[1]->Entities[0].get());
 		if (System::Events.key.keysym.sym == SDLK_1)
-		{
-			Player::Set_Entity(pl, State::Layers[0]->Entities[0].get());
-			sw->Wealder = State::Layers[0]->Entities[0].get();
-		}
+			Player::Set_Entity(pl, State::Layers[0]->Entities[0].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_2)
-		{
-			Player::Set_Entity(pl, State::Layers[0]->Entities[1].get());
-			sw->Wealder = State::Layers[0]->Entities[1].get();
-		}
+			Player::Set_Entity(pl, State::Layers[0]->Entities[1].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_3)
-		{
-			Player::Set_Entity(pl, State::Layers[0]->Entities[2].get());
-			sw->Wealder = State::Layers[0]->Entities[2].get();
-		}
+			Player::Set_Entity(pl, State::Layers[0]->Entities[2].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_4)
-		{
-			Player::Set_Entity(pl, State::Layers[0]->Entities[3].get());
-			sw->Wealder = State::Layers[0]->Entities[3].get();
-		}
+			Player::Set_Entity(pl, State::Layers[0]->Entities[3].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_5)
-		{
-			Player::Set_Entity(pl, State::Layers[0]->Entities[4].get());
-			sw->Wealder = State::Layers[0]->Entities[4].get();
-		}
+			Player::Set_Entity(pl, State::Layers[0]->Entities[4].get(), true);
 		//if (System::Events.key.keysym.sym == SDLK_5)
 		//{
 		//	Player::Set_Entity(pl, State::Layers[0]->Entities[4].get());
@@ -201,7 +184,7 @@ void Main_Menu::Events()
 	}
 
 
-	if (Keyboard_Handler::Key_Up({ SDLK_SPACE }))
+	if (Keyboard_Handler::Key_Up({ SDLK_ESCAPE }))
 	{
 		for (auto pl : Player::Get_Players())
 		{

@@ -7,6 +7,9 @@
 #include "System.h"
 #include "Hitbox.h"
 #include <SDL.h>
+#include "Player.h"
+#include "Input_Handler.h"
+#include "Mouse_Handler.h"
 
 void Sword::Create()
 {
@@ -31,15 +34,20 @@ void Sword::Update()
 	}
 	if (Wealder)
 	{
-		int a, b;
+		std::cout << Player::Get_Keys(Wealder)[5]->Check() << std::endl;
+		double a = Player::Get_Keys(Wealder)[4]->Check();
+		double b = Player::Get_Keys(Wealder)[5]->Check();
+		double ang = 0.0;
+		if (a == 0.0 && b == 0.0)
+			ang = __Old_Angle;
+		else
+			ang = (atan2(Player::Get_Keys(Wealder)[5]->Check(), Player::Get_Keys(Wealder)[4]->Check()) * 180 / M_PI) + 90 + (Max_Swing / 2 * __On_Left) + __Angle_Offset;
 		double x, y;
-		SDL_GetMouseState(&a, &b);
-		x = Wealder->X;
-		y = Wealder->Y - 8 * Screen::Get_Scale();
-		double ang = (atan2(b - y, a - x) * 180 / M_PI) + 90 + (Max_Swing / 2 * __On_Left)+ __Angle_Offset;
+		x = Player::Get_Entity(Wealder)->X;
+		y = Player::Get_Entity(Wealder)->Y - 8 * Screen::Get_Scale();
 		Get_Sprite()->Rotation = ang;
-		X = Wealder->X - cos(ang * M_PI / 180 + M_PI / 2) * 40;
-		Y = Wealder->Y - 8 * Screen::Get_Scale() - sin(ang * M_PI / 180 + M_PI / 2) * 40;
+		X = Player::Get_Entity(Wealder)->X - cos(ang * M_PI / 180 + M_PI / 2) * 40;
+		Y = Player::Get_Entity(Wealder)->Y - 8 * Screen::Get_Scale() - sin(ang * M_PI / 180 + M_PI / 2) * 40;
 		if (abs(ang - __Old_Angle) > 5  && abs(ang - __Old_Angle) < 180)
 		{
 			if (ang < __Old_Angle) Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
@@ -50,6 +58,6 @@ void Sword::Update()
 }
 void Sword::Events()
 {
-	if (System::Events.type == SDL_MOUSEBUTTONDOWN)
+	if (Mouse_Handler::Button_Down({SDL_BUTTON_LEFT}))
 		__Swinging = true;
 }

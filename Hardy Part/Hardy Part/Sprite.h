@@ -34,6 +34,8 @@ public:
 	//*** The angle in radians of this entity to be drawn
 	//*** If set to 0, sprite will be displayed without rotation
 	double Rotation = 0;
+	//*** The individual scale of this entity
+	double Scale = 1;
 private:
 	//*** Loaded Texture of this entity
 	std::shared_ptr<Texture> __Texture = nullptr;

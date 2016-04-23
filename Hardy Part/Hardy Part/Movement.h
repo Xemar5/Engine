@@ -49,6 +49,10 @@ public:
 
 	//*** Sets the max speed of this Entity
 	double Set_Speed(double speed);
+	//*** Reference to the enitity's x coordinate
+	Sint32 Xpos = 0;
+	//*** Reference to the enitity's y coordinate
+	Sint32 Ypos = 0;
 
 private:
 	//*** The max amount of pixels the entity is moving each frame

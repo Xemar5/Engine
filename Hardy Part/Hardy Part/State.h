@@ -17,6 +17,8 @@ public:
 	bool Events_Entities = true;
 	//*** Stores all entities of this layer
 	std::vector<std::shared_ptr<Entity>> Entities;
+	//*** Returns the entity with given index if it exists
+	Entity* operator[](unsigned ent);
 };
 
 
@@ -78,6 +80,10 @@ public:
 	bool Add_Tileset(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
 	//*** Returns the container of all Tilesets in this State
 	std::vector<std::shared_ptr<Tileset>> Get_Tilesets();
+
+	//*** Operator [] overload returns the layer with given index
+	//*** if such layer doesn't exist, returns nullptr
+	Layer& operator[](unsigned layer);
 private:
 	//*** The container of all Tilesets of this State
 	std::vector<std::shared_ptr<Tileset>> __Tilesets;

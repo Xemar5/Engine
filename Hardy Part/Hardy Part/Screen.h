@@ -33,7 +33,7 @@ public:
 	static bool Set_Windowed();
 
 	//*** Returns the scale of the whole screen
-	static unsigned Get_Scale();
+	static double Get_Scale();
 
 
 	//*** Initializes all the Screen compounds
@@ -55,12 +55,19 @@ public:
 	static void Exit();
 
 private:
+	//*** Width of the window screen when windowed
+	//*** When changing to fullscreen, this variable stores last screen resolution
+	static unsigned __Windowed_Width;
+	//*** Height of the window screen
+	//*** When changing to fullscreen, this variable stores last screen resolution
+	static unsigned __Windowed_Height;
+
 	//*** If true, prevents the user from additional, unnecessary initializations
 	//*** Screen::Start should be called only once
 	static bool __Initialized;
 	
 	//*** The global scale ratio of all displayed textures
-	static unsigned __Scale;
+	static double __Scale;
 
 	//*** If true, the state of the window is set to windowed
 	static bool __Windowed;

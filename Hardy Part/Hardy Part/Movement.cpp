@@ -1,5 +1,6 @@
 #include "Movement.h"
 #include "Entity.h"
+#include "Screen.h"
 
 template <typename T> int sgn(T val) {
 	return (T(0) < val) - (val < T(0));
@@ -106,8 +107,8 @@ bool Movement::__Resolve_Movement(Movement * movement)
 	auto acc = movement->__Mass * 0.1;
 	for (unsigned i = 0; i < movement->__Forces.size(); i++)
 	{
-		fx += movement->__Forces[i].first * movement->Get_Speed();
-		fy += movement->__Forces[i].second * movement->Get_Speed();
+		fx += movement->__Forces[i].first * movement->Get_Speed() * Screen::Get_Scale();
+		fy += movement->__Forces[i].second * movement->Get_Speed() * Screen::Get_Scale();
 	}
 	movement->__vx += acc * sgn(fx - movement->__vx);
 	movement->__vy += acc * sgn(fy - movement->__vy);
@@ -115,7 +116,8 @@ bool Movement::__Resolve_Movement(Movement * movement)
 	if (abs(fy - movement->__vy) < acc) movement->__vy = fy;
 	*movement->__X += movement->__vx;
 	*movement->__Y += movement->__vy;
-
+	movement->Xpos = (Sint32)*movement->__X;
+	movement->Ypos = (Sint32)*movement->__Y;
 
 	movement->__Forces.clear();
 	return movement->__vx || movement->__vy;

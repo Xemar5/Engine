@@ -1,16 +1,19 @@
 #include "Mouse_Handler.h"
 #include <iostream>
 #include "System.h"
+#include "Entity.h"
+#include "Sprite.h"
+#include "Texture.h"
 
 std::map<Sint32, int> Mouse_Handler::__Map;
 
 double Mouse_Handler::Button_Down(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Down : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
-	Sint32 key = (Sint32)*it;
+	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Button_Down : Button not supplied\n"; return 0.0; }
+	Sint32 btn = (Sint32)*it;
 	for (std::map<Sint32, int>::iterator it = Mouse_Handler::__Map.begin(); it != Mouse_Handler::__Map.end(); it++)
-		if (it->first == key && it->second == -2)
+		if (it->first == btn && it->second == -2)
 			return 1.0;
 	return 0.0;
 }
@@ -18,11 +21,11 @@ double Mouse_Handler::Button_Down(std::vector<Sint32> args)
 double Mouse_Handler::Button_Up(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Up : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
-	Sint32 key = (Sint32)*it;
+	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Button_Up : Button not supplied\n"; return 0.0; }
+	Sint32 btn = (Sint32)*it;
 
 	for (std::map<Sint32, int>::iterator it = Mouse_Handler::__Map.begin(); it != Mouse_Handler::__Map.end(); it++)
-		if (it->first == key && it->second == -1)
+		if (it->first == btn && it->second == -1)
 			return 1.0;
 	return 0.0;
 }
@@ -30,20 +33,79 @@ double Mouse_Handler::Button_Up(std::vector<Sint32> args)
 double Mouse_Handler::Button_Held(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Keyboard_Handler::Key_Held : Key not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
-	Sint32 key = (Sint32)*it++;
+	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Button_Held : Button not supplied\n"; return 0.0; }
+	Sint32 btn = (Sint32)*it++;
 
 	Sint32 time;
 	if (it == args.end()) time = 0;
 	else time = (Sint32)*it;
 
 	for (std::map<Sint32, int>::iterator it = Mouse_Handler::__Map.begin(); it != Mouse_Handler::__Map.end(); it++)
-		if (it->first == key && it->second >= 0 && SDL_GetTicks() - it->second >= (Uint32)time)
+		if (it->first == btn && it->second >= 0 && SDL_GetTicks() - it->second >= (Uint32)time)
 			return 1.0;
 	return 0.0;
 }
 
+double Mouse_Handler::Get_Relative_Mouse_X_State(std::vector<Sint32> args)
+{
+	auto it = args.begin();
+	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_X_State : X coordinate not supplied\n"; return 0.0; }
+	Sint32 x = (Sint32)*it++;
+	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_X_State : Y coordinate not supplied\n"; return 0.0; }
+	Sint32 y = (Sint32)*it;
 
+	Sint32 mx, my;
+	SDL_GetMouseState(&mx, &my);
+
+	return cos(atan2(my - y, mx - x));
+}
+
+
+
+double Mouse_Handler::Get_Relative_Mouse_Y_State(std::vector<Sint32> args)
+{
+	auto it = args.begin();
+	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_Y_State : X coordinate not supplied\n"; return 0.0; }
+	Sint32 x = (Sint32)*it++;
+	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_Y_State : Y coordinate not supplied\n"; return 0.0; }
+	Sint32 y = (Sint32)*it;
+
+	Sint32 mx, my;
+	SDL_GetMouseState(&mx, &my);
+
+	return sin(atan2(my - y, mx - x));
+}
+
+
+bool Mouse_Handler::Contains_Mouse(Entity* ent)
+{
+	if (!ent)
+	{
+		std::cerr << "ERR Entity::Contains_Mouse : No entity supplied\n";
+		return false;
+	}
+	if (!ent->Get_Sprite())
+	{
+		std::cerr << "ERR Entity::Contains_Mouse : Given entity has no sprite supplied\n";
+		return false;
+	}
+	if (!ent->Get_Sprite()->Get_Texture())
+	{
+		std::cerr << "ERR Entity::Contains_Mouse : Given sprite has no texture supplied\n";
+		return false;
+	}
+	int px, py;
+	SDL_GetMouseState(&px, &py);
+	auto sp = ent->Get_Sprite();
+	double offx = sp->Get_Texture()->Get_SDL_Starting_Point().x * sp->Scale * Screen::Get_Scale();
+	double offy = sp->Get_Texture()->Get_SDL_Starting_Point().y * sp->Scale * Screen::Get_Scale();
+	return (
+		px >= ent->X - offx &&
+		px <= ent->X - offx + ent->Get_Hitbox().first &&
+		py >= ent->Y - offy &&
+		py <= ent->Y - offy + ent->Get_Hitbox().second
+		);
+}
 
 void Mouse_Handler::__Events()
 {

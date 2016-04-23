@@ -183,10 +183,10 @@ SDL_Texture * Texture::Get_SDL_Texture()
 }
 std::pair<float, float> Texture::Set_Starting_Point(float x, float y)
 {
-	if (x > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1;\n"; }
-	if (x < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1;\n"; }
-	if (y > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1;\n"; }
-	if (y < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1;\n"; }
+	if (x > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x not in range from -1 to 1\n"; }
+	if (x < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x not in range from -1 to 1\n"; }
+	if (y > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y not in range from -1 to 1\n"; }
+	if (y < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y not in range from -1 to 1\n"; }
 	__Starting_Point_X = x;
 	__Starting_Point_Y = y;
 	return std::make_pair(x, y);

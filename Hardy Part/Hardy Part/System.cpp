@@ -8,14 +8,18 @@
 
 SDL_Event System::Events;
 Timer System::FPS_Clock;
+Timer System::In_Game_Timer;
 unsigned System::FPS = 60;
+Mix_Music* System::Soundtrack = nullptr;
 
 
 void System::_System_Update()
 {
 	bool Quit_System = false;
 
+	In_Game_Timer.Start();
 	FPS_Clock.Start();
+
 	if (!System::FPS || System::FPS > 1000) System::FPS = 60;
 
 	while (!Quit_System)

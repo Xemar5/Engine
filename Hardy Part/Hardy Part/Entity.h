@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <SDL.h>
 
 class Sprite;
 class Action;
@@ -23,7 +24,7 @@ public:
 	virtual void Events();
 
 	//*** Returns the Hitbox pointer if it exists
-	Hitbox* Get_Hitbox();
+	std::pair<double, double> Get_Hitbox();
 
 	//*** Returns the Sprite pointer if it exists
 	std::shared_ptr<Sprite> Get_Sprite();

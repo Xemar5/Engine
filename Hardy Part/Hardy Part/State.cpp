@@ -63,5 +63,22 @@ std::vector<std::shared_ptr<Tileset>> State::Get_Tilesets()
 	return __Tilesets;
 }
 
+Layer & State::operator[](unsigned layer)
+{
+	if (layer >= Layers.size())
+	{
+		std::cerr << "ERR State::operator[] : State has no layer with given index; creating layer with given index and belove\n";
+		while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<Layer>());
+	}
+	return *Layers[layer].get();
+}
 
-
+Entity * Layer::operator[](unsigned ent)
+{
+	if (ent >= Entities.size())
+	{
+		std::cerr << "ERR Layer::operator[] : Layer has no entity with given index\n";
+		return nullptr;
+	}
+	return Entities[ent].get();
+}
