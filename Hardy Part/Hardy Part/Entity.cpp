@@ -23,8 +23,8 @@ std::pair<double, double> Entity::Get_Hitbox()
 	if (!this) { std::cerr << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
 	if (!this->Get_Sprite()) { std::cerr << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
 	return std::make_pair(
-		this->Get_Sprite()->Get_Frame_Size().first * this->Get_Sprite()->Scale * Screen::Get_Scale(),
-		this->Get_Sprite()->Get_Frame_Size().second * this->Get_Sprite()->Scale * Screen::Get_Scale()
+		this->Get_Sprite()->Get_Frame_Size().first * this->Get_Sprite()->Scale,
+		this->Get_Sprite()->Get_Frame_Size().second * this->Get_Sprite()->Scale
 		);
 }
 

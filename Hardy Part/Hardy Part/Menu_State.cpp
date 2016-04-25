@@ -44,17 +44,17 @@ void Menu_Menu::Create()
 }
 void Menu_Menu::Update()
 {
-	(*this)[0][0]->Get_Sprite()->Scale = pow(sin(System::In_Game_Timer.Get() / 450.0), 2)/2 + 2.5;
-	(*this)[0][0]->X = Screen::Width / 2 + sin(System::In_Game_Timer.Get() / 370.0) * 80;
-	(*this)[0][0]->Y = Screen::Height / 2 + cos(System::In_Game_Timer.Get() / 420.0) * 50 - 100;
+	(*this)[0][0]->X = Screen::Get_Screen_Size().first / 2 + sin(System::In_Game_Timer.Get() / 370.0) * 50;
+	(*this)[0][0]->Y = Screen::Get_Screen_Size().second / 2 + cos(System::In_Game_Timer.Get() / 420.0) * 30 - 50;
+	(*this)[0][0]->Get_Sprite()->Scale = pow(sin(System::In_Game_Timer.Get() / 450.0), 2)/2 + 2;
 	(*this)[0][0]->Get_Sprite()->Rotation = sin(System::In_Game_Timer.Get() / 500.0) * 20;
 
-	(*this)[1][0]->X = Screen::Width / 2 - 30 * Screen::Get_Scale();
-	(*this)[1][0]->Y = Screen::Height / 2 + 200;
-	(*this)[1][1]->X = Screen::Width / 2;
-	(*this)[1][1]->Y = Screen::Height / 2 + 200;
-	(*this)[1][2]->X = Screen::Width / 2 + 30 * Screen::Get_Scale();
-	(*this)[1][2]->Y = Screen::Height / 2 + 200;
+	(*this)[1][0]->X = Screen::Get_Screen_Size().first / 2 - 30;
+	(*this)[1][0]->Y = Screen::Get_Screen_Size().second / 2 + 100;
+	(*this)[1][1]->X = Screen::Get_Screen_Size().first / 2;
+	(*this)[1][1]->Y = Screen::Get_Screen_Size().second / 2 + 100;
+	(*this)[1][2]->X = Screen::Get_Screen_Size().first / 2 + 30;
+	(*this)[1][2]->Y = Screen::Get_Screen_Size().second / 2 + 100;
 
 	State::Update();
 }

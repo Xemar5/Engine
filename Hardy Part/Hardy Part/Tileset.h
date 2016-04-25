@@ -50,6 +50,7 @@ public:
 	std::vector<std::pair<int, int>> Get_Wall_Placeholders();
 
 private:
+	//*** The x and y coordinates of the top-left corner of this tileset
 	std::pair<int, int> __Pos;
 	//*** The texture containing tiles
 	std::shared_ptr<Texture> __Texture = nullptr;

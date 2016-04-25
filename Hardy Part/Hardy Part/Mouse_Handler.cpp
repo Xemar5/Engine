@@ -54,6 +54,9 @@ double Mouse_Handler::Get_Relative_Mouse_X_State(std::vector<Sint32> args)
 	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_X_State : Y coordinate not supplied\n"; return 0.0; }
 	Sint32 y = (Sint32)*it;
 
+	x *= Screen::Get_Scale();
+	y *= Screen::Get_Scale();
+
 	Sint32 mx, my;
 	SDL_GetMouseState(&mx, &my);
 
@@ -69,6 +72,9 @@ double Mouse_Handler::Get_Relative_Mouse_Y_State(std::vector<Sint32> args)
 	Sint32 x = (Sint32)*it++;
 	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_Y_State : Y coordinate not supplied\n"; return 0.0; }
 	Sint32 y = (Sint32)*it;
+
+	x *= Screen::Get_Scale();
+	y *= Screen::Get_Scale();
 
 	Sint32 mx, my;
 	SDL_GetMouseState(&mx, &my);
@@ -97,13 +103,13 @@ bool Mouse_Handler::Contains_Mouse(Entity* ent)
 	int px, py;
 	SDL_GetMouseState(&px, &py);
 	auto sp = ent->Get_Sprite();
-	double offx = sp->Get_Texture()->Get_SDL_Starting_Point().x * sp->Scale * Screen::Get_Scale();
-	double offy = sp->Get_Texture()->Get_SDL_Starting_Point().y * sp->Scale * Screen::Get_Scale();
+	double offx = sp->Get_Texture()->Get_SDL_Starting_Point().x * sp->Scale;
+	double offy = sp->Get_Texture()->Get_SDL_Starting_Point().y * sp->Scale;
 	return (
-		px >= ent->X - offx &&
-		px <= ent->X - offx + ent->Get_Hitbox().first &&
-		py >= ent->Y - offy &&
-		py <= ent->Y - offy + ent->Get_Hitbox().second
+		px >= (ent->X - offx) * Screen::Get_Scale() &&
+		px <= (ent->X - offx + ent->Get_Hitbox().first) * Screen::Get_Scale() &&
+		py >= (ent->Y - offy) * Screen::Get_Scale() &&
+		py <= (ent->Y - offy + ent->Get_Hitbox().second) * Screen::Get_Scale()
 		);
 }
 

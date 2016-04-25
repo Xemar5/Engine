@@ -48,7 +48,7 @@ void System::Start()
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO);
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	System::Soundtrack = Mix_LoadMUS("imgs/Baker Cat.mp3");
-	Mix_PlayMusic(System::Soundtrack, -1);
+	//Mix_PlayMusic(System::Soundtrack, -1);
 	Screen::Start();
 	State::New<T>();
 	//Screen::Change_Window_State();

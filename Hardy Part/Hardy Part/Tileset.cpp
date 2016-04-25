@@ -86,11 +86,13 @@ unsigned Tileset::Which_Tile(int x, int y)
 	if (!__Texture) { std::cerr << "ERR Tileset::Which_Tile : No Sprite supplied\n"; return 0; }
 	std::pair<unsigned, unsigned> frame_size = __Texture->Get_Frame_Size();
 	if(!frame_size.first || !frame_size.second) { std::cerr << "ERR Tileset::Which_Tile : Frame size has width/height equal to 0\n"; return 0; }
+	std::cout << "\n\nx: " << x << "\nRealPos X: " << Get_Real_Pos().first;
+	std::cout << "\ny: " << y << "\nRealPos Y: " << Get_Real_Pos().second;
 	x -= Get_Real_Pos().first;
 	y -= Get_Real_Pos().second;
 
-	x /= frame_size.first * Screen::Get_Scale();
-	y /= frame_size.second * Screen::Get_Scale();
+	x /= frame_size.first;
+	y /= frame_size.second;
 
 	if (x < 0 || x >= (int)Get_Size().first / (int)frame_size.first ||
 		y < 0 || y >= (int)Get_Size().second / (int)frame_size.second)
@@ -110,8 +112,8 @@ std::pair<int, int> Tileset::Get_Real_Pos()
 {
 	return
 	{
-		Get_Pos().first - (double)(Get_Texture()->Get_Starting_Point().first + 1) / 2 * Get_Size().first  * Screen::Get_Scale(),
-		Get_Pos().second - (double)(Get_Texture()->Get_Starting_Point().second + 1) / 2 * Get_Size().second * Screen::Get_Scale()
+		__Pos.first - (double)(Get_Texture()->Get_Starting_Point().first + 1) / 2 * Get_Size().first,
+		__Pos.second - (double)(Get_Texture()->Get_Starting_Point().second + 1) / 2 * Get_Size().second
 	};
 }
 

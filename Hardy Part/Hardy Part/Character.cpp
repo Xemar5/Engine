@@ -30,6 +30,8 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		Animation::Add(ent, "idle", "0x80 1x5", true);
 		Animation::Add(ent, "move", "0x4 2-5x4", false);
 		Movement::Set(ent, 1.3, 10);
+		ent->X = x;
+		ent->Y = y;
 		return ent;
 	}
 

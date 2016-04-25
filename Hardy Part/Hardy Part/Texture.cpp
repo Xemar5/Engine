@@ -173,8 +173,8 @@ SDL_Point Texture::Get_SDL_Starting_Point()
 	}
 	return 
 	{
-		(int)((1.0 + __Starting_Point_X) / 2 * __Frame_Width),
-		(int)((1.0 + __Starting_Point_Y) / 2 * __Frame_Height)
+		(int)((1.0 + __Starting_Point_X) / 2.0 * __Frame_Width),
+		(int)((1.0 + __Starting_Point_Y) / 2.0 * __Frame_Height)
 	};
 }
 SDL_Texture * Texture::Get_SDL_Texture()

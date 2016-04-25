@@ -15,10 +15,13 @@ public:
 	//*** SDL Renderer handler
 	static SDL_Renderer* Renderer;
 
-	//*** Width of the window screen
-	static unsigned Width;
-	//*** Height of the window screen
-	static unsigned Height;
+	//*** Returns the size of the window
+	//*** Use Get_Screen_Size if in-game screen size needed
+	static std::pair<unsigned, unsigned> Get_Window_Size();
+	//*** Returns the size of the of the screen
+	//*** It scales with the Screen::__Scale
+	//*** Use Get_Window_Size if the actual window size needed
+	static std::pair<unsigned, unsigned> Get_Screen_Size();
 
 	//*** Returns true if the screen is windowed
 	static bool Is_Windowed();
@@ -55,12 +58,10 @@ public:
 	static void Exit();
 
 private:
-	//*** Width of the window screen when windowed
-	//*** When changing to fullscreen, this variable stores last screen resolution
-	static unsigned __Windowed_Width;
+	//*** Width of the window screen
+	static unsigned __Width;
 	//*** Height of the window screen
-	//*** When changing to fullscreen, this variable stores last screen resolution
-	static unsigned __Windowed_Height;
+	static unsigned __Height;
 
 	//*** If true, prevents the user from additional, unnecessary initializations
 	//*** Screen::Start should be called only once

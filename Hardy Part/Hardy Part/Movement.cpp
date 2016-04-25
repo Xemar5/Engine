@@ -107,8 +107,8 @@ bool Movement::__Resolve_Movement(Movement * movement)
 	auto acc = movement->__Mass * 0.1;
 	for (unsigned i = 0; i < movement->__Forces.size(); i++)
 	{
-		fx += movement->__Forces[i].first * movement->Get_Speed() * Screen::Get_Scale();
-		fy += movement->__Forces[i].second * movement->Get_Speed() * Screen::Get_Scale();
+		fx += movement->__Forces[i].first * movement->Get_Speed();
+		fy += movement->__Forces[i].second * movement->Get_Speed();
 	}
 	movement->__vx += acc * sgn(fx - movement->__vx);
 	movement->__vy += acc * sgn(fy - movement->__vy);

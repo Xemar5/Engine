@@ -25,7 +25,7 @@ void Main_Menu::Create()
 	State::Add_Tileset
 	(
 		Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
-		{ Screen::Width/2,Screen::Height / 2 },
+		{ Screen::Get_Screen_Size().first / 2,Screen::Get_Screen_Size().second / 2 },
 		{
 			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 			{ 0,0,0,0,2,2,5,0,0,0,0,0,0,5,5,3,3 },
@@ -44,8 +44,10 @@ void Main_Menu::Create()
 		}
 	);
 
+	int midx = Screen::Get_Screen_Size().first / 2 - 190;
+	int midy = Screen::Get_Screen_Size().second / 2 + 110;
 	
-	auto* m1 = Character::Add(this, "Nerk", 100, 100, 0);
+	auto* m1 = Character::Add(this, "Nerk", midx, midy, 0);
 	auto* m2 = Character::Add(this, "Mosh", 200, 200, 0);
 	auto* m3 = Character::Add(this, "Dreg", 300, 300, 0);
 	auto* m4 = Character::Add(this, "Tar", 400, 400, 0);
@@ -116,8 +118,8 @@ void Main_Menu::Create()
 		for (auto wp : Get_Tilesets()[i]->Get_Wall_Placeholders())
 		{
 			auto* w = State::Add_Entity<Wall<Wall_Enum::Cobble>>(i);
-			w->X = wp.first * (int)Screen::Get_Scale() + Get_Tilesets()[i]->Get_Pos().first * (int)Screen::Get_Scale();
-			w->Y = wp.second * (int)Screen::Get_Scale() + Get_Tilesets()[i]->Get_Pos().second * (int)Screen::Get_Scale() + 24 * (int)Screen::Get_Scale();
+			w->X = wp.first + Get_Tilesets()[i]->Get_Pos().first;
+			w->Y = wp.second + Get_Tilesets()[i]->Get_Pos().second + 24;
 			int r = 2;
 			switch (r)
 			{
@@ -133,18 +135,20 @@ void Main_Menu::Update()
 	for (auto ent : Layers[0]->Entities)
 	{
 		auto tile = Get_Tilesets()[0]->Which_Tile((int)ent->X, (int)ent->Y);
+
 		if (tile == 0 || tile >= 6)
 		{
-			ent->X = Screen::Width/2 - 350;
-			ent->Y = Screen::Height/2 + 220;
+			ent->X = Screen::Get_Screen_Size().first / 2 - 190;
+			ent->Y = Screen::Get_Screen_Size().second / 2 + 110;
 		}
 	}
+
 
 	SDL_Point p;
 	SDL_GetMouseState(&p.x, &p.y);
 	Uint32 px, py;
-	px = (Uint32)((double)p.x / (double)Screen::Width * 255);
-	py = (Uint32)((double)p.y / (double)Screen::Height * 255);
+	px = (Uint32)((double)p.x / (double)Screen::Get_Window_Size().first * 255);
+	py = (Uint32)((double)p.y / (double)Screen::Get_Window_Size().second * 255);
 	SDL_SetRenderDrawColor(Screen::Renderer, px, 255 - (px+py)/2, py, 255);
 
 

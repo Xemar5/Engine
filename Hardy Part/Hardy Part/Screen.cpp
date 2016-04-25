@@ -11,16 +11,25 @@ bool Screen::__Initialized = false;
 SDL_Window* Screen::Window;
 SDL_Renderer* Screen::Renderer;
 
-unsigned Screen::Width = 800;
-unsigned Screen::Height = 600;
-unsigned Screen::__Windowed_Width = 800;
-unsigned Screen::__Windowed_Height = 600;
+unsigned Screen::__Width = 800;
+unsigned Screen::__Height = 600;
 double Screen::__Scale = 2;
 bool Screen::__Windowed = true;
 
 std::vector<std::vector<std::shared_ptr<Entity>>> Screen::__Entities;
 std::vector<std::shared_ptr<Tileset>> Screen::__Tilesets;
 
+
+std::pair<unsigned, unsigned> Screen::Get_Window_Size()
+{
+	return std::make_pair(__Width, __Height);
+}
+
+std::pair<unsigned, unsigned> Screen::Get_Screen_Size()
+{
+	if (!Screen::__Scale) return std::make_pair(Screen::__Width, Screen::__Height);
+	return std::make_pair(Screen::__Width / Screen::__Scale, Screen::__Height / Screen::__Scale);
+}
 
 bool Screen::Is_Windowed()
 {
@@ -41,8 +50,8 @@ bool Screen::Set_Fullscreen()
 		//SDL_SetWindowSize(Screen::Window, mode.w, mode.h);
 		//Screen::__Windowed_Width = Screen::Width;
 		//Screen::__Windowed_Height = Screen::Height;
-		Screen::Width = mode.w;
-		Screen::Height = mode.h;
+		Screen::__Width = mode.w;
+		Screen::__Height = mode.h;
 		Screen::__Scale = mode.w / 500;
 		SDL_SetWindowFullscreen(Screen::Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		__Windowed = false;
@@ -54,8 +63,8 @@ bool Screen::Set_Fullscreen()
 bool Screen::Set_Windowed()
 {
 	//SDL_SetWindowSize(Screen::Window, Screen::Width, Screen::Height);
-	Screen::Width = Screen::__Windowed_Width;
-	Screen::Height = Screen::__Windowed_Height;
+	Screen::__Width = 800;
+	Screen::__Height = 600;
 	Screen::__Scale = 2;
 	SDL_SetWindowFullscreen(Screen::Window, 0);
 	__Windowed = true;
@@ -75,7 +84,7 @@ bool Screen::Start()
 		return false;
 	}
 	Screen::__Initialized = true;
-	Screen::Window = SDL_CreateWindow("Gmae", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Screen::Width, Screen::Height, SDL_WINDOW_SHOWN);
+	Screen::Window = SDL_CreateWindow("Gmae", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Screen::__Width, Screen::__Height, SDL_WINDOW_SHOWN);
 	Screen::Renderer = SDL_CreateRenderer(Screen::Window, -1, SDL_RENDERER_ACCELERATED);
 	return true;
 }
@@ -122,10 +131,12 @@ unsigned Screen::Draw()
 
 		SDL_Rect src = { 0,0, (int)tile->Get_Size().first, (int)tile->Get_Size().second };
 		SDL_Rect dst = {
-			(int)tile->Get_Real_Pos().first,
-			(int)tile->Get_Real_Pos().second,
-			(int)((double)tile->Get_Size().first * Screen::Get_Scale() * tile->Scale),
-			(int)((double)tile->Get_Size().second * Screen::Get_Scale() * tile->Scale)
+			tile->Get_Real_Pos().first * Get_Scale(),
+			tile->Get_Real_Pos().second * Get_Scale(),
+			//tile->Get_Pos().first - (double)(tile->Get_Texture()->Get_Starting_Point().first + 1) / 2 * tile->Get_Size().first,
+			//tile->Get_Pos().second - (double)(tile->Get_Texture()->Get_Starting_Point().second + 1) / 2 * tile->Get_Size().second,
+			(int)((double)tile->Get_Size().first * tile->Scale) * Get_Scale(),
+			(int)((double)tile->Get_Size().second * tile->Scale) * Get_Scale()
 		};
 		SDL_RenderCopy(Screen::Renderer, tile->Get_SDL_Texture(), &src, &dst);
 	}
@@ -159,8 +170,8 @@ unsigned Screen::Draw()
 			}
 			++count;
 
-			double px = (double)spr->Get_Texture()->Get_SDL_Starting_Point().x * Screen::Get_Scale() * spr->Scale;
-			double py = (double)spr->Get_Texture()->Get_SDL_Starting_Point().y * Screen::Get_Scale() * spr->Scale;
+			double px = (double)spr->Get_Texture()->Get_SDL_Starting_Point().x * spr->Scale * Get_Scale();
+			double py = (double)spr->Get_Texture()->Get_SDL_Starting_Point().y * spr->Scale * Get_Scale();
 
 			SDL_Point p = { (int)px, (int)py };
 
@@ -171,10 +182,10 @@ unsigned Screen::Draw()
 				(int)spr->Get_Frame_Size().second,
 			};
 			SDL_Rect draw_rect = {
-				(int)(e->X - px),
-				(int)(e->Y - py),
-				(int)((double)spr->Get_Frame_Size().first * Screen::Get_Scale() * spr->Scale),
-				(int)((double)spr->Get_Frame_Size().second * Screen::Get_Scale() * spr->Scale),
+				(int)(e->X * Get_Scale() - px),
+				(int)(e->Y * Get_Scale() - py),
+				(int)((double)spr->Get_Frame_Size().first * spr->Scale) * Get_Scale(),
+				(int)((double)spr->Get_Frame_Size().second * spr->Scale) * Get_Scale(),
 			};
 
 			SDL_RenderCopyEx
