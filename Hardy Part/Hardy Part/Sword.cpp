@@ -14,7 +14,6 @@
 void Sword::Create()
 {
 	auto sp = Sprite::Create(this, Texture::Load("imgs/xord.png", 24, 24, 24, 24, 0, 1));
-	sp->Scale = 2.0;
 }
 void Sword::Update()
 {

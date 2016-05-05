@@ -11,6 +11,6 @@ public:
 	void Events() override;
 	//*** Creates the character of given name in specific coordinates
 	//*** if given name is not registered, no character will be created
-	static Character* Add(State* stt, std::string name, int x, int y, unsigned layer);
+	static Character* Add(State* stt, std::string name, int x, int y, unsigned layer, double scale = 1);
 };
 

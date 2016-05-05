@@ -19,6 +19,10 @@ public:
 	std::vector<std::shared_ptr<Entity>> Entities;
 	//*** Returns the entity with given index if it exists
 	Entity* operator[](unsigned ent);
+	////*** The container of all Tilesets of this State
+	//std::vector<std::shared_ptr<Tileset>> Tilesets;
+	////*** Returns the tileset with given index if it exists
+	//Tileset* operator()(unsigned tileset);
 };
 
 
@@ -73,20 +77,23 @@ public:
 	//*** Else only this state layer will be updated
 	bool Update_Underneath = false;
 
-	//*** Creates a Tileset with supplied mapping and adds it to this State's Tilesets container
-	//*** - texture - the Texture class containing image file of all tiles
-	//*** - pos - the position of this tileset in this State
-	//*** - map - the mapping of all tiles
-	bool Add_Tileset(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
-	//*** Returns the container of all Tilesets in this State
-	std::vector<std::shared_ptr<Tileset>> Get_Tilesets();
+	////*** Creates a Tileset with supplied mapping and adds it to this State's Tilesets container
+	////*** - texture - the Texture class containing image file of all tiles
+	////*** - pos - the position of this tileset in this State
+	////*** - map - the mapping of all tiles
+	//std::shared_ptr<Tileset> Add_Tileset(std::shared_ptr<Texture> texture, unsigned layer, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
+
+	//*** Returns the container of all Tilesets from all layers in this State
+	std::vector<Tileset*> Get_Tilesets();
+	//*** Returns the container of all Entities from all layers in this State
+	std::vector<Entity*> Get_Entities();
+	//*** Returns the container of all Walls from all layers in this State
+	std::vector<std::shared_ptr<Entity>> Get_Walls();
 
 	//*** Operator [] overload returns the layer with given index
 	//*** if such layer doesn't exist, returns nullptr
 	Layer& operator[](unsigned layer);
 private:
-	//*** The container of all Tilesets of this State
-	std::vector<std::shared_ptr<Tileset>> __Tilesets;
 };
 
 #include "Screen.h"
@@ -94,12 +101,15 @@ private:
 template <typename T>
 T* State::Add_Entity(unsigned layer)
 {
-	while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<Layer>());
-	Layers[layer]->Entities.emplace_back(std::make_shared<T>());
-	Layers[layer]->Entities.back()->Create();
-	Layers[layer]->Entities.back()->__Layer = layer;
-	Screen::Add(Layers[layer]->Entities.back());
-	return dynamic_cast<T*>(Layers[layer]->Entities.back().get());
+	if (!this)
+	{
+		std::cerr << "ERR State::Add_Entity : No this state\n";
+		return nullptr;
+	}
+	(*this)[layer].Entities.emplace_back(std::make_shared<T>());
+	(*this)[layer].Entities.back()->Create();
+	Screen::Add((*this)[layer].Entities.back(), layer);
+	return dynamic_cast<T*>((*this)[layer].Entities.back().get());
 }
 
 

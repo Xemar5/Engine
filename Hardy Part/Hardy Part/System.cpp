@@ -4,13 +4,13 @@
 #include "Timer.h"
 #include "Input_Handler.h"
 #include "Tileset.h"
+#include "Entity.h"
 #include <iostream>
 
 SDL_Event System::Events;
 Timer System::FPS_Clock;
 Timer System::In_Game_Timer;
 unsigned System::FPS = 60;
-Mix_Music* System::Soundtrack = nullptr;
 
 
 void System::_System_Update()
@@ -65,8 +65,10 @@ void System::__Events()
 		stt_to_events.push_back(State::Built[i].get());
 
 		if (!Screen::Is_Windowed() && System::Events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-			for (auto ttr : State::Built[i]->Get_Tilesets())
-				Tileset::Reset(ttr);
+			for (auto lay : State::Built[i]->Layers)
+				for (auto ent : lay->Entities)
+					if(auto ttr = dynamic_cast<Tileset*>(ent.get()))
+						Tileset::Reset(ttr);
 	}
 	for (unsigned i = 0; i < stt_to_events.size(); i++)
 		stt_to_events[i]->Events();

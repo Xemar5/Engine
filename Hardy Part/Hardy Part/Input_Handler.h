@@ -3,6 +3,7 @@
 #include <vector>
 #include <SDL.h>
 
+
 class Input_Handler;
 typedef std::shared_ptr<Input_Handler> Input_Function;
 
@@ -50,3 +51,8 @@ private:
 
 	friend class System;
 };
+
+
+#include "Mouse_Handler.h"
+#include "Keyboard_Handler.h"
+#include "Gamepad_Handler.h"

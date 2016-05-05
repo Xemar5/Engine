@@ -22,40 +22,42 @@
 
 void Main_Menu::Create()
 {
-	State::Add_Tileset
-	(
-		Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
-		{ Screen::Get_Screen_Size().first / 2,Screen::Get_Screen_Size().second / 2 },
-		{
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-			{ 0,0,0,0,2,2,5,0,0,0,0,0,0,5,5,3,3 },
-			{ 0,0,2,2,4,6,2,0,0,0,0,0,5,4,9,9,6 },
-			{ 0,0,4,7,6,0,2,0,2,2,4,0,2,6,0,0,0 },
-			{ 0,0,3,0,0,0,5,4,2,6,2,0,4,0,0,0,0 },
-			{ 0,0,3,0,0,0,6,8,6,0,2,0,3,4,4,0,0 },
-			{ 0,0,2,0,0,2,4,5,0,2,4,0,4,8,5,0,0 },
-			{ 0,0,2,2,3,2,7,5,0,5,6,0,5,3,4,0,0 },
-			{ 0,0,6,6,8,9,0,3,0,4,0,0,6,3,6,0,0 },
-			{ 0,0,0,4,2,5,0,2,0,2,3,4,0,3,4,0,0 },
-			{ 0,0,0,3,6,5,3,4,0,6,9,5,0,6,2,0,0 },
-			{ 4,2,3,3,0,6,9,6,0,0,0,2,2,4,2,0,0 },
-			{ 6,7,7,9,0,0,0,0,0,0,0,7,8,8,6,0,0 },
-			{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-		}
-	);
+	auto ttt = Tileset::Add
+		(
+			this, Tileset::Set(Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
+			{
+				{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
+				{ 0,0,0,0,2,2,5,0,0,0,0,0,0,5,5,3,3 },
+				{ 0,0,2,2,4,6,2,0,0,0,0,0,5,4,9,9,6 },
+				{ 0,0,4,7,6,0,2,0,2,2,4,0,2,6,0,0,0 },
+				{ 0,0,3,0,0,0,5,4,2,6,2,0,4,0,0,0,0 },
+				{ 0,0,3,0,0,0,6,8,6,0,2,0,3,4,4,0,0 },
+				{ 0,0,2,0,0,2,4,5,0,2,4,0,4,8,5,0,0 },
+				{ 0,0,2,2,3,2,7,5,0,5,6,0,5,3,4,0,0 },
+				{ 0,0,6,6,8,9,0,3,0,4,0,0,6,3,6,0,0 },
+				{ 0,0,0,4,2,5,0,2,0,2,3,4,0,3,4,0,0 },
+				{ 0,0,0,3,6,5,3,4,0,6,9,5,0,6,2,0,0 },
+				{ 4,2,3,3,0,6,9,6,0,0,0,2,2,4,2,0,0 },
+				{ 6,7,7,9,0,0,0,0,0,0,0,7,8,8,6,0,0 },
+				{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+			}),
+			Screen::Get_Screen_Size().first / 2, Screen::Get_Screen_Size().second / 2, 0, 1
+			);
 
-	int midx = Screen::Get_Screen_Size().first / 2 - 190;
+	std::cout << ttt->X << std::endl;
+	std::cout << ttt->Get_Texture()->Get_SDL_Starting_Point().x << std::endl;
+
+	int midx = Screen::Get_Screen_Size().first / 2 - 195;
 	int midy = Screen::Get_Screen_Size().second / 2 + 110;
-	
-	auto* m1 = Character::Add(this, "Nerk", midx, midy, 0);
-	auto* m2 = Character::Add(this, "Mosh", 200, 200, 0);
-	auto* m3 = Character::Add(this, "Dreg", 300, 300, 0);
-	auto* m4 = Character::Add(this, "Tar", 400, 400, 0);
-	auto* m5 = Character::Add(this, "Benio", 500, 500, 0);
 
+	auto* m1 = Character::Add(this, "Nerk", midx, midy, 1);
+	auto* m2 = Character::Add(this, "Mosh", midx + 20, midy, 1);
+	auto* m3 = Character::Add(this, "Dreg", midx + 40, midy, 1);
+	auto* m4 = Character::Add(this, "Tar", midx + 60, midy, 1);
+	auto* m5 = Character::Add(this, "Benio", midx + 80, midy, 1);
 
 	for (int i = 0; i < 0; ++i)
-		Character::Add(this, "Nerk", 100, 100, 0);
+		Character::Add(this, "Nerk", 100, 100, 1);
 
 
 
@@ -107,48 +109,47 @@ void Main_Menu::Create()
 		Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 4,2 })
 		);
 
-	Sword* s1 = State::Add_Entity<Sword>(1);
-	s1->Wealder = p2;
-	Sword* s2 = State::Add_Entity<Sword>(1);
-	s2->Wealder = p1;
+	Sword* s1 = State::Add_Entity<Sword>(2);
+	s1->Wealder = p1;
 
-	srand((unsigned)time(0));
-	if (Get_Tilesets().size())
-		for (unsigned i = 0; i < Get_Tilesets().size(); i++)
-		for (auto wp : Get_Tilesets()[i]->Get_Wall_Placeholders())
-		{
-			auto* w = State::Add_Entity<Wall<Wall_Enum::Cobble>>(i);
-			w->X = wp.first + Get_Tilesets()[i]->Get_Pos().first;
-			w->Y = wp.second + Get_Tilesets()[i]->Get_Pos().second + 24;
-			int r = 2;
-			switch (r)
-			{
-			case 0: Animation::Play(w, "type0"); break;
-			case 1: Animation::Play(w, "type1"); break;
-			case 2: Animation::Play(w, "type2"); break;
-			default:break;
-			}
-		}
+	//srand((unsigned)time(0));
+	//if (this->Layers[0]->Entities.size())
+	//	for (unsigned i = 0; i < Get_Tilesets().size(); i++)
+	//		for (auto wp : Get_Tilesets()[i]->Get_Wall_Placeholders())
+	//		{
+	//			auto* w = State::Add_Entity<Wall<Wall_Enum::Cobble>>(i);
+	//			w->X = wp.first;
+	//			w->Y = wp.second + Get_Tilesets()[i]->Get_Texture()->Get_Frame_Size().second;
+	//			int r = rand()%3;
+	//			switch (r)
+	//			{
+	//			case 0: Animation::Play(w, "type0"); break;
+	//			case 1: Animation::Play(w, "type1"); break;
+	//			case 2: Animation::Play(w, "type2"); break;
+	//			default:break;
+	//			}
+	//		}
 }
 void Main_Menu::Update()
 {
-	for (auto ent : Layers[0]->Entities)
+
+	for (auto ent : Get_Entities())
 	{
+		if (!Get_Tilesets().size()) break;
+
 		auto tile = Get_Tilesets()[0]->Which_Tile((int)ent->X, (int)ent->Y);
 
 		if (tile == 0 || tile >= 6)
-		{
+		{		
 			ent->X = Screen::Get_Screen_Size().first / 2 - 190;
 			ent->Y = Screen::Get_Screen_Size().second / 2 + 110;
 		}
 	}
 
-
-	SDL_Point p;
-	SDL_GetMouseState(&p.x, &p.y);
-	Uint32 px, py;
-	px = (Uint32)((double)p.x / (double)Screen::Get_Window_Size().first * 255);
-	py = (Uint32)((double)p.y / (double)Screen::Get_Window_Size().second * 255);
+	Uint32 px = Mouse_Handler::Get_Mouse_Pos().first;
+	Uint32 py = Mouse_Handler::Get_Mouse_Pos().second;
+	px = (Uint32)((double)px / (double)Screen::Get_Screen_Size().first * 255);
+	py = (Uint32)((double)py / (double)Screen::Get_Screen_Size().second * 255);
 	SDL_SetRenderDrawColor(Screen::Renderer, px, 255 - (px+py)/2, py, 255);
 
 
@@ -171,15 +172,15 @@ void Main_Menu::Events()
 		auto pl = Player::Get(0);
 		auto sw = dynamic_cast<Sword*>(State::Layers[1]->Entities[0].get());
 		if (System::Events.key.keysym.sym == SDLK_1)
-			Player::Set_Entity(pl, State::Layers[0]->Entities[0].get(), true);
+			Player::Set_Entity(pl, State::Layers[1]->Entities[0].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_2)
-			Player::Set_Entity(pl, State::Layers[0]->Entities[1].get(), true);
+			Player::Set_Entity(pl, State::Layers[1]->Entities[1].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_3)
-			Player::Set_Entity(pl, State::Layers[0]->Entities[2].get(), true);
+			Player::Set_Entity(pl, State::Layers[1]->Entities[2].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_4)
-			Player::Set_Entity(pl, State::Layers[0]->Entities[3].get(), true);
+			Player::Set_Entity(pl, State::Layers[1]->Entities[3].get(), true);
 		if (System::Events.key.keysym.sym == SDLK_5)
-			Player::Set_Entity(pl, State::Layers[0]->Entities[4].get(), true);
+			Player::Set_Entity(pl, State::Layers[1]->Entities[4].get(), true);
 		//if (System::Events.key.keysym.sym == SDLK_5)
 		//{
 		//	Player::Set_Entity(pl, State::Layers[0]->Entities[4].get());

@@ -1,10 +1,9 @@
 #pragma once
 #include <SDL.h>
-#include <SDL_mixer.h>
 #include <vector>
 #include <memory>
 #include <stdio.h>
-//#include "State.h"
+#include "Audio.h"
 
 class Timer;
 
@@ -27,8 +26,6 @@ public:
 	//*** The approximate number of frames per second
 	static unsigned FPS;
 
-	//*** The main music holder
-	static Mix_Music* Soundtrack;
 protected:
 
 	//*** Main System loop, where all the states are updated
@@ -46,11 +43,10 @@ template <typename T>
 void System::Start()
 {
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO);
-	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-	System::Soundtrack = Mix_LoadMUS("imgs/Baker Cat.mp3");
-	//Mix_PlayMusic(System::Soundtrack, -1);
-	Screen::Start();
+	Screen::Init();
+	Audio::Init();
 	State::New<T>();
+	//Audio::Play_Music(Audio::Load_Music("imgs/Baker Cat.mp3"));
 	//Screen::Change_Window_State();
 	_System_Update();
 }

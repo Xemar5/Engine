@@ -21,6 +21,9 @@ public:
 	//*** returns 1 if time passes; otherwise returns 0
 	static double Button_Held(std::vector<Sint32> args);
 
+	//*** Returns the mouse pos based on the Screen::__Scale
+	static std::pair<int, int> Get_Mouse_Pos();
+
 	//*** Returns the X position of the mouse in range from -1.0 to 1.0
 	//*** - (1st arg) X foothoold - the X coordinate of the foothold
 	//*** - (2nd arg) Y foothoold - the Y coordinate of the foothold

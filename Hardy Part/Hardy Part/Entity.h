@@ -9,6 +9,7 @@ class Sprite;
 class Action;
 class Hitbox;
 class Stats;
+class Texture;
 class Movement;
 
 
@@ -27,18 +28,20 @@ public:
 	std::pair<double, double> Get_Hitbox();
 
 	//*** Returns the Sprite pointer if it exists
-	std::shared_ptr<Sprite> Get_Sprite();
+	virtual std::shared_ptr<Sprite> Get_Sprite();
+	//*** Returns the Texture pointer if it exists
+	virtual std::shared_ptr<Texture> Get_Texture();
+	//*** Returns the scale of this entity
+	virtual double Get_Scale();
 
-	//*** Returns the Actions vector
-	std::vector<std::shared_ptr<Action>> Get_Actions();
+	////*** Returns the Actions vector
+	//virtual std::vector<std::shared_ptr<Action>> Get_Actions();
 
-	//*** Returns the Stats pointer if it exists
-	Stats* Get_Stats();
+	////*** Returns the Stats pointer if it exists
+	//Stats* Get_Stats();
 
 	//*** Returns the Movement pointer if it exists
 	Movement* Get_Movement();
-	//*** Returns the layer this entity is added to
-	unsigned Get_Layer();
 
 	//*** X coordinate of this entity position
 	double X = 0;
@@ -68,8 +71,6 @@ protected:
 	//*** An entity doesn't have to has all the statistics;
 	std::shared_ptr<Movement> __Movement = nullptr;
 
-	//*** Represents the layer this entity is added to
-	int __Layer = -1;
 
 	friend class Sprite;
 	friend class Hitbox;

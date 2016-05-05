@@ -3,12 +3,15 @@
 #include "Keyboard_Handler.h"
 #include "Mouse_Handler.h"
 #include "Main_State.h"
+#include "GameMenu_State.h"
+
 
 #include "Sprite.h"
 #include "Texture.h"
 #include "Animation.h"
 #include "System.h"
 #include "Timer.h"
+
 
 void Menu_Menu::Create()
 {
@@ -62,24 +65,27 @@ void Menu_Menu::Events()
 {
 	if (Mouse_Handler::Contains_Mouse((*this)[1][0]))
 	{
-		std::cout << "b0\n";
 		if(System::Events.type == SDL_MOUSEBUTTONDOWN && System::Events.button.button == SDL_BUTTON_LEFT)
 			State::New<Main_Menu>();
 	}
 	if (Mouse_Handler::Contains_Mouse((*this)[1][1]))
 	{
-		std::cout << "b1\n";
 		if (System::Events.type == SDL_MOUSEBUTTONDOWN && System::Events.button.button == SDL_BUTTON_LEFT)
+		{
 			Screen::Change_Window_State();
+			SDL_WarpMouseInWindow(
+				Screen::Window,
+				(Screen::Get_Screen_Size().first / 2) * (int)Screen::Get_Scale(),
+				(Screen::Get_Screen_Size().second / 2 + 100) * (int)Screen::Get_Scale());
+		}
 	}
 	if (Mouse_Handler::Contains_Mouse((*this)[1][2]))
 	{
-		std::cout << "b2\n";
 		if (System::Events.type == SDL_MOUSEBUTTONDOWN && System::Events.button.button == SDL_BUTTON_LEFT)
 			State::Exit_Game();
 	}
 	if (Keyboard_Handler::Key_Up({ SDLK_ESCAPE })) State::Exit_Game();
-	if (Keyboard_Handler::Key_Up({ SDLK_RETURN })) State::New<Main_Menu>();
+	if (Keyboard_Handler::Key_Up({ SDLK_RETURN })) State::New<GameMenu_State>();
 	State::Events();
 }
 

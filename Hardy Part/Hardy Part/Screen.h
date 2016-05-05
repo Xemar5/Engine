@@ -41,13 +41,13 @@ public:
 
 	//*** Initializes all the Screen compounds
 	//*** Use only once at the start of the System
-	static bool Start();
+	static bool Init();
 
 	//*** Adds the entity to screen renderer queue
-	static bool Add(std::shared_ptr<Entity> ent);
+	static bool Add(std::shared_ptr<Entity> ent, unsigned layer);
 
-	//*** Adds the Tileset to screen renderer queue
-	static bool Add(std::shared_ptr<Tileset> tileset);
+	////*** Adds the Tileset to screen renderer queue
+	//static bool Add(std::shared_ptr<Tileset> tileset, unsigned layer);
 
 	//*** Draws the screen renderer to the screen
 	//*** Use when all entities are added to the renderer
@@ -83,8 +83,8 @@ private:
 	//*** Each sub-vector represents a layer
 	static std::vector<std::vector<std::shared_ptr<Entity>>> __Entities;
 
-	//*** A pointer to the Tileset which is to be drawn on the screen the next frame update
-	//*** It empties itself every frame update
-	static std::vector<std::shared_ptr<Tileset>> __Tilesets;
+	////*** A pointer to the Tileset which is to be drawn on the screen the next frame update
+	////*** It empties itself every frame update
+	//static std::vector<std::vector<std::shared_ptr<Tileset>>> __Tilesets;
 
 };
