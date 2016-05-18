@@ -31,7 +31,6 @@ void System::_System_Update()
 			if (State::Deleted.size()) __Delete();
 			if (State::Built.size()) __Update();
 			else { Quit_System = true; break; }
-			Input_Handler::__Update();
 
 			while (SDL_PollEvent(&System::Events))
 			{
@@ -39,6 +38,7 @@ void System::_System_Update()
 				Input_Handler::__Events();
 				__Events();
 			}
+			Input_Handler::__Update();
 		}
 		SDL_Delay(1);
 	}

@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "Texture.h"
 #include "Tileset.h"
+#include "Output_Handler.h"
 
 
 bool Screen::__Initialized = false;
@@ -87,7 +88,7 @@ bool Screen::Init()
 {
 	if (Screen::__Initialized)
 	{
-		std::cout << "MSG Screen::Start : Screen has already been initialized\n";
+		Output_Handler::Output << "MSG Screen::Start : Screen has already been initialized\n";
 		return false;
 	}
 	Screen::__Initialized = true;
@@ -99,8 +100,8 @@ bool Screen::Init()
 
 bool Screen::Add(std::shared_ptr<Entity> ent, unsigned layer)
 {
-	if (!ent) { std::cerr << "ERR Screen::Add : No entity supplied\n"; return false; }
-	if (!ent->Get_Sprite()) { std::cout << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
+	if (!ent) { Output_Handler::Error << "ERR Screen::Add : No entity supplied\n"; return false; }
+	if (!ent->Get_Sprite()) { Output_Handler::Output << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
 
 	if (layer >= Screen::__Entities.size())
 		Screen::__Entities.resize(layer + 1);
@@ -116,8 +117,8 @@ bool Screen::Add(std::shared_ptr<Entity> ent, unsigned layer)
 
 //bool Screen::Add(std::shared_ptr<Tileset> tileset, unsigned layer)
 //{
-//	if (!tileset) { std::cerr << "ERR Screen::Add : No tileset supplied\n"; return false; }
-//	if (!tileset->Get_SDL_Texture()) { std::cerr << "ERR Screen::Add : Given tileset has no SDL_Texture supplied\n"; return false; }
+//	if (!tileset) { Output_Handler::Error << "ERR Screen::Add : No tileset supplied\n"; return false; }
+//	if (!tileset->Get_SDL_Texture()) { Output_Handler::Error << "ERR Screen::Add : Given tileset has no SDL_Texture supplied\n"; return false; }
 //
 //	if (layer >= Screen::__Tilesets.size())
 //		Screen::__Tilesets.resize(layer + 1);
@@ -181,7 +182,7 @@ unsigned Screen::Draw()
 				//	sdl_texture = tile->Get_Product_Texture();
 				if (!ttr || !sdl_texture)
 				{
-					std::cerr << "ERR Screen::Draw : Given Entity has no texture supplied\n";
+					Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
 					continue;
 				}
 				++count;

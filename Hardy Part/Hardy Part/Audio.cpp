@@ -1,5 +1,5 @@
 #include "Audio.h"
-#include <iostream>
+#include "Output_Handler.h"
 
 Track* Audio::Current_Track = nullptr;
 std::vector<std::shared_ptr<Track>> Audio::Tracklist;
@@ -20,7 +20,7 @@ bool Audio::Init()
 {
 	if (Audio::__Initialized)
 	{
-		std::cout << "MSG Sound::Init : Sound already initialized\n";
+		Output_Handler::Output << "MSG Sound::Init : Sound already initialized\n";
 		return false;
 	}
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
@@ -35,7 +35,7 @@ Track * Audio::Load_Music(std::string path)
 	Mix_Music* ms = Mix_LoadMUS(path.c_str());
 	if (!ms)
 	{
-		std::cerr << "ERR Sound::Load_Music : Given path (\"" << path << "\") stores no Music\n";
+		Output_Handler::Error << "ERR Sound::Load_Music : Given path (\"" << path << "\") stores no Music\n";
 		return nullptr;
 	}
 	Tracklist.push_back(std::make_shared<Track>());
@@ -48,12 +48,12 @@ bool Audio::Play_Music(Track * track, int loops)
 {
 	if (!Audio::__Initialized)
 	{
-		std::cerr << "ERR Sound::Play_Music : Sound not initialized; use Sound::Init first\n";
+		Output_Handler::Error << "ERR Sound::Play_Music : Sound not initialized; use Sound::Init first\n";
 		return false;
 	}
 	if (!track)
 	{
-		std::cerr << "ERR Sound::Play_Music : No Track supplied\n";
+		Output_Handler::Error << "ERR Sound::Play_Music : No Track supplied\n";
 		return false;
 	}
 	Mix_PlayMusic(track->Music, loops);

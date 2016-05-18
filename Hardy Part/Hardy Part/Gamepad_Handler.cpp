@@ -1,4 +1,4 @@
-#include <iostream>
+#include "Output_Handler.h"
 #include "Gamepad_Handler.h"
 #include "System.h"
 
@@ -8,7 +8,7 @@ Gamepad_Handler * Gamepad_Handler::Set(int gamepad_index)
 {
 	if (gamepad_index < 0 || gamepad_index >= SDL_NumJoysticks())
 	{
-		std::cerr << "ERR Gamepad_Handler::Set : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
+		Output_Handler::Error << "ERR Gamepad_Handler::Set : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
 		return nullptr;
 	}
 	if (auto joy = Gamepad_Handler::Get(gamepad_index)) return joy;
@@ -23,7 +23,7 @@ bool Gamepad_Handler::Remove(int gamepad_index)
 	auto joy_index = Gamepad_Handler::__Get_Gamepads_Index(gamepad_index);
 	if (joy_index == -1)
 	{
-		std::cout << "MSG Gamepad_Handler::Remove : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
+		Output_Handler::Output << "MSG Gamepad_Handler::Remove : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
 		return false;
 	}
 	SDL_JoystickClose(Gamepad_Handler::__Gamepads[joy_index]->Get_Joystick());
@@ -35,14 +35,14 @@ Gamepad_Handler * Gamepad_Handler::Get(int gamepad_index)
 {
 	if (gamepad_index < 0 || gamepad_index >= SDL_NumJoysticks())
 	{
-		//std::cerr << "ERR Gamepad_Handler::Set : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
+		//Output_Handler::Error << "ERR Gamepad_Handler::Set : No gamepad connected with given index (connected gamepads: " << SDL_NumJoysticks() << ", given index: " << gamepad_index + 1 << ")\n";
 		return nullptr;
 	}
 	for (unsigned i = 0; i < __Gamepads.size(); i++)
 	{
 		if (__Gamepads[i]->__Index == gamepad_index) return __Gamepads[i].get();
 	}
-	//std::cerr << "ERR Gamepad_Handler::Get : No gamepad handler with given index\n";
+	//Output_Handler::Error << "ERR Gamepad_Handler::Get : No gamepad handler with given index\n";
 	return nullptr;
 }
 
@@ -55,18 +55,22 @@ double Gamepad_Handler::Get_Axis_State(std::vector<Sint32> args)
 {
 	auto it = args.begin();
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Get_Axis_State : Given axis doesn't exist\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Get_Axis_State : Gamepad not supplied \n"; return 0.0; }
+	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
+	if (!joy) { /*Output_Handler::Error << "ERR Gamepad_Handler::Get_Axis_State : Gamepad not set (use Gamepad_Handler::Set function)\n";*/ return 0.0; }
+	if (!joy->Get_Joystick()) { Output_Handler::Error << "ERR Gamepad_Handler::Get_Axis_State : No gamepad supplied\n"; return 0.0; }
+
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Get_Axis_State : Given axis doesn't exist\n"; return 0.0; }
 	Sint32 axis = (Sint32)*it++;
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Get_Axis_State : Gamepad not supplied \n"; return 0.0; }
-	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
-	if (!joy) { /*std::cerr << "ERR Gamepad_Handler::Get_Axis_State : Gamepad not set (use Gamepad_Handler::Set function)\n";*/ return 0.0; }
-	if (!joy->Get_Joystick()) { std::cerr << "ERR Gamepad_Handler::Get_Axis_State : No gamepad supplied\n"; return 0.0; }
 
-	auto stt = SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
-	if (stt == 32767) return 1;
-	if (abs(stt) < 6000) return 0;
-	return (double)stt / 32768.0;
+
+	double stt = (double)SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
+	double dead_zone = 6000.0 * (stt > 0 ? 1. : -1.);
+
+	if (stt == 32767.) return 1.;
+	if (abs(stt) < abs(dead_zone)) return 0.;
+	return (stt - dead_zone) / (32768.0 - abs(dead_zone));
 }
 
 double Gamepad_Handler::Get_Axis_State_Positive(std::vector<Sint32> args)
@@ -87,17 +91,18 @@ double Gamepad_Handler::Get_Absolute_Axis_State(std::vector<Sint32> args)
 {
 	auto it = args.begin();
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Given axis doesn't exist\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Gamepad not supplied\n"; return 0.0; }
+	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
+	if (!joy) { Output_Handler::Error << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	if (!joy->Get_Joystick()) { Output_Handler::Error << "ERR Gamepad_Handler::Get_Absolute_Axis_State : No gamepad supplied\n"; return 0.0; }
+
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Given axis doesn't exist\n"; return 0.0; }
 	Sint32 axis = (Sint32)*it++;
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Gamepad not supplied\n"; return 0.0; }
-	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
-	if (!joy) { std::cerr << "ERR Gamepad_Handler::Get_Absolute_Axis_State : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
-	if (!joy->Get_Joystick()) { std::cerr << "ERR Gamepad_Handler::Get_Absolute_Axis_State : No gamepad supplied\n"; return 0.0; }
-
-	auto as = SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
-	if (abs(as) < 6000) return 0;
-	return as;
+	double as = SDL_JoystickGetAxis(joy->Get_Joystick(), axis);
+	double dead_zone = 6000.0 * (as > 0 ? 1. : -1.);
+	if (abs(as) < abs(dead_zone)) return 0;
+	return (as - dead_zone) / (32768.0 - abs(dead_zone)) * 32768.0;
 }
 
 double Gamepad_Handler::Get_Absolute_Axis_State_Positive(std::vector<Sint32> args)
@@ -118,13 +123,13 @@ double Gamepad_Handler::Button_Down(std::vector<Sint32> args)
 {
 	auto it = args.begin();
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Down : Button not supplied\n"; return 0.0; }
-	Sint32 button = (Sint32)*it++;
-
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Down : Gamepad not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Down : Gamepad not supplied\n"; return 0.0; }
 	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
-	if (!joy) { std::cerr << "ERR Gamepad_Handler::Button_Down : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
-	if (!joy->Get_Joystick()) { std::cerr << "ERR Gamepad_Handler::Button_Down : No gamepad supplied\n"; return 0.0; }
+	if (!joy) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Down : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	if (!joy->Get_Joystick()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Down : No gamepad supplied\n"; return 0.0; }
+
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Down : Button not supplied\n"; return 0.0; }
+	Sint32 button = (Sint32)*it++;
 
 
 	for (std::map<Uint8, int>::iterator it = joy->__Map.begin(); it != joy->__Map.end(); it++)
@@ -137,13 +142,13 @@ double Gamepad_Handler::Button_Up(std::vector<Sint32> args)
 {
 	auto it = args.begin();
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Up : Button not supplied\n"; return 0.0; }
-	Sint32 button = (Sint32)*it++;
-
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Up : Gamepad not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Up : Gamepad not supplied\n"; return 0.0; }
 	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
-	if (!joy) { std::cerr << "ERR Gamepad_Handler::Button_Up : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
-	if (!joy->Get_Joystick()) { std::cerr << "ERR Gamepad_Handler::Button_Up : No gamepad supplied\n"; return 0.0; }
+	if (!joy) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Up : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	if (!joy->Get_Joystick()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Up : No gamepad supplied\n"; return 0.0; }
+
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Up : Button not supplied\n"; return 0.0; }
+	Sint32 button = (Sint32)*it++;
 
 
 	for (std::map<Uint8, int>::iterator it = joy->__Map.begin(); it != joy->__Map.end(); it++)
@@ -156,13 +161,14 @@ double Gamepad_Handler::Button_Held(std::vector<Sint32> args)
 {
 	auto it = args.begin();
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Held : Button not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Held : Gamepad not supplied\n"; return 0.0; }
+	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
+	if (!joy) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Held : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
+	if (!joy->Get_Joystick()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Held : No gamepad supplied\n"; return 0.0; }
+
+	if (it == args.end()) { Output_Handler::Error << "ERR Gamepad_Handler::Button_Held : Button not supplied\n"; return 0.0; }
 	Sint32 button = (Sint32)*it++;
 
-	if (it == args.end()) { std::cerr << "ERR Gamepad_Handler::Button_Held : Gamepad not supplied\n"; return 0.0; }
-	Gamepad_Handler* joy = Gamepad_Handler::Get((int)*it++);
-	if (!joy) { std::cerr << "ERR Gamepad_Handler::Button_Held : Gamepad not set (use Gamepad_Handler::Set function)\n"; return 0.0; }
-	if (!joy->Get_Joystick()) { std::cerr << "ERR Gamepad_Handler::Button_Held : No gamepad supplied\n"; return 0.0; }
 
 	Sint32 time;
 	if (it == args.end()) time = 0;
@@ -184,9 +190,19 @@ int Gamepad_Handler::Get_Index()
 	return __Index;
 }
 
+int Gamepad_Handler::Get_SDL_Index()
+{
+	return SDL_JoystickInstanceID(Get_Joystick());
+}
+
 SDL_Joystick * Gamepad_Handler::Get_Joystick()
 {
 	return __Joystick;
+}
+
+std::vector<std::shared_ptr<Gamepad_Handler>> Gamepad_Handler::Get_Gamepads()
+{
+	return __Gamepads;
 }
 
 void Gamepad_Handler::__Events()
@@ -246,6 +262,6 @@ int Gamepad_Handler::__Get_Gamepads_Index(int gamepad_index)
 		if (__Gamepads[i]->__Index == gamepad_index) return i;
 		++i;
 	}
-	std::cout << "MSG Gamepad_Handler::__Get_Gamepads_Index : No gamepad with given index connected\n";
+	Output_Handler::Output << "MSG Gamepad_Handler::__Get_Gamepads_Index : No gamepad with given index connected\n";
 	return -1;
 }

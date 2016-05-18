@@ -1,5 +1,5 @@
 #include "Mouse_Handler.h"
-#include <iostream>
+#include "Output_Handler.h"
 #include "System.h"
 #include "Entity.h"
 #include "Sprite.h"
@@ -10,7 +10,7 @@ std::map<Sint32, int> Mouse_Handler::__Map;
 double Mouse_Handler::Button_Down(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Button_Down : Button not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Mouse_Handler::Button_Down : Button not supplied\n"; return 0.0; }
 	Sint32 btn = (Sint32)*it;
 	for (std::map<Sint32, int>::iterator it = Mouse_Handler::__Map.begin(); it != Mouse_Handler::__Map.end(); it++)
 		if (it->first == btn && it->second == -2)
@@ -21,7 +21,7 @@ double Mouse_Handler::Button_Down(std::vector<Sint32> args)
 double Mouse_Handler::Button_Up(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Button_Up : Button not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Mouse_Handler::Button_Up : Button not supplied\n"; return 0.0; }
 	Sint32 btn = (Sint32)*it;
 
 	for (std::map<Sint32, int>::iterator it = Mouse_Handler::__Map.begin(); it != Mouse_Handler::__Map.end(); it++)
@@ -33,7 +33,7 @@ double Mouse_Handler::Button_Up(std::vector<Sint32> args)
 double Mouse_Handler::Button_Held(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Button_Held : Button not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Mouse_Handler::Button_Held : Button not supplied\n"; return 0.0; }
 	Sint32 btn = (Sint32)*it++;
 
 	Sint32 time;
@@ -60,9 +60,9 @@ std::pair<int, int> Mouse_Handler::Get_Mouse_Pos()
 double Mouse_Handler::Get_Relative_Mouse_X_State(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_X_State : X coordinate not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Mouse_Handler::Get_Relative_Mouse_X_State : X coordinate not supplied\n"; return 0.0; }
 	Sint32 x = (Sint32)*it++;
-	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_X_State : Y coordinate not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Mouse_Handler::Get_Relative_Mouse_X_State : Y coordinate not supplied\n"; return 0.0; }
 	Sint32 y = (Sint32)*it;
 
 	x *= (Sint32)Screen::Get_Scale();
@@ -79,9 +79,9 @@ double Mouse_Handler::Get_Relative_Mouse_X_State(std::vector<Sint32> args)
 double Mouse_Handler::Get_Relative_Mouse_Y_State(std::vector<Sint32> args)
 {
 	auto it = args.begin();
-	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_Y_State : X coordinate not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Mouse_Handler::Get_Relative_Mouse_Y_State : X coordinate not supplied\n"; return 0.0; }
 	Sint32 x = (Sint32)*it++;
-	if (it == args.end()) { std::cerr << "ERR Mouse_Handler::Get_Relative_Mouse_Y_State : Y coordinate not supplied\n"; return 0.0; }
+	if (it == args.end()) { Output_Handler::Error << "ERR Mouse_Handler::Get_Relative_Mouse_Y_State : Y coordinate not supplied\n"; return 0.0; }
 	Sint32 y = (Sint32)*it;
 
 	x *= (Sint32)Screen::Get_Scale();
@@ -98,17 +98,17 @@ bool Mouse_Handler::Contains_Mouse(Entity* ent)
 {
 	if (!ent)
 	{
-		std::cerr << "ERR Entity::Contains_Mouse : No entity supplied\n";
+		Output_Handler::Error << "ERR Entity::Contains_Mouse : No entity supplied\n";
 		return false;
 	}
 	if (!ent->Get_Sprite())
 	{
-		std::cerr << "ERR Entity::Contains_Mouse : Given entity has no sprite supplied\n";
+		Output_Handler::Error << "ERR Entity::Contains_Mouse : Given entity has no sprite supplied\n";
 		return false;
 	}
 	if (!ent->Get_Sprite()->Get_Texture())
 	{
-		std::cerr << "ERR Entity::Contains_Mouse : Given sprite has no texture supplied\n";
+		Output_Handler::Error << "ERR Entity::Contains_Mouse : Given sprite has no texture supplied\n";
 		return false;
 	}
 	int px = Mouse_Handler::Get_Mouse_Pos().first;

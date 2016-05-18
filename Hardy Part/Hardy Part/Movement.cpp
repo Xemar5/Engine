@@ -1,8 +1,9 @@
 #include "Movement.h"
 #include "Entity.h"
 #include "Screen.h"
+#include "Output_Handler.h"
 
-template <typename T> int sgn(T val) {
+template <typename T> T sgn(T val) {
 	return (T(0) < val) - (val < T(0));
 }
 
@@ -10,7 +11,7 @@ std::shared_ptr<Movement> Movement::Set(double & x, double & y, double speed, in
 {
 	if (mass < -1)
 	{
-		std::cout << "ERR Movement::Create : Given mass can't be less than -1\n";
+		Output_Handler::Output << "ERR Movement::Create : Given mass can't be less than -1\n";
 		return nullptr;
 	}
 	std::shared_ptr<Movement> m = std::make_shared<Movement>();
@@ -26,7 +27,7 @@ std::shared_ptr<Movement> Movement::Set(Entity * ent, double speed, int mass)
 {
 	if (!ent)
 	{
-		std::cerr << "ERR Movement::Set : No entity supplied; use the other Movement::Set if only object needed\n";
+		Output_Handler::Error << "ERR Movement::Set : No entity supplied; use the other Movement::Set if only object needed\n";
 		return nullptr;
 	}
 	return ent->__Movement = Movement::Set(ent->X, ent->Y, speed, mass);
@@ -36,7 +37,7 @@ bool Movement::Add_Force(Movement * movement, double force_x, double force_y)
 {
 	if (!movement)
 	{
-		std::cerr << "ERR Movement::Set : No Movement Supplied\n";
+		Output_Handler::Error << "ERR Movement::Set : No Movement Supplied\n";
 		return false;
 	}
 	if (movement->__Mass == -1) return true;
@@ -52,12 +53,12 @@ bool Movement::Add_Force(Entity * ent, double force_x, double force_y)
 {
 	if (!ent)
 	{
-		std::cerr << "ERR Movement::Move : No entity supplied; use the other Movement::Move function instead\n";
+		Output_Handler::Error << "ERR Movement::Move : No entity supplied; use the other Movement::Move function instead\n";
 		return false;
 	}
 	if (!ent->Get_Movement())
 	{
-		std::cerr << "ERR Movement::Move : Given entity has no Movement\n";
+		Output_Handler::Error << "ERR Movement::Move : Given entity has no Movement\n";
 		return false;
 	}
 	Movement::Add_Force(ent->Get_Movement(), force_x, force_y);
@@ -94,12 +95,12 @@ bool Movement::__Resolve_Movement(Movement * movement)
 {
 	if (!movement)
 	{
-		std::cerr << "ERR Movement::__Resolve_Movement : No Movement supplied\n";
+		Output_Handler::Error << "ERR Movement::__Resolve_Movement : No Movement supplied\n";
 		return false;
 	}
 	if (!movement->__X || !movement->__Y)
 	{
-		std::cerr << "ERR Movement::__Resolve_Movement : Given Movement points to no X or Y variables\n";
+		Output_Handler::Error << "ERR Movement::__Resolve_Movement : Given Movement points to no X or Y variables\n";
 		return false;
 	}
 
@@ -116,8 +117,6 @@ bool Movement::__Resolve_Movement(Movement * movement)
 	if (abs(fy - movement->__vy) < acc) movement->__vy = fy;
 	*movement->__X += movement->__vx;
 	*movement->__Y += movement->__vy;
-	movement->Xpos = (Sint32)*movement->__X;
-	movement->Ypos = (Sint32)*movement->__Y;
 
 	movement->__Forces.clear();
 	return movement->__vx || movement->__vy;
@@ -127,7 +126,7 @@ bool Movement::__Resolve_Movement(Entity * ent)
 {
 	if (!ent)
 	{
-		std::cerr << "ERR Movement::__Resolve_Movement : No Entity supplied\n";
+		Output_Handler::Error << "ERR Movement::__Resolve_Movement : No Entity supplied\n";
 		return false;
 	}
 	return Movement::__Resolve_Movement(ent->Get_Movement());

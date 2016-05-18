@@ -3,19 +3,19 @@
 #include "Texture.h"
 #include "Screen.h"
 #include "State.h"
-#include <iostream>
+#include "Output_Handler.h"
 
 
 std::shared_ptr<Tileset> Tileset::Set(std::shared_ptr<Texture> texture, std::vector<std::vector<unsigned>> map)
 {
 	if (!texture)
 	{
-		std::cerr << "ERR Tileset::Set : No Texture supplied\n";
+		Output_Handler::Error << "ERR Tileset::Set : No Texture supplied\n";
 		return nullptr;
 	}
 	if (!map.size() || !map[0].size())
 	{
-		std::cerr << "ERR Tileset::Set : Given map has width/height equal to 0\n";
+		Output_Handler::Error << "ERR Tileset::Set : Given map has width/height equal to 0\n";
 		return nullptr;
 	}
 	
@@ -60,7 +60,7 @@ std::shared_ptr<Tileset> Tileset::Set(std::shared_ptr<Texture> texture, std::vec
 			}
 			else
 			{
-				std::cout << "MSG Tileset::Set : Tile " << map[i][j] << " doesn't exist (max " << texture->Max_Frames() - 1 << "); no tile is drawn\n";
+				Output_Handler::Output << "MSG Tileset::Set : Tile " << map[i][j] << " doesn't exist (max " << texture->Max_Frames() - 1 << "); no tile is drawn\n";
 				src.x = 0;
 				src.y = 0;
 			}
@@ -81,11 +81,11 @@ Tileset * Tileset::Add(State * state, std::shared_ptr<Tileset> tileset, double x
 {
 	if (!state)
 	{
-		std::cout << "MSG Tileset::Add : No State supplied; initializing tileset\n";
+		Output_Handler::Output << "MSG Tileset::Add : No State supplied; initializing tileset\n";
 	}
 	if (!tileset)
 	{
-		std::cerr << "ERR Tileset::Add : No tileset supplied\n";
+		Output_Handler::Error << "ERR Tileset::Add : No tileset supplied\n";
 		return nullptr;
 	}
 	(*state)[layer].Entities.push_back(tileset);
@@ -106,7 +106,7 @@ bool Tileset::Reset(Tileset * tileset)
 {
 	if (!tileset)
 	{
-		std::cout << "MSG Tileset::Reset : No Tileset supplied\n";
+		Output_Handler::Output << "MSG Tileset::Reset : No Tileset supplied\n";
 		return false;
 	}
 	Texture::Reload(tileset->Get_Texture().get());
@@ -116,10 +116,10 @@ bool Tileset::Reset(Tileset * tileset)
 
 unsigned Tileset::Which_Tile(int x, int y)
 {
-	if (!this) { std::cerr << "ERR Tileset::Which_Tile : No this Tileset\n"; return 0; }
-	if (!__Texture) { std::cerr << "ERR Tileset::Which_Tile : No Sprite supplied\n"; return 0; }
+	if (!this) { Output_Handler::Error << "ERR Tileset::Which_Tile : No this Tileset\n"; return 0; }
+	if (!__Texture) { Output_Handler::Error << "ERR Tileset::Which_Tile : No Sprite supplied\n"; return 0; }
 	std::pair<unsigned, unsigned> frame_size = __Product_Texture->Get_Frame_Size();
-	if(!frame_size.first || !frame_size.second) { std::cerr << "ERR Tileset::Which_Tile : Frame size has width/height equal to 0\n"; return 0; }
+	if(!frame_size.first || !frame_size.second) { Output_Handler::Error << "ERR Tileset::Which_Tile : Frame size has width/height equal to 0\n"; return 0; }
 
 	x -= (int)X - __Texture->Get_SDL_Starting_Point().x;
 	y -= (int)Y - __Texture->Get_SDL_Starting_Point().y;
@@ -154,7 +154,7 @@ unsigned Tileset::Which_Tile(int x, int y)
 //{
 //	if (!this)
 //	{
-//		std::cerr << "ERR Tileset::Set_Pos : No this Tileset\n";
+//		Output_Handler::Error << "ERR Tileset::Set_Pos : No this Tileset\n";
 //		return false;
 //	}
 //	__Pos.first = x;
@@ -166,7 +166,7 @@ unsigned Tileset::Which_Tile(int x, int y)
 //{
 //	if (!this)
 //	{
-//		std::cerr << "ERR Tileset::Set_Pos_Relative : No this Tileset\n";
+//		Output_Handler::Error << "ERR Tileset::Set_Pos_Relative : No this Tileset\n";
 //		return false;
 //	}
 //	__Pos.first += x;
@@ -183,7 +183,7 @@ double Tileset::Get_Scale()
 //{
 //	if (!__Tilemap.size() || !__Tilemap[0].size())
 //	{
-//		std::cerr << "ERR Tileset::Get_Size : Supplied Tilemap has width/height equal to 0\n";
+//		Output_Handler::Error << "ERR Tileset::Get_Size : Supplied Tilemap has width/height equal to 0\n";
 //		return{ 0,0 };
 //	}
 //	return std::make_pair(__Tilemap[0].size() * __Texture->Get_Frame_Size().first,__Tilemap.size() * __Texture->Get_Frame_Size().second);
@@ -193,7 +193,7 @@ std::shared_ptr<Texture> Tileset::Get_Texture()
 {
 	if (!this)
 	{
-		std::cerr << "ERR Tileset::Get_Sprite : No this Tileset\n";
+		Output_Handler::Error << "ERR Tileset::Get_Sprite : No this Tileset\n";
 		return nullptr;
 	}
 	return __Texture;
@@ -204,7 +204,7 @@ std::shared_ptr<Texture> Tileset::Get_Product_Texture()
 {
 	if (!this)
 	{
-		std::cerr << "ERR Tileset::Get_Texture : No this Tileset\n";
+		Output_Handler::Error << "ERR Tileset::Get_Texture : No this Tileset\n";
 		return nullptr;
 	}
 	return __Product_Texture;
@@ -214,13 +214,13 @@ unsigned Tileset::Get_Tiles_Count()
 {
 	if (!this)
 	{
-		std::cerr << "ERR Tileset::Get_Tiles_Count : No this Tileset\n";
+		Output_Handler::Error << "ERR Tileset::Get_Tiles_Count : No this Tileset\n";
 		return 0;
 	}
 	auto sp = Get_Texture();
 	if (!sp)
 	{
-		std::cerr << "ERR Tileset::Get_Tiles_Count : No Sprite supplied\n";
+		Output_Handler::Error << "ERR Tileset::Get_Tiles_Count : No Sprite supplied\n";
 		return 0;
 	}
 	return Get_Texture()->Max_Frames();

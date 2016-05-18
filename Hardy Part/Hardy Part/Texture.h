@@ -118,7 +118,7 @@ private:
 
 
 
-	//***  The texture of a sprite
+	//***  The SDL texture of this Texture object
 	SDL_Texture* __Texture;
 
 	//*** All loaded sprites

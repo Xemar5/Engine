@@ -4,7 +4,7 @@
 #include "Animation.h"
 #include "Movement.h"
 #include "Texture.h"
-#include <iostream>
+#include "Output_Handler.h"
 
 void Character::Create() {}
 void Character::Update() {}
@@ -14,12 +14,12 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 {
 	if (name.size() == 0)
 	{
-		std::cerr << "ERR Character::Add : No name supplied\n";
+		Output_Handler::Error << "ERR Character::Add : No name supplied\n";
 		return nullptr;
 	}
 	if (!stt)
 	{
-		std::cerr << "ERR Character::Add : No state supplied\n";
+		Output_Handler::Error << "ERR Character::Add : No state supplied\n";
 		return nullptr;
 	}
 
@@ -95,6 +95,6 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		return ent;
 	}
 
-	std::cerr << "ERR Character::Add : No character with given name exists\n";
+	Output_Handler::Error << "ERR Character::Add : No character with given name exists\n";
 	return nullptr;
 }

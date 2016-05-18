@@ -5,6 +5,7 @@
 #include "Animation.h"
 #include "Movement.h"
 #include "Tileset.h"
+#include "Output_Handler.h"
 
 std::vector<std::shared_ptr<State>> State::Built;
 std::vector<unsigned> State::Deleted;
@@ -45,16 +46,42 @@ void State::Events()
 				ent->Events();
 }
 
+bool State::Set_Entity_Layer(State * state, Entity * entity, unsigned new_layer)
+{
+	if (!state)
+	{
+		Output_Handler::Error << "ERR State::Set_Entity_Layer : No State supplied\n";
+		return false;
+	}
+	if (!entity)
+	{
+		Output_Handler::Error << "ERR State::Set_Entity_Layer : No Entity supplied\n";
+		return false;
+	}
+	for (unsigned lay = 0; lay < state->Layers.size(); ++lay)
+		for (unsigned ent = 0; ent < state->Layers[lay]->Entities.size(); ++ent)
+			if (state->Layers[lay]->Entities[ent].get() == entity)
+			{
+				state->Add_Entity(entity, new_layer);
+				state->Layers[lay]->Entities.erase(state->Layers[lay]->Entities.begin() + ent);
+				Screen::Add((*state)[new_layer].Entities.back(), new_layer);
+				entity->__Layer = new_layer;
+				return true;
+			}
+	Output_Handler::Error << "ERR State::Set_Entity_Layer : Couldn't find entity on any layer in given state (maybe use State::Add_Entity instead)\n";
+	return false;
+}
+
 //std::shared_ptr<Tileset> State::Add_Tileset(std::shared_ptr<Texture> texture, unsigned layer, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map)
 //{
 //	if (!this)
 //	{
-//		std::cerr << "ERR State::Add_Tileset : No this State\n";
+//		Output_Handler::Error << "ERR State::Add_Tileset : No this State\n";
 //		return nullptr;
 //	}
 //	if (!texture)
 //	{
-//		std::cerr << "ERR State::Add_Tileset : No texture supplied\n";
+//		Output_Handler::Error << "ERR State::Add_Tileset : No texture supplied\n";
 //		return nullptr;
 //	}
 //	while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<Layer>());
@@ -98,7 +125,7 @@ Layer & State::operator[](unsigned layer)
 {
 	if (layer >= Layers.size())
 	{
-		std::cout << "MSG State::operator[] : State has no layer with given index; creating layer with given index and belove\n";
+		Output_Handler::Output << "MSG State::operator[] : State has no layer with given index; creating layer with given index and belove\n";
 		while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<Layer>());
 	}
 	return *Layers[layer].get();
@@ -108,7 +135,7 @@ Layer & State::operator[](unsigned layer)
 //{
 //	if (tileset >= Tilesets.size())
 //	{
-//		std::cerr << "ERR Layer::operator() : Layer has no tileset with given index\n";
+//		Output_Handler::Error << "ERR Layer::operator() : Layer has no tileset with given index\n";
 //		return nullptr;
 //	}
 //	return Tilesets[tileset].get();
@@ -118,7 +145,7 @@ Entity * Layer::operator[](unsigned ent)
 {
 	if (ent >= Entities.size())
 	{
-		std::cerr << "ERR Layer::operator[] : Layer has no entity with given index\n";
+		Output_Handler::Error << "ERR Layer::operator[] : Layer has no entity with given index\n";
 		return nullptr;
 	}
 	return Entities[ent].get();

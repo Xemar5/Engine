@@ -48,6 +48,9 @@ public:
 	//*** Y coordinate of this entity position
 	double Y = 0;
 
+	//*** Returns the layer this character is set on
+	unsigned Get_Layer();
+
 protected:
 	//*** A class responsible for Colisions and size of the entity
 	//*** If nullptr, no colisions are handled
@@ -71,6 +74,8 @@ protected:
 	//*** An entity doesn't have to has all the statistics;
 	std::shared_ptr<Movement> __Movement = nullptr;
 
+	//*** The layer of the state this entity is set on
+	unsigned __Layer = -1;
 
 	friend class Sprite;
 	friend class Hitbox;

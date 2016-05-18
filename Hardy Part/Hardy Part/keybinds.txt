@@ -1,0 +1,120 @@
+KEYCODE
+
+x	(square)	r1(right bumper)	laup	(left stick up)		raup	(right stick up)	dup	(D-pad up)
+y	(triangle)	r2(right trigger)	ladown	(left stick down)	radown	(right stick down)	ddown	(D-pad down)
+a	(cross)		r3(right stick)		laleft	(left stick left)	raleft	(right stick left)	dleft	(D-pad left)
+b	(circle)	l1(left bumper)		laright	(left stick right)	raright	(right stick right)	dright	(D-pad right)
+select			l2(left trigger)		
+start			l3(left stick)		
+
+
+
+FUNCTION SYNTAX
+
+1. keycode - look above
+2. gamepad           || keyboard         || mouse
+3. button / axis     || key / *blank*    || button / *blank*
+4. #key no. (leave *blank* if 'mouse relative_x' or 'mouse relative_y') 
+5. 	down / up / held 										 -  for keyboard
+	down / up / held / unit / unit_negative / unit_positive / abs / abs_negative / abs_positive 	 -  for gamepad
+	down / up / held / relative_x / relative_y							 -  for mouse
+6(if 'held' used). #time (in miliseconds)
+eg:
+	x = mouse button 0
+	laup = gamepad axis 1 unit_negative
+	raright = mouse relative_x
+* For mouse relative_x and relative_y, use them only once when binding to ra..., la... or d...
+	(eg. raup			) <- leave empty
+	(eg. radown = mouse relative_y	)
+	(eg. raleft			) <- leave empty
+	(eg. raright = mouse relative_x	)
+
+* Keywords can be used in any order, but always start with KEYCODE and the equal sign (eg. start = 0 button gamepad down)
+* Numbers are read from left to right (#key no. is always the first found number, #time (if used at all) is the second)
+* For clarity, try to stick to the syntax used in above example (not sure if it unordered syntax works at all times)
+
+* If decoder can't understand the input, the key will be set to null (no key asigned)
+* If multiple arguments from the same point in FUNCTION SYNTAX are used, the key will be set to null (no key asigned)
+	(eg. x = mouse gamepad ...    or    x = gamepad unit abs ...)
+* Lack of any argument from any point from FUNCTION SYNTAX (except for *blank* options) results in key being set to null (no key asigned)
+* Be careful about mistakes with underscore sign '_' missing 
+	(eg. x = gamepad unit negative ...  - NOT AN ERROR ('unit' will be used instead of 'unit_negative'))
+			     ^
+
+* For #key in 4. and SDL replacement can be used (for gamepad axis, gamepad button and keyboard button - no replacement for mouse)
+	(eg. x = keyboard key SDL_W down		)
+	(eg. a = mouse button 0 up  			)
+	(eg. raup = gamepad axis SDL_leftx unit_negative)
+
+
+!!!!!!!!!!!!!!!WARNING!!!!!!!!!!!!!!!!
+* Some SDL-type buttons for gamepad are mapped WRONG, that means, SDL_a is not always mapped to the actual A button
+* If ths happens, user has to manually edit the keybinds (or this file) or try to match numeric key arguments (eg. button 7)
+
+
+
+[gamepad]
+a = gamepad button SDL_a down
+b = gamepad button SDL_b down
+x = gamepad button SDL_x down
+y = gamepad button SDL_y down
+
+r1
+r2
+r3
+l1
+l2
+l3
+
+select
+start
+
+laup = gamepad axis SDL_lefty unit_negative
+ladown = gamepad axis SDL_lefty unit_positive
+laleft = gamepad axis SDL_leftx unit_negative
+laright = gamepad axis SDL_leftx unit_positive
+
+raup
+radown
+raleft
+raright
+
+dup
+ddown
+dleft
+dright
+
+
+
+
+
+[keyboard]
+a
+b
+x
+y
+
+r1
+r2
+r3
+l1
+l2
+l3
+
+select
+start
+
+laup = keyboard SDL_W held
+ladown = keyboard SDL_S held
+laleft = keyboard SDL_A held
+laright = keyboard SDL_D held
+
+raup
+radown = mouse relative_y
+raleft
+raright = mouse relative_x
+
+dup
+ddown
+dleft
+dright

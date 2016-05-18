@@ -1,12 +1,13 @@
 #include "Hitbox.h"
 #include "Entity.h"
+#include "Output_Handler.h"
 
 
 std::shared_ptr<Hitbox> Hitbox::Set(Entity* ent, unsigned width, unsigned height)
 {
 	if (!ent)
 	{
-		std::cout << "MSG Hitbox::Set : No entity supplied; returning pointer\n";
+		Output_Handler::Output << "MSG Hitbox::Set : No entity supplied; returning pointer\n";
 	}
 	std::shared_ptr<Hitbox> h = std::make_shared<Hitbox>();
 	h->__Width = width;

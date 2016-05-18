@@ -1,9 +1,11 @@
+#include <fstream>
 #include "GameMenu_State.h"
 #include "Sprite.h"
 #include "Texture.h"
 #include "Entity.h"
 #include "Input_Handler.h"
 #include "Player.h"
+#include "Character.h"
 
 void GameMenu_State::Create()
 {
@@ -40,21 +42,61 @@ void GameMenu_State::Update()
 	State::Update();
 }
 
+Player* Add_New_Player(unsigned const ui, int controller_id)
+{
+	if (ui & (1 << (controller_id + 1))) return false;
+
+	std::ifstream file;
+	file.open("keybinds.txt");
+	if (file)
+	{
+		auto p = Player::Set();
+		std::string name = "keyboard";
+		if (controller_id >= 0) name = SDL_JoystickNameForIndex(controller_id);
+		p->Input_Preset = Input_Handler::Load(file, name, controller_id);
+		file.close();
+		//ui = ui | (1 << (controller_id + 1));
+		return p;
+	}
+	return nullptr;
+}
+
+#include "System.h"
+class Main_Menu;
 void GameMenu_State::Events()
 {
-	if (Keyboard_Handler::Key_Down({ SDLK_RETURN }))
+	if ((System::Events.type == SDL_KEYDOWN && System::Events.key.keysym.sym == SDLK_RETURN) ||
+		(System::Events.type == SDL_JOYBUTTONDOWN && System::Events.jbutton.button == SDL_CONTROLLER_BUTTON_A))
 	{
-		//auto p1 = Player::Set(0);
-		////Player::Set_Entity(p1, m1);
-		//Player::Set_Keys(p1,
-		//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_w }),
-		//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_s }),
-		//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_a }),
-		//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_d }),
-
-		//	Input_Handler::Set_Dynamic(&Mouse_Handler::Get_Relative_Mouse_X_State, { &Player::Get_Entity(p1)->Get_Movement()->Xpos, &Player::Get_Entity(p1)->Get_Movement()->Ypos }),
-		//	Input_Handler::Set_Dynamic(&Mouse_Handler::Get_Relative_Mouse_Y_State, { &Player::Get_Entity(p1)->Get_Movement()->Xpos, &Player::Get_Entity(p1)->Get_Movement()->Ypos })
-		//	);
+		int ind = -1;
+		for (unsigned i = 0; i < Gamepad_Handler::Gamepad_Count(); i++)
+		{
+			if (System::Events.cdevice.which == Gamepad_Handler::Get_Gamepads()[i]->Get_SDL_Index())
+			{
+				ind = Gamepad_Handler::Get_Gamepads()[i]->Get_Index();
+				break;
+			}
+		}
+		if (auto* p = Add_New_Player(Player::Get_First_Unused_Index(), ind))
+		{
+			auto* m1 = Character::Add(this, "Nerk", 100, 100, 3);
+			Player::Set_Entity(p, m1);
+		}
+	}
+	if (Keyboard_Handler::Key_Up({ SDLK_SPACE }) && Player::Get_Players().size())
+//		if (System::Events.type == SDL_KEYDOWN && System::Events.key.keysym.sym == SDLK_SPACE)
+	{
+		std::vector<Entity*> v(Player::Get_Players().size());
+		for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
+			v[i] = Player::Get_Entity(Player::Get_Players()[i].get());
+		State::New<Main_Menu>(v);
+	}
+	if (Keyboard_Handler::Key_Up({ SDLK_ESCAPE }))
+	{
+		for (auto pl : Player::Get_Players())
+			Player::Remove(pl.get());
+		State::New<Menu_Menu>();
 	}
 	State::Events();
 }
+

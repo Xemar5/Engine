@@ -31,8 +31,8 @@ void Sword::Update()
 	}
 	if (Wealder)
 	{
-		double a = Player::Get_Keys(Wealder)[4]->Check();
-		double b = Player::Get_Keys(Wealder)[5]->Check();
+		double a = Wealder->Input_Preset["raright"]->Check() - Wealder->Input_Preset["raleft"]->Check();
+		double b = Wealder->Input_Preset["radown"]->Check() - Wealder->Input_Preset["raup"]->Check();
 		double ang = __Old_Angle;
 		if (a || b)
 			ang = (atan2(b, a) * 180 / M_PI) + 90 + (Max_Swing / 2 * __On_Left) + __Angle_Offset;

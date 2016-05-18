@@ -2,6 +2,7 @@
 #include "Animation.h"
 #include "System.h"
 #include "Screen.h"
+#include "Output_Handler.h"
 
 std::vector<std::shared_ptr<Texture>> Texture::__Loaded;
 
@@ -10,18 +11,18 @@ std::shared_ptr<Texture> Texture::Load(std::string path, unsigned width, unsigne
 {
 	if (!path.size())
 	{
-		std::cerr << "ERR Texture::Load : No path supplied\n";
+		Output_Handler::Error << "ERR Texture::Load : No path supplied\n";
 		return nullptr;
 	}
 	for (auto sprite : Texture::__Loaded) if (path == sprite->__Path)
 	{
-		//std::cerr << "MSG Texture::Load : Texture already loaded, returning loaded version\n";
+		//Output_Handler::Error << "MSG Texture::Load : Texture already loaded, returning loaded version\n";
 		return sprite;
 	}
 	SDL_Texture* tr = IMG_LoadTexture(Screen::Renderer, path.c_str());
 	if (!tr)
 	{
-		std::cerr << "ERR Texture::Load : No valid texture file supplied\n";
+		Output_Handler::Error << "ERR Texture::Load : No valid texture file supplied\n";
 		return nullptr;
 	}
 	std::shared_ptr<Texture> texture = Texture::Load(tr, width, height, frame_width, frame_height, starting_point_x, starting_point_y);
@@ -33,7 +34,7 @@ std::shared_ptr<Texture> Texture::Load(SDL_Texture * texture, unsigned width, un
 {
 	if (!texture)
 	{
-		std::cerr << "ERR Texture::Load : No SDL_Texture supplied\n";
+		Output_Handler::Error << "ERR Texture::Load : No SDL_Texture supplied\n";
 		return nullptr;
 	}
 	Texture::__Loaded.emplace_back(std::make_shared<Texture>());
@@ -50,7 +51,7 @@ bool Texture::Reload(Texture * texture)
 {
 	if (!texture)
 	{
-		std::cout << "MSG Texture::Unload : No texture supplied\n";
+		Output_Handler::Output << "MSG Texture::Unload : No texture supplied\n";
 		return false;
 	}
 	for (unsigned i = 0; i < Texture::__Loaded.size(); i++)
@@ -73,7 +74,7 @@ bool Texture::Destroy(Texture* sprite)
 {
 	if (!sprite)
 	{
-		std::cerr << "ERR Texture::Destroy_Sprite : No pointer to Texture supplied\n";
+		Output_Handler::Error << "ERR Texture::Destroy_Sprite : No pointer to Texture supplied\n";
 		return false;
 	}
 	if (int pos = Texture::Already_Loaded(sprite->__Path))
@@ -88,7 +89,7 @@ int Texture::Already_Loaded(std::string path)
 {
 	if (!path.size())
 	{
-		std::cerr << "ERR Texture::__Check_If_Sprite_Already_Loaded : No sprite path supplied\n";
+		Output_Handler::Error << "ERR Texture::__Check_If_Sprite_Already_Loaded : No sprite path supplied\n";
 		return -1;
 	}
 	for (unsigned i = 0; i < Texture::__Loaded.size(); i++)
@@ -111,7 +112,7 @@ std::pair<unsigned, unsigned> Texture::Get_Frame_Pos(unsigned frame)
 {
 	if (frame >= Get_Frames_Number())
 	{
-		std::cerr << "ERR Texture::Get_Frame_Pos : Given frame is greater than the max number of frames\n";
+		Output_Handler::Error << "ERR Texture::Get_Frame_Pos : Given frame is greater than the max number of frames\n";
 		return std::make_pair<unsigned, unsigned>(0, 0);
 	}
 	unsigned x, y = 0;
@@ -142,11 +143,11 @@ std::pair<unsigned, unsigned> Texture::Set_Frame_Size(int w, int h)
 {
 
 	if (w < 0) w = __Width / -w;
-	else if ((unsigned)w > __Width) { std::cout << "MSG Texture::Set_Frame_Size : Given Frame width is invalid; Setting to Texture Width\n"; w = __Width; }
+	else if ((unsigned)w > __Width) { Output_Handler::Output << "MSG Texture::Set_Frame_Size : Given Frame width is invalid; Setting to Texture Width\n"; w = __Width; }
 	else if (w == 0)w = __Width;
 
 	if (h < 0) h = __Height / -h;
-	else if ((unsigned)h > __Height) { std::cout << "MSG Texture::Set_Frame_Size : Given Frame height is invalid; Setting to Texture Height\n"; h = __Height; }
+	else if ((unsigned)h > __Height) { Output_Handler::Output << "MSG Texture::Set_Frame_Size : Given Frame height is invalid; Setting to Texture Height\n"; h = __Height; }
 	else if (h == 0)h = __Height;
 	__Frame_Width = w;
 	__Frame_Height = h;
@@ -168,7 +169,7 @@ SDL_Point Texture::Get_SDL_Starting_Point()
 {
 	if (!this)
 	{
-		std::cerr << "ERR Texure::Get_SDL_Starting_Point : No this Texture\n";
+		Output_Handler::Error << "ERR Texure::Get_SDL_Starting_Point : No this Texture\n";
 		return { 0,0 };
 	}
 	return 
@@ -179,14 +180,19 @@ SDL_Point Texture::Get_SDL_Starting_Point()
 }
 SDL_Texture * Texture::Get_SDL_Texture()
 {
+	if (!this)
+	{
+		Output_Handler::Error << "ERR Texture::Get_SDL_Texture : No this Texture\n";
+		return nullptr;
+	}
 	return this->__Texture;
 }
 std::pair<float, float> Texture::Set_Starting_Point(float x, float y)
 {
-	if (x > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x not in range from -1 to 1\n"; }
-	if (x < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x not in range from -1 to 1\n"; }
-	if (y > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y not in range from -1 to 1\n"; }
-	if (y < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y not in range from -1 to 1\n"; }
+	if (x > 1.0) { Output_Handler::Output << "MSG Texture::Set_Starting_Point : Starting point x not in range from -1 to 1\n"; }
+	if (x < -1.0) { Output_Handler::Output << "MSG Texture::Set_Starting_Point : Starting point x not in range from -1 to 1\n"; }
+	if (y > 1.0) { Output_Handler::Output << "MSG Texture::Set_Starting_Point : Starting point y not in range from -1 to 1\n"; }
+	if (y < -1.0) { Output_Handler::Output << "MSG Texture::Set_Starting_Point : Starting point y not in range from -1 to 1\n"; }
 	__Starting_Point_X = x;
 	__Starting_Point_Y = y;
 	return std::make_pair(x, y);

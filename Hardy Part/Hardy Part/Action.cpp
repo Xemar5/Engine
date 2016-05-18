@@ -1,6 +1,6 @@
-#include <iostream>
 #include "Action.h"
 #include "System.h"
+#include "Output_Handler.h"
 
 
 
@@ -17,13 +17,13 @@ bool Action::_Set_Variables(std::vector<double*>& vars, std::vector<double*>& ar
 			++itv;
 			continue;
 		}
-		std::cout << "MSG Movement::Set_Variables : Too many arguments; ignoring excess\n";
+		Output_Handler::Output << "MSG Movement::Set_Variables : Too many arguments; ignoring excess\n";
 		break;
 	}
 	for (auto it = vars.begin(); it != vars.end(); it++)
 	{
 		if (*it) continue;
-		std::cerr << "ERR Movement::Set_Variables : Not enough arguments\n";
+		Output_Handler::Error << "ERR Movement::Set_Variables : Not enough arguments\n";
 		return false;
 	}
 	return true;
