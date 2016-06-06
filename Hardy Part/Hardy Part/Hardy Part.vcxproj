@@ -116,15 +116,15 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="CobbleWall.cpp" />
+    <ClCompile Include="Controlls_State.cpp" />
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameMenu_State.cpp" />
-    <ClCompile Include="Gamepad_Handler.cpp" />
     <ClCompile Include="Hitbox.cpp" />
-    <ClCompile Include="Input_Handler.cpp" />
-    <ClCompile Include="Keyboard_Handler.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main_State.cpp" />
+    <ClCompile Include="Mapping.cpp" />
     <ClCompile Include="Menu_State.cpp" />
-    <ClCompile Include="Mouse_Handler.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="Action.cpp" />
     <ClCompile Include="Output_Handler.cpp" />
@@ -143,16 +143,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="Controlls_State.h" />
+    <ClInclude Include="Device.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameMenu_State.h" />
-    <ClInclude Include="Gamepad_Handler.h" />
     <ClInclude Include="Hitbox.h" />
-    <ClInclude Include="Input_Handler.h" />
-    <ClInclude Include="Keyboard_Handler.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Main_State.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Mapping.h" />
     <ClInclude Include="Menu_State.h" />
-    <ClInclude Include="Mouse_Handler.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Action.h" />
     <ClInclude Include="Output_Handler.h" />

@@ -5,7 +5,7 @@
 #include <memory>
 
 
-class Keyboard_Handler
+class Keyboard_Handler : public Controller
 {
 public:
 	//*** Returns true if supplied key is being pushed
@@ -23,8 +23,8 @@ private:
 	static void __Events();
 	//*** Updates timers on keys being pushed
 	static void __Update();
-	//*** Contains every pushed key and the time it's being pushed for
-	static std::map<SDL_Keycode, int> __Map;
+	////*** Contains every pushed key and the time it's being pushed for
+	//static std::map<SDL_Keycode, int> __Map;
 
 	friend class Input_Handler;
 };

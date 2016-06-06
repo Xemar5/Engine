@@ -3,12 +3,16 @@
 #include "Sprite.h"
 #include "Texture.h"
 #include "Entity.h"
-#include "Input_Handler.h"
+#include "Device.h"
 #include "Player.h"
 #include "Character.h"
 
 void GameMenu_State::Create()
 {
+	for (auto pl : Player::Get_Players())
+		if (auto ent = Player::Get_Entity(pl.get()))
+			ent->Get_Sprite()->Scale = 1.5;
+
 	int xoffs = 40;
 	int yoffs = 40;
 
@@ -42,20 +46,13 @@ void GameMenu_State::Update()
 	State::Update();
 }
 
-Player* Add_New_Player(unsigned const ui, int controller_id)
+Player* Add_New_Player(Sint32 controller)
 {
-	if (ui & (1 << (controller_id + 1))) return false;
-
-	std::ifstream file;
-	file.open("keybinds.txt");
-	if (file)
+	for (auto& pl : Player::Get_Players())
+		if (pl->Controller == controller) return nullptr;
+	if (auto p = Player::Set())
 	{
-		auto p = Player::Set();
-		std::string name = "keyboard";
-		if (controller_id >= 0) name = SDL_JoystickNameForIndex(controller_id);
-		p->Input_Preset = Input_Handler::Load(file, name, controller_id);
-		file.close();
-		//ui = ui | (1 << (controller_id + 1));
+		Player::Set_Controller(p, controller);
 		return p;
 	}
 	return nullptr;
@@ -65,33 +62,34 @@ Player* Add_New_Player(unsigned const ui, int controller_id)
 class Main_Menu;
 void GameMenu_State::Events()
 {
-	if ((System::Events.type == SDL_KEYDOWN && System::Events.key.keysym.sym == SDLK_RETURN) ||
-		(System::Events.type == SDL_JOYBUTTONDOWN && System::Events.jbutton.button == SDL_CONTROLLER_BUTTON_A))
+	Player* p = nullptr;
+	if (Device::Get(Device::Which())["x"].Down())
 	{
-		int ind = -1;
-		for (unsigned i = 0; i < Gamepad_Handler::Gamepad_Count(); i++)
+		if (auto* p = Add_New_Player(Device::Which()))
 		{
-			if (System::Events.cdevice.which == Gamepad_Handler::Get_Gamepads()[i]->Get_SDL_Index())
-			{
-				ind = Gamepad_Handler::Get_Gamepads()[i]->Get_Index();
-				break;
-			}
-		}
-		if (auto* p = Add_New_Player(Player::Get_First_Unused_Index(), ind))
-		{
-			auto* m1 = Character::Add(this, "Nerk", 100, 100, 3);
+			auto* m1 = Character::Add(this, "Nerk", 100, 100, 3, 1.5);
 			Player::Set_Entity(p, m1);
 		}
 	}
-	if (Keyboard_Handler::Key_Up({ SDLK_SPACE }) && Player::Get_Players().size())
-//		if (System::Events.type == SDL_KEYDOWN && System::Events.key.keysym.sym == SDLK_SPACE)
+	if (Device::Get(Device::Which())["b"].Down())
+	{
+		for (auto& p : Player::Get_Players())
+
+			if (p->Controller == Device::Which())
+			{
+				Player::Remove(p.get());
+				State::Remove_Entity(Player::Get_Entity(p.get()));
+			}
+	}
+
+	if(Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_SPACE)].Up() && Player::Get_Players().size())
 	{
 		std::vector<Entity*> v(Player::Get_Players().size());
 		for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
 			v[i] = Player::Get_Entity(Player::Get_Players()[i].get());
 		State::New<Main_Menu>(v);
 	}
-	if (Keyboard_Handler::Key_Up({ SDLK_ESCAPE }))
+	if (Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_ESCAPE)].Up())
 	{
 		for (auto pl : Player::Get_Players())
 			Player::Remove(pl.get());

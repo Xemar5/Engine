@@ -8,8 +8,7 @@
 #include "Hitbox.h"
 #include <SDL.h>
 #include "Player.h"
-#include "Input_Handler.h"
-#include "Mouse_Handler.h"
+#include "Device.h"
 
 void Sword::Create()
 {
@@ -31,8 +30,8 @@ void Sword::Update()
 	}
 	if (Wealder)
 	{
-		double a = Wealder->Input_Preset["raright"]->Check() - Wealder->Input_Preset["raleft"]->Check();
-		double b = Wealder->Input_Preset["radown"]->Check() - Wealder->Input_Preset["raup"]->Check();
+		double a = Device::Get(Wealder->Controller)["raright"].Held() - Device::Get(Wealder->Controller)["raleft"].Held();
+		double b = Device::Get(Wealder->Controller)["radown"].Held() - Device::Get(Wealder->Controller)["raup"].Held();
 		double ang = __Old_Angle;
 		if (a || b)
 			ang = (atan2(b, a) * 180 / M_PI) + 90 + (Max_Swing / 2 * __On_Left) + __Angle_Offset;
@@ -52,6 +51,6 @@ void Sword::Update()
 }
 void Sword::Events()
 {
-	if (Mouse_Handler::Button_Down({SDL_BUTTON_LEFT}))
+	if (Wealder && Device::Get(Wealder->Controller)["r1"].Down())
 		__Swinging = true;
 }

@@ -54,6 +54,8 @@ public:
 	template<typename T = Entity> T * Add_Entity(unsigned layer = unsigned(0));
 	//*** Adds supplied entity to the state as new object independent from the parent
 	template<typename T> T * Add_Entity(T* entity, unsigned layer);
+	//*** Removes given entity from the state and destroys it
+	bool Remove_Entity(Entity* ent);
 	//*** Changes the Layer of an entity
 	static bool Set_Entity_Layer(State* state, Entity* entity, unsigned new_layer);
 
@@ -104,6 +106,7 @@ private:
 #include "Menu_State.h"
 #include "Main_State.h"
 #include "GameMenu_State.h"
+#include "Controlls_State.h"
 #include "Player.h"
 
 
@@ -163,7 +166,7 @@ T* State::New(std::vector<Entity*> persistant_entities)
 		auto e = State::Built.back()->Add_Entity(ent, ent->Get_Layer());
 
 		auto oldmv = ent->Get_Movement();
-		if (oldmv) Movement::Set(e, oldmv->Get_Speed(), oldmv->Get_Mass());
+		if (oldmv) Movement::Set(e, oldmv->Get_Speed(), (int)oldmv->Get_Mass());
 
 		for (auto& p : Player::Get_Players())
 			if (Player::Get_Entity(p.get()) == ent)

@@ -115,8 +115,8 @@ bool Movement::__Resolve_Movement(Movement * movement)
 	movement->__vy += acc * sgn(fy - movement->__vy);
 	if (abs(fx - movement->__vx) < acc) movement->__vx = fx;
 	if (abs(fy - movement->__vy) < acc) movement->__vy = fy;
-	*movement->__X += movement->__vx;
-	*movement->__Y += movement->__vy;
+	*movement->__X += movement->__vx * Screen::Get_Scale();
+	*movement->__Y += movement->__vy * Screen::Get_Scale();
 
 	movement->__Forces.clear();
 	return movement->__vx || movement->__vy;

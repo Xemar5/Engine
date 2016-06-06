@@ -32,6 +32,7 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		Movement::Set(ent, 1.3, 10);
 		ent->X = x;
 		ent->Y = y;
+		ent->__Sprite->Scale = scale;
 		return ent;
 	}
 
@@ -44,6 +45,7 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		Movement::Set(ent, 1.3, 10);
 		ent->X = x;
 		ent->Y = y;
+		ent->__Sprite->Scale = scale;
 		return ent;
 	}
 
@@ -56,6 +58,7 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		Movement::Set(ent, 1.3, 10);
 		ent->X = x;
 		ent->Y = y;
+		ent->__Sprite->Scale = scale;
 		return ent;
 	}
 
@@ -68,6 +71,7 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		Movement::Set(ent, 1.3, 10);
 		ent->X = x;
 		ent->Y = y;
+		ent->__Sprite->Scale = scale;
 		return ent;
 	}
 
@@ -80,6 +84,7 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		Movement::Set(ent, 1.3, 40);
 		ent->X = x;
 		ent->Y = y;
+		ent->__Sprite->Scale = scale;
 		return ent;
 	}
 
@@ -92,6 +97,7 @@ Character * Character::Add(State* stt, std::string name, int x, int y, unsigned 
 		Movement::Set(ent, 1.3, 10);
 		ent->X = x;
 		ent->Y = y;
+		ent->__Sprite->Scale = scale;
 		return ent;
 	}
 

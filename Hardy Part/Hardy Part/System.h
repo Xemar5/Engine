@@ -38,11 +38,17 @@ private:
 };
 
 #include "Screen.h"
+#include "Device.h"
 
 template <typename T>
 void System::Start()
 {
-	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | SDL_INIT_AUDIO);
+	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) != 0)
+	{
+		std::cout << "\nUnable to initialize SDL:" << SDL_GetError() << "\n";
+	}
+	SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
+	Gamepad::Init("keybinds.txt");
 	Screen::Init();
 	Audio::Init();
 	State::New<T>();

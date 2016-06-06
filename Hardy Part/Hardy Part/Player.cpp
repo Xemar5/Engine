@@ -1,6 +1,5 @@
 #include "Player.h"
-#include "Input_Handler.h"
-#include "Mouse_Handler.h"
+#include "Device.h"
 #include "Movement.h"
 #include "Entity.h"
 #include "Sprite.h"
@@ -8,6 +7,8 @@
 #include "Output_Handler.h"
 
 std::vector<std::shared_ptr<Player>> Player::__Players;
+std::vector<std::string> Player::__Used_Presets;
+unsigned Player::Max_Players = 4;
 
 Player* Player::Set(int index)
 {
@@ -18,8 +19,13 @@ Player* Player::Set(int index)
 		return pl;
 	}
 
-	Player::__Players.push_back(std::make_shared<Player>());
 	if (index < 0) index = Player::Get_First_Unused_Index();
+	if (index >= Player::Max_Players)
+	{
+		Output_Handler::Output << "MSG Player::Set : Exceding the max number of players (" << Player::Max_Players << ")\n";
+		return nullptr;
+	}
+	Player::__Players.push_back(std::make_shared<Player>());
 	Player::__Players.back()->__Index = index;
 	return Player::__Players.back().get();
 }
@@ -119,6 +125,23 @@ int Player::Get_First_Unused_Index()
 	return index;
 }
 
+bool Player::Set_Controller(Player * player, Sint32 controller)
+{
+	if (!player)
+	{
+		Output_Handler::Error << "ERR Player::Set_Controller : No player supplied\n";
+		return false;
+	}
+	//if (controller < -2 || contro)
+	//{
+	//	Output_Handler::Error << "Player::Set_Controller : No controller supplied\n";
+	//	return false;
+	//}
+
+	player->Controller = controller;
+	return true;
+}
+
 bool Player::Set_Entity(Player* player, Entity * ent)
 {
 	if (!player)
@@ -164,17 +187,17 @@ void Player::__Update()
 	//{
 	for(auto p : Player::__Players)
 	{
+		if (p->Controller == -2) continue;
 		if (Entity* ent = Get_Entity(p.get()))
 		{
 
-			auto& ip = p->Input_Preset;
+			auto& ip = Device::Get(p->Controller);
 
+			auto sgn = [](double d) {return d ? d / abs(d) : 0; };
 
 			double vx = 0, vy = 0;
-			vy += ip["ladown"]->Check();
-			vy -= ip["laup"]->Check();
-			vx += ip["laright"]->Check();
-			vx -= ip["laleft"]->Check();
+			vy += sgn(ip["ladown"].Held()) - sgn(ip["laup"].Held());
+			vx += sgn(ip["laright"].Held()) - sgn(ip["laleft"].Held());
 
 
 			if (vx < 0) p->__Entity->Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
@@ -187,16 +210,16 @@ void Player::__Update()
 			Sint32 x = (Sint32)ent->X;
 			Sint32 y = (Sint32)ent->Y;
 
-			for (auto& foo : ip)
-			{
-				if (!foo.second) continue;
-				if (foo.second->Input_Function == Mouse_Handler::Get_Relative_Mouse_X_State ||
-					foo.second->Input_Function == Mouse_Handler::Get_Relative_Mouse_Y_State)
-				{
-					foo.second->Input_Args[0] = x;
-					foo.second->Input_Args[1] = y;
-				}
-			}
+			//for (auto& foo : ip)
+			//{
+			//	if (!foo.second) continue;
+			//	if (foo.second->Input_Function == Mouse_Handler::Get_Relative_Mouse_X_State ||
+			//		foo.second->Input_Function == Mouse_Handler::Get_Relative_Mouse_Y_State)
+			//	{
+			//		foo.second->Input_Args[0] = x;
+			//		foo.second->Input_Args[1] = y;
+			//	}
+			//}
 		}
 	}
 }

@@ -1,7 +1,6 @@
 #include "Menu_State.h"
 #include "Entity.h"
-#include "Keyboard_Handler.h"
-#include "Mouse_Handler.h"
+#include "Device.h"
 #include "Main_State.h"
 #include "GameMenu_State.h"
 
@@ -63,12 +62,12 @@ void Menu_Menu::Update()
 }
 void Menu_Menu::Events()
 {
-	if (Mouse_Handler::Contains_Mouse((*this)[1][0]))
+	if (Mouse::Contains_Mouse((*this)[1][0]))
 	{
 		if(System::Events.type == SDL_MOUSEBUTTONDOWN && System::Events.button.button == SDL_BUTTON_LEFT)
 			State::New<Main_Menu>();
 	}
-	if (Mouse_Handler::Contains_Mouse((*this)[1][1]))
+	if (Mouse::Contains_Mouse((*this)[1][1]))
 	{
 		if (System::Events.type == SDL_MOUSEBUTTONDOWN && System::Events.button.button == SDL_BUTTON_LEFT)
 		{
@@ -79,13 +78,13 @@ void Menu_Menu::Events()
 				(Screen::Get_Screen_Size().second / 2 + 100) * (int)Screen::Get_Scale());
 		}
 	}
-	if (Mouse_Handler::Contains_Mouse((*this)[1][2]))
+	if (Mouse::Contains_Mouse((*this)[1][2]))
 	{
 		if (System::Events.type == SDL_MOUSEBUTTONDOWN && System::Events.button.button == SDL_BUTTON_LEFT)
 			State::Exit_Game();
 	}
-	if (Keyboard_Handler::Key_Up({ SDLK_ESCAPE })) State::Exit_Game();
-	if (Keyboard_Handler::Key_Up({ SDLK_RETURN })) State::New<GameMenu_State>();
+	if (Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_ESCAPE)].Up()) State::Exit_Game();
+	if (Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_RETURN)].Up()) State::New<GameMenu_State>();
 	State::Events();
 }
 

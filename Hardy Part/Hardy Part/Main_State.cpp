@@ -4,10 +4,7 @@
 #include "Timer.h"
 #include "Animation.h"
 #include "Player.h"
-#include "Input_Handler.h"
-#include "Keyboard_Handler.h"
-#include "Mouse_Handler.h"
-#include "Gamepad_Handler.h"
+#include "Device.h"
 #include "Sword.h"
 #include "Movement.h"
 #include "Tileset.h"
@@ -22,6 +19,10 @@ class GameMenu_State;
 
 void Main_Menu::Create()
 {
+	for (auto pl : Player::Get_Players())
+		if (auto ent = Player::Get_Entity(pl.get()))
+			ent->Get_Sprite()->Scale = 1;
+
 	auto ttt = Tileset::Add
 		(
 			this, Tileset::Set(Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
@@ -149,8 +150,8 @@ void Main_Menu::Update()
 		}
 	}
 
-	Uint32 px = Mouse_Handler::Get_Mouse_Pos().first;
-	Uint32 py = Mouse_Handler::Get_Mouse_Pos().second;
+	Uint32 px = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
+	Uint32 py = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
 	px = (Uint32)((double)px / (double)Screen::Get_Screen_Size().first * 255);
 	py = (Uint32)((double)py / (double)Screen::Get_Screen_Size().second * 255);
 	SDL_SetRenderDrawColor(Screen::Renderer, px, 255 - (px+py)/2, py, 255);
@@ -170,32 +171,32 @@ void Main_Menu::Update()
 }
 void Main_Menu::Events()
 {
-	if (System::Events.type == SDL_KEYDOWN)
-	{
-		if (State::Layers.size() > 1 && State::Layers[1]->Entities.size())
-		{
-			auto pl = Player::Get(0);
-			auto sw = dynamic_cast<Sword*>(State::Layers[1]->Entities[0].get());
-			if (System::Events.key.keysym.sym == SDLK_1)
-				Player::Set_Entity(pl, State::Layers[1]->Entities[0].get());
-			if (System::Events.key.keysym.sym == SDLK_2)
-				Player::Set_Entity(pl, State::Layers[1]->Entities[1].get());
-			if (System::Events.key.keysym.sym == SDLK_3)
-				Player::Set_Entity(pl, State::Layers[1]->Entities[2].get());
-			if (System::Events.key.keysym.sym == SDLK_4)
-				Player::Set_Entity(pl, State::Layers[1]->Entities[3].get());
-			if (System::Events.key.keysym.sym == SDLK_5)
-				Player::Set_Entity(pl, State::Layers[1]->Entities[4].get());
-		}
-		//if (System::Events.key.keysym.sym == SDLK_5)
-		//{
-		//	Player::Set_Entity(pl, State::Layers[0]->Entities[4].get());
-		//	sw->Wealder = State::Layers[0]->Entities[4].get();
-		//}
-	}
+	//if (System::Events.type == SDL_KEYDOWN)
+	//{
+	//	if (State::Layers.size() > 1 && State::Layers[1]->Entities.size())
+	//	{
+	//		auto pl = Player::Get(0);
+	//		auto sw = dynamic_cast<Sword*>(State::Layers[1]->Entities[0].get());
+	//		if (System::Events.key.keysym.sym == SDLK_1)
+	//			Player::Set_Entity(pl, State::Layers[1]->Entities[0].get());
+	//		if (System::Events.key.keysym.sym == SDLK_2)
+	//			Player::Set_Entity(pl, State::Layers[1]->Entities[1].get());
+	//		if (System::Events.key.keysym.sym == SDLK_3)
+	//			Player::Set_Entity(pl, State::Layers[1]->Entities[2].get());
+	//		if (System::Events.key.keysym.sym == SDLK_4)
+	//			Player::Set_Entity(pl, State::Layers[1]->Entities[3].get());
+	//		if (System::Events.key.keysym.sym == SDLK_5)
+	//			Player::Set_Entity(pl, State::Layers[1]->Entities[4].get());
+	//	}
+	//	//if (System::Events.key.keysym.sym == SDLK_5)
+	//	//{
+	//	//	Player::Set_Entity(pl, State::Layers[0]->Entities[4].get());
+	//	//	sw->Wealder = State::Layers[0]->Entities[4].get();
+	//	//}
+	//}
 
 
-	if (Keyboard_Handler::Key_Up({ SDLK_ESCAPE }))
+	if (Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_ESCAPE)].Up())
 	{
 		
 		//for (auto pl : Player::Get_Players())

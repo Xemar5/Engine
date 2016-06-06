@@ -2,7 +2,6 @@
 #include "State.h"
 #include "Screen.h"
 #include "Timer.h"
-#include "Input_Handler.h"
 #include "Tileset.h"
 #include "Entity.h"
 #include <iostream>
@@ -35,10 +34,8 @@ void System::_System_Update()
 			while (SDL_PollEvent(&System::Events))
 			{
 				if (System::Events.type == SDL_QUIT) { State::Exit_Game(); break; }
-				Input_Handler::__Events();
 				__Events();
 			}
-			Input_Handler::__Update();
 		}
 		SDL_Delay(1);
 	}
@@ -55,9 +52,11 @@ void System::__Update()
 	}
 	for (unsigned i = 0; i < stt_to_update.size(); i++)
 		stt_to_update[i]->Update();
+	Player::__Update();
 }
 void System::__Events()
 {
+	Device::Events();
 	std::vector<State*> stt_to_events;
 	for (unsigned i = 0; i < State::Built.size(); i++)
 	{
@@ -72,6 +71,7 @@ void System::__Events()
 	}
 	for (unsigned i = 0; i < stt_to_events.size(); i++)
 		stt_to_events[i]->Events();
+	Device::Events_CleanUp();
 }
 void System::__Delete()
 {

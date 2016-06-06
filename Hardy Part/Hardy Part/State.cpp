@@ -46,6 +46,24 @@ void State::Events()
 				ent->Events();
 }
 
+bool State::Remove_Entity(Entity * ent)
+{
+	if (!ent)
+	{
+		Output_Handler::Output << "MSG State::Remove_Entity : No entity supplied\n";
+		return false;
+	}
+	for (auto& l : Layers)
+		for (auto it = l->Entities.begin(); it != l->Entities.end(); ++it)
+			if (ent == it->get())
+			{
+				l->Entities.erase(it);
+				return true;
+			}
+	Output_Handler::Output << "MSG State::Remove_Entity : entity not found\n";
+	return false;
+}
+
 bool State::Set_Entity_Layer(State * state, Entity * entity, unsigned new_layer)
 {
 	if (!state)

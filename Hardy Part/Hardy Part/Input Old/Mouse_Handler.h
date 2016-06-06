@@ -6,7 +6,7 @@
 
 class Entity;
 
-class Mouse_Handler
+class Mouse_Handler : public Controller
 {
 public:
 	//*** Returns 1 if supplied button is being pushed; otherwise returns 0
@@ -41,8 +41,8 @@ private:
 	static void __Events();
 	//*** Updates timers on button being pushed
 	static void __Update();
-	//*** Contains every pushed button and the time it's being pushed for
-	static std::map<Sint32, int> __Map;
+	////*** Contains every pushed button and the time it's being pushed for
+	//static std::map<Sint32, int> __Map;
 
 	friend class Input_Handler;
 };

@@ -3,11 +3,10 @@
 #include <vector>
 #include <memory>
 #include <SDL.h>
-#include "Input_Handler.h"
 
 
 class Entity;
-typedef std::shared_ptr<Input_Handler> Input_Function;
+typedef double(*Input_Function)(std::vector<Sint32>);
 
 class Player
 {
@@ -22,6 +21,10 @@ public:
 	static bool Remove(Player* player);
 	//*** Returns an existing player with a given index if it exists
 	static int Get_First_Unused_Index();
+	//*** Sets the controller of a player based on the given device index
+	static bool Set_Controller(Player* player, Sint32 controller);
+	//*** The index of this Player
+	Sint32 Controller = -2;
 	//*** Sets the given entity for this player to controll
 	//*** - change_mouse_coordinates - if true, the relative x and y coordinates of mouse input will be set
 	//***							   to the x and y pos of supplied entity
@@ -32,13 +35,16 @@ public:
 	static std::vector<std::shared_ptr<Player>> Get_Players();
 	//*** Returns a vector of all entities that are being controlled by each player
 	static std::vector<Entity*> Get_Controlled_Entities();
-	//*** A map storing all important actions
-	Input_Preset Input_Preset = Input_Handler::Empty_Preset;
+	//*** The maximum number of players
+	static unsigned Max_Players;
 private:
-	//*** The index of this Player
 	int __Index = -1;
 	//*** The entity this Player controlls
 	Entity* __Entity = nullptr;
+
+	//*** Vecotr of all used input presets from a file
+	//*** An used input preset can't be used again
+	static std::vector<std::string> __Used_Presets;
 
 
 	//*** The container of all the Player objectss
@@ -47,6 +53,6 @@ private:
 	static void __Update();
 	static void __Events();
 
-	friend class Input_Handler;
+	friend class System;
 };
 
