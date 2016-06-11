@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <SDL.h>
+#include "Texture.h"
 
 class Animation;
 class Texture;
@@ -36,6 +37,8 @@ public:
 	double Rotation = 0;
 	//*** The individual scale of this entity
 	double Scale = 1;
+	//*** Destroys this sprite and destroys its texture if no sprite uses it
+	static bool Destroy(Sprite* sprite);
 private:
 	//*** Loaded Texture of this entity
 	std::shared_ptr<Texture> __Texture = nullptr;
@@ -52,4 +55,5 @@ private:
 	static std::vector<std::shared_ptr<Sprite>> __Sprites;
 
 	friend class Animation;
+	friend class State;
 };

@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <SDL.h>
+#include "Sprite.h"
 
 class Sprite;
 class Action;
@@ -24,6 +25,8 @@ public:
 	//***  Virtual Events function, should be overriden by derivering entites
 	virtual void Events();
 
+	//*** Returns this as an entity derative if possible
+	template <typename T> T* As() { return dynamic_cast<T*>(this); };
 	//*** Returns the Hitbox pointer if it exists
 	std::pair<double, double> Get_Hitbox();
 
@@ -50,6 +53,9 @@ public:
 
 	//*** Returns the layer this character is set on
 	unsigned Get_Layer();
+
+	//*** Destroys given entity, its sprite and texture if it's no used
+	static bool Destroy(Entity* ent);
 
 protected:
 	//*** A class responsible for Colisions and size of the entity

@@ -47,7 +47,7 @@ std::shared_ptr<Texture> Texture::Load(SDL_Texture * texture, unsigned width, un
 	return Texture::__Loaded.back();
 }
 
-bool Texture::Reload(Texture * texture)
+bool Texture::Reload(Texture * texture, std::string path)
 {
 	if (!texture)
 	{
@@ -70,14 +70,14 @@ std::vector<std::shared_ptr<Texture>> Texture::Get_Loaded()
 	return Texture::__Loaded;
 }
 
-bool Texture::Destroy(Texture* sprite)
+bool Texture::Destroy(Texture* texture)
 {
-	if (!sprite)
+	if (!texture)
 	{
 		Output_Handler::Error << "ERR Texture::Destroy_Sprite : No pointer to Texture supplied\n";
 		return false;
 	}
-	if (int pos = Texture::Already_Loaded(sprite->__Path))
+	if (int pos = Texture::Already_Loaded(texture->__Path) != -1)
 	{
 		Texture::__Loaded.erase(Texture::__Loaded.begin() + pos);
 		return true;

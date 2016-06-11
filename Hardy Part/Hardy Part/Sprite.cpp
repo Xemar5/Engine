@@ -85,3 +85,23 @@ Animation * Sprite::Get_Current_Animation()
 	}
 	return __Current_Animation;
 }
+
+bool Sprite::Destroy(Sprite* sprite)
+{
+	if (!sprite)
+	{
+		Output_Handler::Output << "MSG Sprite::Destroy : No sprite supplied\n";
+		return false;
+	}
+	if (sprite->__Texture && sprite->__Texture.use_count() == 2)
+		Texture::Destroy(sprite->__Texture.get());
+	sprite->__Texture = nullptr;
+	
+	for (auto it = __Sprites.begin(); it != __Sprites.end(); ++it)
+		if (it->get() == sprite)
+		{
+			__Sprites.erase(it);
+			return true;
+		}
+	return false;
+}

@@ -77,25 +77,25 @@ std::shared_ptr<Tileset> Tileset::Set(std::shared_ptr<Texture> texture, std::vec
 	return ts;
 }
 
-Tileset * Tileset::Add(State * state, std::shared_ptr<Tileset> tileset, double x, double y, unsigned layer, double scale)
-{
-	if (!state)
-	{
-		Output_Handler::Output << "MSG Tileset::Add : No State supplied; initializing tileset\n";
-	}
-	if (!tileset)
-	{
-		Output_Handler::Error << "ERR Tileset::Add : No tileset supplied\n";
-		return nullptr;
-	}
-	(*state)[layer].Entities.push_back(tileset);
-	tileset->Create();
-	tileset->X = x;
-	tileset->Y = y;
-	tileset->Scale = scale;
-	Screen::Add(tileset, layer);
-	return tileset.get();
-}
+//Tileset * Tileset::Add(State * state, std::shared_ptr<Tileset> tileset, double x, double y, unsigned layer, double scale)
+//{
+//	if (!state)
+//	{
+//		Output_Handler::Output << "MSG Tileset::Add : No State supplied; initializing tileset\n";
+//	}
+//	if (!tileset)
+//	{
+//		Output_Handler::Error << "ERR Tileset::Add : No tileset supplied\n";
+//		return nullptr;
+//	}
+//	state->Add_Entity(tileset, tileset->Get_Layer());
+//	tileset->Create();
+//	tileset->X = x;
+//	tileset->Y = y;
+//	tileset->Scale = scale;
+//	Screen::Add(tileset);
+//	return tileset.get();
+//}
 
 bool Tileset::Reset(std::shared_ptr<Tileset> tileset)
 {

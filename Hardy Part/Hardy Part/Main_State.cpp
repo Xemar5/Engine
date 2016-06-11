@@ -23,9 +23,9 @@ void Main_Menu::Create()
 		if (auto ent = Player::Get_Entity(pl.get()))
 			ent->Get_Sprite()->Scale = 1;
 
-	auto ttt = Tileset::Add
+	auto ttt = State::Add_Entity<Tileset>
 		(
-			this, Tileset::Set(Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
+			Tileset::Set(Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
 			{
 				{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
 				{ 0,0,0,0,2,2,5,0,0,0,0,0,0,5,5,3,3 },
@@ -41,10 +41,10 @@ void Main_Menu::Create()
 				{ 4,2,3,3,0,6,9,6,0,0,0,2,2,4,2,0,0 },
 				{ 6,7,7,9,0,0,0,0,0,0,0,7,8,8,6,0,0 },
 				{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-			}),
-			Screen::Get_Screen_Size().first / 2, Screen::Get_Screen_Size().second / 2, 0, 1
+			})
 			);
-
+	ttt->X = Screen::Get_Screen_Size().first / 2;
+	ttt->Y = Screen::Get_Screen_Size().second / 2;
 	//Output_Handler::Output << ttt->X << std::endl;
 	//Output_Handler::Output << ttt->Get_Texture()->Get_SDL_Starting_Point().x << std::endl;
 
@@ -113,8 +113,8 @@ void Main_Menu::Create()
 	//	);
 	if (Player::Get_Players().size())
 	{
-		Sword* s1 = State::Add_Entity<Sword>(1);
-		s1->Wealder = Player::Get_Players().front().get();
+		auto s1 = State::Add_Entity<Sword>(1);
+		dynamic_cast<Sword*>(s1.get())->Wealder = Player::Get_Players().front().get();
 	}
 	//srand((unsigned)time(0));
 	//if (this->Layers[0]->Entities.size())
@@ -136,20 +136,22 @@ void Main_Menu::Create()
 }
 void Main_Menu::Update()
 {
-
-	for (auto ent : Get_Entities())
+	for (auto tileset : Get_Entities())
 	{
-		if (!Get_Tilesets().size()) break;
+		if (!tileset->As<Tileset>()) continue;
+		for (auto ent : Get_Entities())
+		{
+			if (tileset == ent) continue;
+			if (!Get_Entities().size()) break;
+			auto tile = tileset->As<Tileset>()->Which_Tile((int)ent->X, (int)ent->Y);
 
-		auto tile = Get_Tilesets()[0]->Which_Tile((int)ent->X, (int)ent->Y);
-
-		if (tile == 0 || tile >= 6)
-		{		
-			ent->X = Screen::Get_Screen_Size().first / 2 - 190;
-			ent->Y = Screen::Get_Screen_Size().second / 2 + 110;
+			if (tile == 0 || tile >= 6)
+			{
+				ent->X = Screen::Get_Screen_Size().first / 2 - 190;
+				ent->Y = Screen::Get_Screen_Size().second / 2 + 110;
+			}
 		}
 	}
-
 	Uint32 px = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
 	Uint32 py = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
 	px = (Uint32)((double)px / (double)Screen::Get_Screen_Size().first * 255);
@@ -167,7 +169,6 @@ void Main_Menu::Update()
 	//		if (ent->Y > 600) ent->Y = 0;
 	//		if (ent->Y < 0) ent->Y = 600;
 	//	}
-	State::Update();
 }
 void Main_Menu::Events()
 {
@@ -204,12 +205,7 @@ void Main_Menu::Events()
 		//	//Player::Remove(pl.get());
 		//	//Player::Set_Entity(pl.get(), nullptr);
 		//}
-		std::vector<Entity*> v(Player::Get_Players().size());
-		for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
-			v[i] = Player::Get_Entity(Player::Get_Players()[i].get());
-		State::New<GameMenu_State>(v);
+		State::New<GameMenu_State>(Player::Get_Controlled_Entities());
 	}
-
-	State::Events();
 }
 

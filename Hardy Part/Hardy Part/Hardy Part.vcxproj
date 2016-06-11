@@ -133,6 +133,7 @@
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Sword.cpp" />
+    <ClCompile Include="Textfield.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="State.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Sword.h" />
+    <ClInclude Include="Textfield.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="State.h" />

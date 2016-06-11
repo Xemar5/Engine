@@ -72,5 +72,18 @@ unsigned Entity::Get_Layer()
 	return ++__Layer;
 }
 
+bool Entity::Destroy(Entity * ent)
+{
+	if (!ent)
+	{
+		Output_Handler::Output << "MSG Entity::Destroy : No entity supplied\n";
+		return false;
+	}
+	auto sprt = ent->__Sprite.get();
+	ent->__Sprite = nullptr;
+	Sprite::Destroy(sprt);
+	return true;
+}
+
 
 

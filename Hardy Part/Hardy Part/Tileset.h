@@ -22,7 +22,7 @@ public:
 	//*** - x, y - position of this tileset
 	//*** - layer - the layer in state this tileset is being added to
 	//*** - scale - the individual scale of this tileset
-	static Tileset* Add(State* state, std::shared_ptr<Tileset> tileset, double x, double y, unsigned layer, double scale = 1);
+	//static Tileset* Add(State* state, std::shared_ptr<Tileset> tileset, double x, double y, unsigned layer, double scale = 1);
 
 	//*** Resets current tileset and it's texture
 	//*** Use when the tileset is not drawn properly

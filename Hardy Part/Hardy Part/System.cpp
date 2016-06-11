@@ -51,7 +51,10 @@ void System::__Update()
 		stt_to_update.push_back(State::Built[i].get());
 	}
 	for (unsigned i = 0; i < stt_to_update.size(); i++)
+	{
 		stt_to_update[i]->Update();
+		stt_to_update[i]->State::Update();
+	}
 	Player::__Update();
 }
 void System::__Events()
@@ -64,13 +67,15 @@ void System::__Events()
 		stt_to_events.push_back(State::Built[i].get());
 
 		if (!Screen::Is_Windowed() && System::Events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-			for (auto lay : State::Built[i]->Layers)
-				for (auto ent : lay->Entities)
-					if(auto ttr = dynamic_cast<Tileset*>(ent.get()))
-						Tileset::Reset(ttr);
+			for (auto ent : State::Built[i]->Get_Entities())
+				if (ent->As<Tileset>())
+					Tileset::Reset(ent->As<Tileset>());
 	}
 	for (unsigned i = 0; i < stt_to_events.size(); i++)
+	{
 		stt_to_events[i]->Events();
+		stt_to_events[i]->State::Events();
+	}
 	Device::Events_CleanUp();
 }
 void System::__Delete()

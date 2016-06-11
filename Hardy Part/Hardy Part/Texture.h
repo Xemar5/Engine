@@ -68,8 +68,8 @@ public:
 	//*** Returns pointer to it if created or already existing
 	static std::shared_ptr<Texture> Load(SDL_Texture* texture, unsigned width, unsigned height, int frame_width = 0, int frame_height = 0, float starting_point_x = 0, float starting_point_y = 0);
 
-	//*** Unloads a loaded SDL_Texture from given Texture
-	static bool Reload(Texture* texture);
+	//*** Unloads a loaded SDL_Texture from given Texture using the given path if supplied
+	static bool Reload(Texture* texture, std::string path = "");
 
 	//*** Returns all loaded Textures in this session
 	static std::vector<std::shared_ptr<Texture>> Get_Loaded();

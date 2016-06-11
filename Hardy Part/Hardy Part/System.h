@@ -37,6 +37,8 @@ private:
 	
 };
 
+#include <SDL_ttf.h>
+#include "Output_Handler.h"
 #include "Screen.h"
 #include "Device.h"
 
@@ -45,7 +47,11 @@ void System::Start()
 {
 	if (SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_TIMER | SDL_INIT_JOYSTICK) != 0)
 	{
-		std::cout << "\nUnable to initialize SDL:" << SDL_GetError() << "\n";
+		Output_Handler::Error << "\nUnable to initialize SDL:" << SDL_GetError() << "\n";
+	}
+	if (TTF_Init() != 0)
+	{
+		Output_Handler::Error << "\nUnable to initialize TTF:" << TTF_GetError() << "\n";
 	}
 	SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
 	Gamepad::Init("keybinds.txt");

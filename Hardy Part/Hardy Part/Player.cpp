@@ -142,7 +142,7 @@ bool Player::Set_Controller(Player * player, Sint32 controller)
 	return true;
 }
 
-bool Player::Set_Entity(Player* player, Entity * ent)
+bool Player::Set_Entity(Player* player, std::shared_ptr<Entity> ent)
 {
 	if (!player)
 	{
@@ -153,7 +153,7 @@ bool Player::Set_Entity(Player* player, Entity * ent)
 	return true;
 }
 
-Entity * Player::Get_Entity(Player* player)
+std::shared_ptr<Entity> Player::Get_Entity(Player* player)
 {
 	if (!player)
 	{
@@ -173,9 +173,9 @@ std::vector<std::shared_ptr<Player>> Player::Get_Players()
 	return __Players;
 }
 
-std::vector<Entity*> Player::Get_Controlled_Entities()
+std::vector<std::shared_ptr<Entity>> Player::Get_Controlled_Entities()
 {
-	std::vector<Entity*> v(Player::Get_Players().size());
+	std::vector<std::shared_ptr<Entity>> v(Player::Get_Players().size());
 	for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
 		v[i] = Player::Get_Entity(Player::Get_Players()[i].get());
 	return v;
@@ -188,7 +188,7 @@ void Player::__Update()
 	for(auto p : Player::__Players)
 	{
 		if (p->Controller == -2) continue;
-		if (Entity* ent = Get_Entity(p.get()))
+		if (auto ent = Get_Entity(p.get()))
 		{
 
 			auto& ip = Device::Get(p->Controller);
@@ -202,7 +202,7 @@ void Player::__Update()
 
 			if (vx < 0) p->__Entity->Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
 			if (vx > 0) p->__Entity->Get_Sprite()->Flip = SDL_FLIP_NONE;
-			Movement::Add_Force(p->__Entity, vx, vy);
+			Movement::Add_Force(p->__Entity.get(), vx, vy);
 
 
 			double(*foo)(std::vector<Sint32>) = nullptr;

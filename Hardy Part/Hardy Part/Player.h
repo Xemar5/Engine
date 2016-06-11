@@ -28,19 +28,19 @@ public:
 	//*** Sets the given entity for this player to controll
 	//*** - change_mouse_coordinates - if true, the relative x and y coordinates of mouse input will be set
 	//***							   to the x and y pos of supplied entity
-	static bool Set_Entity(Player* player, Entity* ent);
+	static bool Set_Entity(Player* player, std::shared_ptr<Entity> ent);
 	//*** Returns the entity given player controlls
-	static Entity* Get_Entity(Player* player);
+	static std::shared_ptr<Entity> Get_Entity(Player* player);
 	//*** Returns the container of all created Players
 	static std::vector<std::shared_ptr<Player>> Get_Players();
 	//*** Returns a vector of all entities that are being controlled by each player
-	static std::vector<Entity*> Get_Controlled_Entities();
+	static std::vector<std::shared_ptr<Entity>> Get_Controlled_Entities();
 	//*** The maximum number of players
 	static unsigned Max_Players;
 private:
 	int __Index = -1;
 	//*** The entity this Player controlls
-	Entity* __Entity = nullptr;
+	std::shared_ptr<Entity> __Entity = nullptr;
 
 	//*** Vecotr of all used input presets from a file
 	//*** An used input preset can't be used again

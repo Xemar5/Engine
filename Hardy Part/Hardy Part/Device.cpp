@@ -54,8 +54,8 @@ bool Keyboard::Contains_Mouse(Entity* ent)
 		Output_Handler::Error << "ERR Entity::Contains_Mouse : Given sprite has no texture supplied\n";
 		return false;
 	}
-	int px = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
-	int py = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
+	double px = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
+	double py = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
 	auto sp = ent->Get_Sprite();
 	double offx = sp->Get_Texture()->Get_SDL_Starting_Point().x * sp->Scale;
 	double offy = sp->Get_Texture()->Get_SDL_Starting_Point().y * sp->Scale;
