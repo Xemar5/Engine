@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardy_Part___Map_Editor.Tileset_Palette;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,12 +14,10 @@ namespace Hardy_Part___Map_Editor
 {
     public partial class FormNewMap : Form
     {
-        private FormMainScreen _Parent;
 
-        public FormNewMap(FormMainScreen parent)
+        public FormNewMap()
         {
             InitializeComponent();
-            _Parent = parent;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -30,9 +29,26 @@ namespace Hardy_Part___Map_Editor
         {
             if (!string.IsNullOrWhiteSpace(textBoxName.Text))
             {
-                _Parent.CurrentMap = new Map(textBoxName.Text);
+                Map.CurrentMap = new Map(textBoxName.Text, (int)numericUpDownMapWidth.Value, (int)numericUpDownMapHeight.Value);
                 this.Close();
             }
+        }
+
+        private void textBoxName_TextChanged(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(textBoxName.Text) || !Char.IsLetter(textBoxName.Text[0]))
+                buttonMapCreate.Enabled = false;
+            else buttonMapCreate.Enabled = true;
+        }
+
+        private void numericUpDownMapWidth_Enter(object sender, EventArgs e)
+        {
+            numericUpDownMapWidth.Select(0, numericUpDownMapWidth.Text.Length);
+        }
+
+        private void numericUpDownMapHeight_Enter(object sender, EventArgs e)
+        {
+            numericUpDownMapHeight.Select(0, numericUpDownMapHeight.Text.Length);
         }
     }
 }

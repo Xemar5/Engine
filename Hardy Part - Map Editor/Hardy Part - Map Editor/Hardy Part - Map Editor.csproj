@@ -46,22 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dialog Boxes\FormEditTileset.cs">
+    <Compile Include="Tileset Palette\FormLoadTileset.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialog Boxes\FormEditTileset.Designer.cs">
-      <DependentUpon>FormEditTileset.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialog Boxes\FormLoadTileset.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialog Boxes\FormLoadTileset.Designer.cs">
+    <Compile Include="Tileset Palette\FormLoadTileset.Designer.cs">
       <DependentUpon>FormLoadTileset.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMainScreen.cs">
+    <Compile Include="Main Screen\FormMainScreen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMainScreen.Designer.cs">
+    <Compile Include="Main Screen\FormMainScreen.Designer.cs">
       <DependentUpon>FormMainScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialog Boxes\FormNewMap.cs">
@@ -70,21 +64,39 @@
     <Compile Include="Dialog Boxes\FormNewMap.Designer.cs">
       <DependentUpon>FormNewMap.cs</DependentUpon>
     </Compile>
-    <Compile Include="Map.cs" />
-    <Compile Include="Palette.cs" />
+    <Compile Include="Map.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PicturePanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tileset.cs" />
-    <EmbeddedResource Include="Dialog Boxes\FormEditTileset.resx">
-      <DependentUpon>FormEditTileset.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialog Boxes\FormLoadTileset.resx">
+    <Compile Include="Tileset Palette\Tileset.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Tileset Palette\TilesetPalette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tileset Palette\TilesetPalette.Designer.cs">
+      <DependentUpon>TilesetPalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tileset Palette\TilesetWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tileset Palette\TilesetWindow.Designer.cs">
+      <DependentUpon>TilesetWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Tileset Palette\TilesetPropertyMenu.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tileset Palette\TilesetPropertyMenu.Designer.cs">
+      <DependentUpon>TilesetPropertyMenu.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Tileset Palette\FormLoadTileset.resx">
       <DependentUpon>FormLoadTileset.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMainScreen.resx">
+    <EmbeddedResource Include="Main Screen\FormMainScreen.resx">
       <DependentUpon>FormMainScreen.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialog Boxes\FormNewMap.resx">
@@ -99,6 +111,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Tileset Palette\TilesetPalette.resx">
+      <DependentUpon>TilesetPalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tileset Palette\TilesetWindow.resx">
+      <DependentUpon>TilesetWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tileset Palette\TilesetPropertyMenu.resx">
+      <DependentUpon>TilesetPropertyMenu.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

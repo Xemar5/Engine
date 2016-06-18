@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardy_Part___Map_Editor.Tileset_Palette;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,20 +14,11 @@ namespace Hardy_Part___Map_Editor.Dialog_Boxes
 {
     public partial class FormLoadTileset : Form
     {
-        private FormMainScreen _Parent = null;
         private bool _Error = false;
 
-        public FormLoadTileset(FormMainScreen parent)
+        public FormLoadTileset()
         {
             InitializeComponent();
-            _Parent = parent;
-            if(parent.CurrentTileset != null)
-            {
-                numericUpDownFrameWidth.Value = parent.CurrentTileset.FrameWidth;
-                numericUpDownFrameHeight.Value = parent.CurrentTileset.FrameHeight;
-                textBoxImagePath.Text = parent.CurrentTileset.Path;
-                loadImagePreview(parent.CurrentTileset.Path);
-            }
         }
         private void buttonImagePath_Click(object sender, EventArgs e)
         {
@@ -48,10 +40,7 @@ namespace Hardy_Part___Map_Editor.Dialog_Boxes
         }
 
 
-        private void saveTilesetPalette()
-        {
 
-        }
 
 
         private void loadImagePreview(string path)
@@ -77,7 +66,6 @@ namespace Hardy_Part___Map_Editor.Dialog_Boxes
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            _Parent.CurrentTileset = null;
             this.Close();
         }
 
@@ -85,8 +73,8 @@ namespace Hardy_Part___Map_Editor.Dialog_Boxes
         {
             if (_Error == false && !string.IsNullOrWhiteSpace(textBoxImagePath.Text))
             {
-                _Parent.CurrentTileset = new Tileset(textBoxImagePath.Text, (int)numericUpDownFrameWidth.Value, (int)numericUpDownFrameHeight.Value,
-                    pictureBoxImagrPreview.Image.Width, pictureBoxImagrPreview.Image.Height);
+                if (Palette.CurrentPalette == null) Palette.CurrentPalette = new Palette();
+                Palette.CurrentPalette.AddTilesetPalette(textBoxImagePath.Text, (int)numericUpDownFrameWidth.Value, (int)numericUpDownFrameHeight.Value);
                 this.Close();
             }
         }

@@ -29,15 +29,15 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.labelName = new System.Windows.Forms.Label();
             this.labelMapSizeReminder = new System.Windows.Forms.Label();
             this.labelMapHeight = new System.Windows.Forms.Label();
             this.numericUpDownMapWidth = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownMapHeight = new System.Windows.Forms.NumericUpDown();
             this.labelMapWidth = new System.Windows.Forms.Label();
-            this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonOK = new System.Windows.Forms.Button();
-            this.labelName = new System.Windows.Forms.Label();
-            this.textBoxName = new System.Windows.Forms.TextBox();
+            this.buttonMapCancel = new System.Windows.Forms.Button();
+            this.buttonMapCreate = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMapHeight)).BeginInit();
@@ -59,14 +59,33 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Map";
             // 
+            // textBoxName
+            // 
+            this.textBoxName.Location = new System.Drawing.Point(79, 25);
+            this.textBoxName.MaxLength = 20;
+            this.textBoxName.Name = "textBoxName";
+            this.textBoxName.Size = new System.Drawing.Size(175, 20);
+            this.textBoxName.TabIndex = 0;
+            this.textBoxName.Text = "map0";
+            this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Location = new System.Drawing.Point(6, 28);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(35, 13);
+            this.labelName.TabIndex = 6;
+            this.labelName.Text = "Name";
+            // 
             // labelMapSizeReminder
             // 
             this.labelMapSizeReminder.AutoSize = true;
-            this.labelMapSizeReminder.Location = new System.Drawing.Point(103, 121);
+            this.labelMapSizeReminder.Location = new System.Drawing.Point(140, 121);
             this.labelMapSizeReminder.Name = "labelMapSizeReminder";
-            this.labelMapSizeReminder.Size = new System.Drawing.Size(42, 13);
+            this.labelMapSizeReminder.Size = new System.Drawing.Size(50, 13);
             this.labelMapSizeReminder.TabIndex = 5;
-            this.labelMapSizeReminder.Text = "(in tiles)";
+            this.labelMapSizeReminder.Text = "(in pixels)";
             // 
             // labelMapHeight
             // 
@@ -80,6 +99,11 @@
             // numericUpDownMapWidth
             // 
             this.numericUpDownMapWidth.Location = new System.Drawing.Point(79, 72);
+            this.numericUpDownMapWidth.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
             this.numericUpDownMapWidth.Minimum = new decimal(new int[] {
             1,
             0,
@@ -87,16 +111,22 @@
             0});
             this.numericUpDownMapWidth.Name = "numericUpDownMapWidth";
             this.numericUpDownMapWidth.Size = new System.Drawing.Size(175, 20);
-            this.numericUpDownMapWidth.TabIndex = 0;
+            this.numericUpDownMapWidth.TabIndex = 1;
             this.numericUpDownMapWidth.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
+            this.numericUpDownMapWidth.Enter += new System.EventHandler(this.numericUpDownMapWidth_Enter);
             // 
             // numericUpDownMapHeight
             // 
             this.numericUpDownMapHeight.Location = new System.Drawing.Point(79, 98);
+            this.numericUpDownMapHeight.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
             this.numericUpDownMapHeight.Minimum = new decimal(new int[] {
             1,
             0,
@@ -104,12 +134,13 @@
             0});
             this.numericUpDownMapHeight.Name = "numericUpDownMapHeight";
             this.numericUpDownMapHeight.Size = new System.Drawing.Size(175, 20);
-            this.numericUpDownMapHeight.TabIndex = 3;
+            this.numericUpDownMapHeight.TabIndex = 2;
             this.numericUpDownMapHeight.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
+            this.numericUpDownMapHeight.Enter += new System.EventHandler(this.numericUpDownMapHeight_Enter);
             // 
             // labelMapWidth
             // 
@@ -117,53 +148,36 @@
             this.labelMapWidth.Location = new System.Drawing.Point(6, 74);
             this.labelMapWidth.Name = "labelMapWidth";
             this.labelMapWidth.Size = new System.Drawing.Size(35, 13);
-            this.labelMapWidth.TabIndex = 1;
+            this.labelMapWidth.TabIndex = 3;
             this.labelMapWidth.Text = "Width";
             // 
-            // buttonCancel
+            // buttonMapCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(197, 164);
-            this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 9;
-            this.buttonCancel.Text = "Cancel";
-            this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonMapCancel.Location = new System.Drawing.Point(197, 164);
+            this.buttonMapCancel.Name = "buttonMapCancel";
+            this.buttonMapCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonMapCancel.TabIndex = 9;
+            this.buttonMapCancel.Text = "Cancel";
+            this.buttonMapCancel.UseVisualStyleBackColor = true;
+            this.buttonMapCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
-            // buttonOK
+            // buttonMapCreate
             // 
-            this.buttonOK.Location = new System.Drawing.Point(116, 164);
-            this.buttonOK.Name = "buttonOK";
-            this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 10;
-            this.buttonOK.Text = "OK";
-            this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
-            // 
-            // labelName
-            // 
-            this.labelName.AutoSize = true;
-            this.labelName.Location = new System.Drawing.Point(6, 28);
-            this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(35, 13);
-            this.labelName.TabIndex = 6;
-            this.labelName.Text = "Name";
-            // 
-            // textBoxName
-            // 
-            this.textBoxName.Location = new System.Drawing.Point(79, 25);
-            this.textBoxName.MaxLength = 20;
-            this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(175, 20);
-            this.textBoxName.TabIndex = 7;
+            this.buttonMapCreate.Location = new System.Drawing.Point(116, 164);
+            this.buttonMapCreate.Name = "buttonMapCreate";
+            this.buttonMapCreate.Size = new System.Drawing.Size(75, 23);
+            this.buttonMapCreate.TabIndex = 10;
+            this.buttonMapCreate.Text = "Create";
+            this.buttonMapCreate.UseVisualStyleBackColor = true;
+            this.buttonMapCreate.Click += new System.EventHandler(this.buttonOK_Click);
             // 
             // FormNewMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 195);
-            this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.buttonCancel);
+            this.Controls.Add(this.buttonMapCreate);
+            this.Controls.Add(this.buttonMapCancel);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -185,8 +199,8 @@
         private System.Windows.Forms.NumericUpDown numericUpDownMapWidth;
         private System.Windows.Forms.NumericUpDown numericUpDownMapHeight;
         private System.Windows.Forms.Label labelMapWidth;
-        private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.Button buttonOK;
+        private System.Windows.Forms.Button buttonMapCancel;
+        private System.Windows.Forms.Button buttonMapCreate;
         private System.Windows.Forms.TextBox textBoxName;
         private System.Windows.Forms.Label labelName;
     }
