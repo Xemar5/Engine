@@ -113,7 +113,7 @@
             this.numericUpDownMapWidth.Size = new System.Drawing.Size(175, 20);
             this.numericUpDownMapWidth.TabIndex = 1;
             this.numericUpDownMapWidth.Value = new decimal(new int[] {
-            1,
+            800,
             0,
             0,
             0});
@@ -136,7 +136,7 @@
             this.numericUpDownMapHeight.Size = new System.Drawing.Size(175, 20);
             this.numericUpDownMapHeight.TabIndex = 2;
             this.numericUpDownMapHeight.Value = new decimal(new int[] {
-            1,
+            600,
             0,
             0,
             0});

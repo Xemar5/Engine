@@ -11,7 +11,7 @@ using System.IO;
 
 namespace Hardy_Part___Map_Editor.Tileset_Palette
 {
-    public partial class TilesetPalette : UserControl
+    public partial class TilesetPreset : UserControl
     {
         readonly public int FrameWidth;
         readonly public int FrameHeight;
@@ -25,7 +25,7 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
             }
         }
 
-        public TilesetPalette(string path, int frameWidth, int frameHeight)
+        public TilesetPreset(string path, int frameWidth, int frameHeight)
         {
             InitializeComponent();
             tpName = path;
@@ -92,7 +92,7 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
         public void Tile_Click(object sender, EventArgs e)
         {
             if (tpName == "NONE") return;
-            Tileset_Palette.Palette.CurrentPalette.SelectTile((PictureBox)sender);
+            Tileset_Palette.TilesetWindow.CurrentTilesetWindow.SelectTile((PictureBox)sender);
         }
 
         private void buttonTilesetOptions_Click(object sender, EventArgs e)
@@ -110,6 +110,7 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 
         public void Delete()
         {
+            TilesetWindow.CurrentTilesetWindow.TilesetPresets.Remove(this);
             if (tpName == "NONE") return;
             for (var i = 0; i < flowLayoutPanelTiles.Controls.Count; ++i)
                 ((PictureBox)flowLayoutPanelTiles.Controls[i]).Image.Dispose();

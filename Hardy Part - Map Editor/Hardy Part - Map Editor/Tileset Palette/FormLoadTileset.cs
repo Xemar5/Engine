@@ -73,8 +73,7 @@ namespace Hardy_Part___Map_Editor.Dialog_Boxes
         {
             if (_Error == false && !string.IsNullOrWhiteSpace(textBoxImagePath.Text))
             {
-                if (Palette.CurrentPalette == null) Palette.CurrentPalette = new Palette();
-                Palette.CurrentPalette.AddTilesetPalette(textBoxImagePath.Text, (int)numericUpDownFrameWidth.Value, (int)numericUpDownFrameHeight.Value);
+                TilesetWindow.CurrentTilesetWindow.AddTilesetPreset(textBoxImagePath.Text, (int)numericUpDownFrameWidth.Value, (int)numericUpDownFrameHeight.Value);
                 this.Close();
             }
         }

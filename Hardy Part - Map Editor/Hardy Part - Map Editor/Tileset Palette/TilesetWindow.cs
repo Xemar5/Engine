@@ -12,27 +12,30 @@ using System.IO;
 
 namespace Hardy_Part___Map_Editor.Tileset_Palette
 {
-    public partial class Palette : UserControl
+    public partial class TilesetWindow : UserControl
     {
-        public static Palette CurrentPalette = null;
+        public static TilesetWindow CurrentTilesetWindow = null;
         public PictureBox CurrentTile = null;
         public Tileset CurrentTileset = null;
+        public List<TilesetPreset> TilesetPresets = new List<TilesetPreset>();
 
-        public Palette()
+
+
+        public TilesetWindow()
         {
             InitializeComponent();
-            flowLayoutPanelTilesetsPresets.Controls.Add(new TilesetPalette("NONE", 0, 0));
+            AddTilesetPreset("NONE", 0, 0);
             flowLayoutPanelTilesetsPresets.Controls[0].Hide();
-            comboBoxSelectedPreset.DataSource = flowLayoutPanelTilesetsPresets.Controls.Cast<TilesetPalette>().ToList();
-            comboBoxSelectedPreset.DisplayMember = "GetName";
         }
 
 
-        public void AddTilesetPalette(string path, int frameWidth, int frameHeight)
+        public void AddTilesetPreset(string path, int frameWidth, int frameHeight)
         {
-            var tp = new TilesetPalette(path, frameWidth, frameHeight);
+            var tp = new TilesetPreset(path, frameWidth, frameHeight);
+            TilesetPresets.Add(tp);
             flowLayoutPanelTilesetsPresets.Controls.Add(tp);
-            comboBoxSelectedPreset.DataSource = flowLayoutPanelTilesetsPresets.Controls.Cast<TilesetPalette>().ToList();
+            comboBoxSelectedPreset.DataSource = null;
+            comboBoxSelectedPreset.DataSource = TilesetPresets;
             comboBoxSelectedPreset.DisplayMember = "GetName";
         }
 
@@ -52,22 +55,16 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
             CurrentTile.Focus();
         }
 
-        private void textBoxScale_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            String listOfChars = "0123456789,\b\r\u001b";
-            if (e.KeyChar == '\r' || e.KeyChar == '\u001b')
-                textBoxScale_Leave(sender, e);
-            if (listOfChars.IndexOf(e.KeyChar) == -1)
-                e.Handled = true;
-            else if (e.KeyChar == ',' && textBoxScale.Text.IndexOf(',') != -1)
-                e.Handled = true;
-        }
 
         private void buttonAddTileset_Click(object sender, EventArgs e)
         {
             if (Map.CurrentMap == null) return;
-            Map.CurrentMap.Controls.Add(new Tileset());
-            listBoxExistingTilesets.DataSource = Map.CurrentMap.Controls.Cast<Tileset>().ToList();
+            var t = new Tileset();
+            t.Location = Map.CurrentMap.Location;
+            Map.CurrentMap.BuiltTilesets.Add(t);
+            Map.CurrentMap.Controls.Add(t);
+            listBoxExistingTilesets.DataSource = null;
+            listBoxExistingTilesets.DataSource = Map.CurrentMap.BuiltTilesets;
             listBoxExistingTilesets.DisplayMember = "tName";
             numericUpDownTilesetX.Maximum = Map.CurrentMap.Width - 6;
             numericUpDownTilesetY.Maximum = Map.CurrentMap.Height - 6;
@@ -75,6 +72,11 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 
         private void listBoxExistingTilesets_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (listBoxExistingTilesets.SelectedIndex == -1)
+            {
+                CurrentTileset = null;
+                return;
+            }
             if (groupBoxTilesetObject.Enabled == false) groupBoxTilesetObject.Enabled = true;
             CurrentTileset = (Tileset)listBoxExistingTilesets.SelectedItem;
             textBoxTilesetName.Text = CurrentTileset.tName;
@@ -89,6 +91,18 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 
 
 
+
+        private void textBoxScale_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            String listOfChars = "0123456789,\b\r\u001b";
+            if (e.KeyChar == '\r' || e.KeyChar == '\u001b')
+                textBoxScale_Leave(sender, e);
+            if (listOfChars.IndexOf(e.KeyChar) == -1)
+                e.Handled = true;
+            else if (e.KeyChar == ',' && textBoxScale.Text.IndexOf(',') != -1)
+                e.Handled = true;
+        }
+
         private void textBoxScale_Leave(object sender, EventArgs e)
         {
             if (textBoxScale.Text.Length == 0) textBoxScale.Text = "1,0";
@@ -98,6 +112,9 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
             if (Convert.ToDouble(textBoxScale.Text) == 0) textBoxScale.Text = "1,0";
             if (Convert.ToDouble(textBoxScale.Text) > 10) textBoxScale.Text = "10,0";
             if (Convert.ToDouble(textBoxScale.Text) < 0.1) textBoxScale.Text = "0,1";
+
+            CurrentTileset.tScale = Double.Parse(textBoxScale.Text);
+            CurrentTileset.Grid_Redraw();
         }
 
         private void textBoxTilesetName_KeyPress(object sender, KeyPressEventArgs e)
@@ -125,12 +142,12 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 
         private void comboBoxSelectedPreset_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (CurrentTileset == null) return;
             if (comboBoxSelectedPreset.SelectedIndex == 0)
-                CurrentTileset.tPreset = null;
+                CurrentTileset.ChangeTilesetPreset(null);
             else
             {
-                CurrentTileset.tPreset = (TilesetPalette)comboBoxSelectedPreset.SelectedItem;
-                CurrentTileset.SetGrid();
+                CurrentTileset.ChangeTilesetPreset((TilesetPreset)comboBoxSelectedPreset.SelectedItem);
             }
         }
     }

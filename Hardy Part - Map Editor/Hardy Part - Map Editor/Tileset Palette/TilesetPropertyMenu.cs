@@ -12,8 +12,8 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 {
     public partial class TilesetPropertyMenu : UserControl
     {
-        private TilesetPalette _Parent = null;
-        public TilesetPropertyMenu(TilesetPalette parent)
+        private TilesetPreset _Parent = null;
+        public TilesetPropertyMenu(TilesetPreset parent)
         {
             InitializeComponent();
             _Parent = parent;

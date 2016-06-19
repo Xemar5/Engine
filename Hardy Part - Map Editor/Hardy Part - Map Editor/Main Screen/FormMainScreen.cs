@@ -17,8 +17,8 @@ namespace Hardy_Part___Map_Editor
         public FormMainScreen()
         {
             InitializeComponent();
-            tabControlPanels.TabPages[1].Controls.Add(new Palette());
-            Palette.CurrentPalette = (Palette)tabControlPanels.TabPages[1].Controls[0];
+            tabControlPanels.TabPages[1].Controls.Add(new TilesetWindow());
+            TilesetWindow.CurrentTilesetWindow = (TilesetWindow)tabControlPanels.TabPages[1].Controls[0];
         }
 
         private void buttonNewMap_Click(object sender, EventArgs e)

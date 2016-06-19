@@ -1,6 +1,6 @@
 ﻿namespace Hardy_Part___Map_Editor.Tileset_Palette
 {
-    partial class Palette
+    partial class TilesetWindow
     {
         /// <summary> 
         /// Required designer variable.
@@ -33,6 +33,8 @@
             this.groupBoxTilesetPresets = new System.Windows.Forms.GroupBox();
             this.buttonAddTileset = new System.Windows.Forms.Button();
             this.groupBoxTilesetObject = new System.Windows.Forms.GroupBox();
+            this.textBoxTilesetName = new System.Windows.Forms.TextBox();
+            this.labelTilesetName = new System.Windows.Forms.Label();
             this.labelTilesetY = new System.Windows.Forms.Label();
             this.numericUpDownTilesetY = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownTilesetX = new System.Windows.Forms.NumericUpDown();
@@ -42,8 +44,6 @@
             this.comboBoxSelectedPreset = new System.Windows.Forms.ComboBox();
             this.labelScale = new System.Windows.Forms.Label();
             this.listBoxExistingTilesets = new System.Windows.Forms.ListBox();
-            this.labelTilesetName = new System.Windows.Forms.Label();
-            this.textBoxTilesetName = new System.Windows.Forms.TextBox();
             this.groupBoxTilesetPresets.SuspendLayout();
             this.groupBoxTilesetObject.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTilesetY)).BeginInit();
@@ -111,6 +111,24 @@
             this.groupBoxTilesetObject.TabStop = false;
             this.groupBoxTilesetObject.Text = "Current Tileset - None";
             // 
+            // textBoxTilesetName
+            // 
+            this.textBoxTilesetName.Location = new System.Drawing.Point(48, 21);
+            this.textBoxTilesetName.Name = "textBoxTilesetName";
+            this.textBoxTilesetName.Size = new System.Drawing.Size(108, 20);
+            this.textBoxTilesetName.TabIndex = 9;
+            this.textBoxTilesetName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxTilesetName_KeyPress);
+            this.textBoxTilesetName.Leave += new System.EventHandler(this.textBoxTilesetName_Leave);
+            // 
+            // labelTilesetName
+            // 
+            this.labelTilesetName.AutoSize = true;
+            this.labelTilesetName.Location = new System.Drawing.Point(7, 24);
+            this.labelTilesetName.Name = "labelTilesetName";
+            this.labelTilesetName.Size = new System.Drawing.Size(35, 13);
+            this.labelTilesetName.TabIndex = 8;
+            this.labelTilesetName.Text = "Name";
+            // 
             // labelTilesetY
             // 
             this.labelTilesetY.AutoSize = true;
@@ -123,6 +141,11 @@
             // numericUpDownTilesetY
             // 
             this.numericUpDownTilesetY.Location = new System.Drawing.Point(102, 87);
+            this.numericUpDownTilesetY.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownTilesetY.Name = "numericUpDownTilesetY";
             this.numericUpDownTilesetY.Size = new System.Drawing.Size(54, 20);
             this.numericUpDownTilesetY.TabIndex = 5;
@@ -130,6 +153,11 @@
             // numericUpDownTilesetX
             // 
             this.numericUpDownTilesetX.Location = new System.Drawing.Point(24, 87);
+            this.numericUpDownTilesetX.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownTilesetX.Name = "numericUpDownTilesetX";
             this.numericUpDownTilesetX.Size = new System.Drawing.Size(54, 20);
             this.numericUpDownTilesetX.TabIndex = 4;
@@ -190,25 +218,7 @@
             this.listBoxExistingTilesets.TabIndex = 5;
             this.listBoxExistingTilesets.SelectedIndexChanged += new System.EventHandler(this.listBoxExistingTilesets_SelectedIndexChanged);
             // 
-            // labelTilesetName
-            // 
-            this.labelTilesetName.AutoSize = true;
-            this.labelTilesetName.Location = new System.Drawing.Point(7, 24);
-            this.labelTilesetName.Name = "labelTilesetName";
-            this.labelTilesetName.Size = new System.Drawing.Size(35, 13);
-            this.labelTilesetName.TabIndex = 8;
-            this.labelTilesetName.Text = "Name";
-            // 
-            // textBoxTilesetName
-            // 
-            this.textBoxTilesetName.Location = new System.Drawing.Point(48, 21);
-            this.textBoxTilesetName.Name = "textBoxTilesetName";
-            this.textBoxTilesetName.Size = new System.Drawing.Size(108, 20);
-            this.textBoxTilesetName.TabIndex = 9;
-            this.textBoxTilesetName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxTilesetName_KeyPress);
-            this.textBoxTilesetName.Leave += new System.EventHandler(this.textBoxTilesetName_Leave);
-            // 
-            // Palette
+            // TilesetWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -217,7 +227,7 @@
             this.Controls.Add(this.groupBoxTilesetObject);
             this.Controls.Add(this.groupBoxTilesetPresets);
             this.Controls.Add(this.buttonImportTileset);
-            this.Name = "Palette";
+            this.Name = "TilesetWindow";
             this.Size = new System.Drawing.Size(336, 673);
             this.groupBoxTilesetPresets.ResumeLayout(false);
             this.groupBoxTilesetObject.ResumeLayout(false);

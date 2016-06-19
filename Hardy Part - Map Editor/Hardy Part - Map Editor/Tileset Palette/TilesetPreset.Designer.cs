@@ -1,6 +1,6 @@
 ﻿namespace Hardy_Part___Map_Editor.Tileset_Palette
 {
-    partial class TilesetPalette
+    partial class TilesetPreset
     {
         /// <summary> 
         /// Required designer variable.

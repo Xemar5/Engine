@@ -75,11 +75,11 @@
     <Compile Include="Tileset Palette\Tileset.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tileset Palette\TilesetPalette.cs">
+    <Compile Include="Tileset Palette\TilesetPreset.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Tileset Palette\TilesetPalette.Designer.cs">
-      <DependentUpon>TilesetPalette.cs</DependentUpon>
+    <Compile Include="Tileset Palette\TilesetPreset.Designer.cs">
+      <DependentUpon>TilesetPreset.cs</DependentUpon>
     </Compile>
     <Compile Include="Tileset Palette\TilesetWindow.cs">
       <SubType>UserControl</SubType>
@@ -111,8 +111,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Tileset Palette\TilesetPalette.resx">
-      <DependentUpon>TilesetPalette.cs</DependentUpon>
+    <EmbeddedResource Include="Tileset Palette\TilesetPreset.resx">
+      <DependentUpon>TilesetPreset.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Tileset Palette\TilesetWindow.resx">
       <DependentUpon>TilesetWindow.cs</DependentUpon>
