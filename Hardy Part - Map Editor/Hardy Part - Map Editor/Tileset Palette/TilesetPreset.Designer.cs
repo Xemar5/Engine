@@ -72,7 +72,7 @@
             this.labelTileSize.TabIndex = 4;
             this.labelTileSize.Text = "TileSize";
             // 
-            // Tileset
+            // TilesetPreset
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -82,7 +82,7 @@
             this.Controls.Add(this.buttonTilesetOptions);
             this.Controls.Add(this.labelTilesetName);
             this.Margin = new System.Windows.Forms.Padding(0);
-            this.Name = "Tileset";
+            this.Name = "TilesetPreset";
             this.Size = new System.Drawing.Size(300, 78);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -92,7 +92,7 @@
         #endregion
         private System.Windows.Forms.Label labelTilesetName;
         private System.Windows.Forms.Button buttonTilesetOptions;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelTiles;
         private System.Windows.Forms.Label labelTileSize;
+        public System.Windows.Forms.FlowLayoutPanel flowLayoutPanelTiles;
     }
 }

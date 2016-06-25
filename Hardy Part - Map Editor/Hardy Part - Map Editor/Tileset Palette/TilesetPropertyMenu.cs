@@ -37,6 +37,22 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 
         private void buttonTilesetRemove_Click(object sender, EventArgs e)
         {
+            if (Map.CurrentMap != null)
+            {
+                foreach (Tileset t in Map.CurrentMap.Entities)
+                {
+                    if (t == null) continue;
+                    if (t.Preset == _Parent) t.Preset = null;
+                }
+            }
+
+            TilesetWindow.CurrentTilesetWindow.TilesetPresets.Remove(_Parent);
+
+            TilesetWindow.CurrentTilesetWindow.comboBoxSelectedPreset.SelectedIndex = 0;
+            TilesetWindow.CurrentTilesetWindow.comboBoxSelectedPreset.DataSource = null;
+            TilesetWindow.CurrentTilesetWindow.comboBoxSelectedPreset.DataSource = TilesetWindow.CurrentTilesetWindow.TilesetPresets;
+            TilesetWindow.CurrentTilesetWindow.comboBoxSelectedPreset.DisplayMember = "GetName";
+
             _Parent.Delete();
             _Parent.Dispose();
             this.Dispose();

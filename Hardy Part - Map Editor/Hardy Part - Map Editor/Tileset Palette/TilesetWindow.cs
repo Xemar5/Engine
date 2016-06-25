@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Hardy_Part___Map_Editor.Dialog_Boxes;
 using System.IO;
+using System.Globalization;
 
 namespace Hardy_Part___Map_Editor.Tileset_Palette
 {
@@ -17,23 +18,44 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
         public static TilesetWindow CurrentTilesetWindow = null;
         public PictureBox CurrentTile = null;
         public Tileset CurrentTileset = null;
-        public List<TilesetPreset> TilesetPresets = new List<TilesetPreset>();
-
+        public List<TilesetPreset> TilesetPresets = null;
+        private TilesetPreset higlitedTilesetPreset = null;
 
 
         public TilesetWindow()
         {
             InitializeComponent();
+            //pictureBoxDelete_Paint();
+            TilesetPresets = new List<TilesetPreset>();
+            existingTilesetList.dataGridViewExistingTilesets.SelectionChanged += dataGridViewExistingTilesets_SelectionChanged;
+            //listBoxExistingTilesets.DataSource = null;
             AddTilesetPreset("NONE", 0, 0);
             flowLayoutPanelTilesetsPresets.Controls[0].Hide();
         }
 
+        public void TilesetWindowReset()
+        {
+            ChangeCurrentTileset();
+            groupBoxTilesetObject.Enabled = false;
+            comboBoxSelectedPreset.SelectedIndex = 0;
+            existingTilesetList.UpdateList();
+            //UpdateExistingTilesets();
+            buttonAddTileset.Enabled = false;
+            Tileset.IdCount = 0;
+            if (higlitedTilesetPreset != null)
+                higlitedTilesetPreset.BackColor = SystemColors.ControlDark;
+            higlitedTilesetPreset = null;
+            SelectTile(null);
+        }
 
         public void AddTilesetPreset(string path, int frameWidth, int frameHeight)
         {
-            var tp = new TilesetPreset(path, frameWidth, frameHeight);
-            TilesetPresets.Add(tp);
-            flowLayoutPanelTilesetsPresets.Controls.Add(tp);
+            if (!String.IsNullOrWhiteSpace(path))
+            {
+                var tp = new TilesetPreset(path, frameWidth, frameHeight);
+                TilesetPresets.Add(tp);
+                flowLayoutPanelTilesetsPresets.Controls.Add(tp);
+            }
             comboBoxSelectedPreset.DataSource = null;
             comboBoxSelectedPreset.DataSource = TilesetPresets;
             comboBoxSelectedPreset.DisplayMember = "GetName";
@@ -48,11 +70,19 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 
         public void SelectTile(PictureBox tile)
         {
-            if(CurrentTile != null)
+            if (CurrentTile != null)
                 CurrentTile.BackColor = Control.DefaultBackColor;
-            CurrentTile = tile;
-            CurrentTile.BackColor = Color.Green;
-            CurrentTile.Focus();
+
+            if (higlitedTilesetPreset == null)
+                CurrentTile = null;
+            else if (higlitedTilesetPreset.flowLayoutPanelTiles.Controls.Contains(tile))
+                CurrentTile = tile;
+
+            if (CurrentTile != null)
+            {
+                CurrentTile.BackColor = Color.Green;
+                CurrentTile.Focus();
+            }
         }
 
 
@@ -60,30 +90,45 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
         {
             if (Map.CurrentMap == null) return;
             var t = new Tileset();
-            t.Location = Map.CurrentMap.Location;
-            Map.CurrentMap.BuiltTilesets.Add(t);
-            Map.CurrentMap.Controls.Add(t);
-            listBoxExistingTilesets.DataSource = null;
-            listBoxExistingTilesets.DataSource = Map.CurrentMap.BuiltTilesets;
-            listBoxExistingTilesets.DisplayMember = "tName";
+            Map.CurrentMap.Entities.Add(t);
+            existingTilesetList.UpdateList();
+            existingTilesetList.SelectedTileset = t;
+            buttonRemoveTileset.Enabled = true;
+            //UpdateExistingTilesets();
+            //listBoxExistingTilesets.SelectedIndex = listBoxExistingTilesets.Items.Count - 1;
             numericUpDownTilesetX.Maximum = Map.CurrentMap.Width - 6;
             numericUpDownTilesetY.Maximum = Map.CurrentMap.Height - 6;
         }
 
-        private void listBoxExistingTilesets_SelectedIndexChanged(object sender, EventArgs e)
+        private void dataGridViewExistingTilesets_SelectionChanged(object sender, EventArgs e)
         {
-            if (listBoxExistingTilesets.SelectedIndex == -1)
-            {
-                CurrentTileset = null;
-                return;
-            }
+            ChangeCurrentTileset();
+        }
+
+
+        private void ChangeCurrentTileset()
+        {
+            //if (existingTilesetList1.SelectedTileset == null)
+            //{
+            //    CurrentTileset = null;
+            //    CurrentTile = null;
+            //    return;
+            //}
             if (groupBoxTilesetObject.Enabled == false) groupBoxTilesetObject.Enabled = true;
-            CurrentTileset = (Tileset)listBoxExistingTilesets.SelectedItem;
-            textBoxTilesetName.Text = CurrentTileset.tName;
-            if (CurrentTileset.tPreset == null) comboBoxSelectedPreset.SelectedIndex = 0;
-            else comboBoxSelectedPreset.SelectedItem = CurrentTileset.tPreset;
-            textBoxScale.Text = CurrentTileset.tScale.ToString();
-            textBoxScale_Leave(sender, e);
+            CurrentTileset = existingTilesetList.SelectedTileset;
+            if (CurrentTileset == null) return;
+            textBoxTilesetName.Text = CurrentTileset.Name;
+            numericUpDownTilesetX.Value = CurrentTileset.X;
+            numericUpDownTilesetY.Value = CurrentTileset.Y;
+            checkBoxTilesetVisible.Checked = CurrentTileset.Visible;
+
+            numericUpDownTilesetLayer.ValueChanged -= numericUpDownTilesetLayer_ValueChanged;
+            numericUpDownTilesetLayer.Value = (Decimal)CurrentTileset.Layer;
+            numericUpDownTilesetLayer.ValueChanged += numericUpDownTilesetLayer_ValueChanged;
+
+            if (CurrentTileset.Preset == null) comboBoxSelectedPreset.SelectedIndex = 0;
+            else comboBoxSelectedPreset.SelectedItem = CurrentTileset.Preset;
+            numericUpDownTilesetScale.Value = (Decimal)CurrentTileset.Scale;
         }
 
 
@@ -91,31 +136,6 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
 
 
 
-
-        private void textBoxScale_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            String listOfChars = "0123456789,\b\r\u001b";
-            if (e.KeyChar == '\r' || e.KeyChar == '\u001b')
-                textBoxScale_Leave(sender, e);
-            if (listOfChars.IndexOf(e.KeyChar) == -1)
-                e.Handled = true;
-            else if (e.KeyChar == ',' && textBoxScale.Text.IndexOf(',') != -1)
-                e.Handled = true;
-        }
-
-        private void textBoxScale_Leave(object sender, EventArgs e)
-        {
-            if (textBoxScale.Text.Length == 0) textBoxScale.Text = "1,0";
-            if (textBoxScale.Text.IndexOf(',') == -1) textBoxScale.Text += ',';
-            if (textBoxScale.Text.Last() == ',') textBoxScale.Text += '0';
-            if (textBoxScale.Text.First() == ',') textBoxScale.Text.Insert(0, "0");
-            if (Convert.ToDouble(textBoxScale.Text) == 0) textBoxScale.Text = "1,0";
-            if (Convert.ToDouble(textBoxScale.Text) > 10) textBoxScale.Text = "10,0";
-            if (Convert.ToDouble(textBoxScale.Text) < 0.1) textBoxScale.Text = "0,1";
-
-            CurrentTileset.tScale = Double.Parse(textBoxScale.Text);
-            CurrentTileset.Grid_Redraw();
-        }
 
         private void textBoxTilesetName_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -126,6 +146,74 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
                 e.Handled = true;
         }
 
+
+        private void comboBoxSelectedPreset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CurrentTileset == null) return;
+            if (comboBoxSelectedPreset.SelectedIndex == -1) return;
+            if (comboBoxSelectedPreset.SelectedIndex == 0)
+            {
+                CurrentTileset.Preset = null;
+                if(higlitedTilesetPreset != null)
+                    higlitedTilesetPreset.BackColor = SystemColors.ControlDark;
+                higlitedTilesetPreset = null;
+                SelectTile(null);
+            }
+            else
+            {
+                var lastHighlight = higlitedTilesetPreset;
+                CurrentTileset.Preset = (TilesetPreset)comboBoxSelectedPreset.SelectedItem;
+                if (higlitedTilesetPreset != null)
+                    higlitedTilesetPreset.BackColor = SystemColors.ControlDark;
+                higlitedTilesetPreset = (TilesetPreset)comboBoxSelectedPreset.SelectedItem;
+                higlitedTilesetPreset.BackColor = Color.Green;
+                if (lastHighlight != higlitedTilesetPreset && higlitedTilesetPreset.flowLayoutPanelTiles.Controls.Count >= 0)
+                    SelectTile(higlitedTilesetPreset.flowLayoutPanelTiles.Controls[0] as PictureBox);
+            }
+            Map.CurrentMap.Draw();
+            //CurrentTileset.Drawraw();
+        }
+
+        private void numericUpDownTilesetX_ValueChanged(object sender, EventArgs e)
+        {
+            if (CurrentTileset != null)
+                CurrentTileset.X = (int)numericUpDownTilesetX.Value;
+            Map.CurrentMap.Draw();
+        }
+
+        private void numericUpDownTilesetY_ValueChanged(object sender, EventArgs e)
+        {
+            if (CurrentTileset != null)
+                CurrentTileset.Y = (int)numericUpDownTilesetY.Value;
+            Map.CurrentMap.Draw();
+        }
+
+        //private void pictureBoxDelete_Click(object sender, EventArgs e)
+        //{
+        //    SelectTile(pictureBoxDelete);
+        //}
+
+        //private void pictureBoxDelete_Paint()
+        //{
+        //    pictureBoxDelete.Image = new Bitmap(48, 48);
+        //    using (Graphics g = Graphics.FromImage(pictureBoxDelete.Image))
+        //    {
+        //        g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+        //        Pen p = new Pen(Color.Maroon, 5);
+        //        g.DrawLine(p, new Point(10, 10), new Point(38, 38));
+        //        g.DrawLine(p, new Point(38, 10), new Point(10, 38));
+        //        p.Dispose();
+        //    }
+        //}
+
+        private void numericUpDownTilesetScale_ValueChanged(object sender, EventArgs e)
+        {
+            CurrentTileset.Scale = (Double)numericUpDownTilesetScale.Value;
+            Map.CurrentMap.Draw();
+            //CurrentTileset.Drawraw();
+        }
+
+
         private void textBoxTilesetName_Leave(object sender, EventArgs e)
         {
             if (CurrentTileset == null) return;
@@ -133,22 +221,56 @@ namespace Hardy_Part___Map_Editor.Tileset_Palette
             while (!String.IsNullOrEmpty(textBoxTilesetName.Text) && Char.IsNumber(textBoxTilesetName.Text.First()))
                 textBoxTilesetName.Text = textBoxTilesetName.Text.Remove(0, 1);
             if (String.IsNullOrEmpty(textBoxTilesetName.Text))
-                textBoxTilesetName.Text = CurrentTileset.tName;
+                textBoxTilesetName.Text = CurrentTileset.Name;
 
-            CurrentTileset.tName = textBoxTilesetName.Text;
-            listBoxExistingTilesets.DataSource = Map.CurrentMap.Controls.Cast<Tileset>().ToList();
-            listBoxExistingTilesets.DisplayMember = "tName";
+            CurrentTileset.Name = textBoxTilesetName.Text;
+            existingTilesetList.UpdateList();
         }
 
-        private void comboBoxSelectedPreset_SelectedIndexChanged(object sender, EventArgs e)
+        private void numericUpDownTilesetLayer_ValueChanged(object sender, EventArgs e)
         {
-            if (CurrentTileset == null) return;
-            if (comboBoxSelectedPreset.SelectedIndex == 0)
-                CurrentTileset.ChangeTilesetPreset(null);
-            else
+            CurrentTileset.Layer = (int)numericUpDownTilesetLayer.Value;
+            existingTilesetList.UpdateList();
+            Map.CurrentMap.Draw();
+            //UpdateExistingTilesets();
+
+        }
+
+        private void checkBoxShowGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            if(Map.CurrentMap != null && CurrentTileset != null)
+                Map.CurrentMap.Draw();
+            //CurrentTileset.Drawraw();
+        }
+
+        private void checkBoxTilesetVisible_CheckedChanged(object sender, EventArgs e)
+        {
+            CurrentTileset.Visible = checkBoxTilesetVisible.Checked;
+            //CurrentTileset.Drawraw();
+            existingTilesetList.UpdateList();
+        }
+
+        private void buttonRemoveTileset_Click(object sender, EventArgs e)
+        {
+            Map.CurrentMap.Entities.Remove(CurrentTileset);
+            existingTilesetList.UpdateList();
+            if (higlitedTilesetPreset != null)
+                higlitedTilesetPreset.BackColor = SystemColors.ControlDark;
+            higlitedTilesetPreset = null;
+            SelectTile(null);
+            if(Map.CurrentMap.Entities.Where(s => (s as Tileset) != null).ToList().Count == 0)
             {
-                CurrentTileset.ChangeTilesetPreset((TilesetPreset)comboBoxSelectedPreset.SelectedItem);
+                //listBoxExistingTilesets.DataSource = null;
+                groupBoxTilesetObject.Enabled = false;
+                existingTilesetList.Enabled = false;
+                Tileset.IdCount = 0;
+                buttonRemoveTileset.Enabled = false;
+                return;
             }
+            ChangeCurrentTileset();
+            Map.CurrentMap.Draw();
+
+            //UpdateExistingTilesets();
         }
     }
 }
