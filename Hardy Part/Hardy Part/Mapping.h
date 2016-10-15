@@ -4,6 +4,7 @@
 #include "Input.h"
 #include <vector>
 #include <string>
+#include <regex>
 
 
 std::pair<std::string, Input> operator+(std::string name, const Input& input);
@@ -27,7 +28,7 @@ public:
 	//*** - src_str - the line of string to read
 	//*** - dst_str - the string this function writes the action name to
 	//*** - binding - the Input this function sets
-	static bool Read_Line(bool is_action, std::string& src_str, std::string* const dst_str = nullptr, Input* const binding = nullptr);
+	static int Read_Line(std::string& src_str, std::string* const dst_str = nullptr, Input* const binding = nullptr);
 	//*** Reads the file from given path and saves all recognised action-inputs pairs
 	//***	as a map; if no action was read succesfuly, but the name of a map is,
 	//***	creates an empty map of this name
@@ -54,6 +55,8 @@ public:
 	//*** Iterator to the past-the-last element of __Map
 	std::map<std::string, Input>::const_iterator end() const { return __Map.end(); };
 private:
+	//*** The regex to convert mapping line to Input action
+	static std::regex __Regex;
 	//*** Converts a map of mapping names and Input maps to the program-readable string and writes it to the end of the given file
 	//*** - path - the keybinds filepath
 	//*** - maps - a map of mapping names and Input maps

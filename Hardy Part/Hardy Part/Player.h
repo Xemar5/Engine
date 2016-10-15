@@ -19,6 +19,8 @@ public:
 	static Player* Get(int index);
 	//*** Removes the player from the game
 	static bool Remove(Player* player);
+	//*** Removes all players from the game
+	static bool RemoveAll();
 	//*** Returns an existing player with a given index if it exists
 	static int Get_First_Unused_Index();
 	//*** Sets the controller of a player based on the given device index
@@ -38,9 +40,12 @@ public:
 	//*** The maximum number of players
 	static unsigned Max_Players;
 private:
+	//*** The index of this player
 	int __Index = -1;
 	//*** The entity this Player controlls
 	std::shared_ptr<Entity> __Entity = nullptr;
+	//*** The name of the controller this player uses
+	std::string __ControllerName = "";
 
 	//*** Vecotr of all used input presets from a file
 	//*** An used input preset can't be used again
@@ -54,5 +59,7 @@ private:
 	static void __Events();
 
 	friend class System;
+	friend class State;
+	friend class Gamepad;
 };
 

@@ -54,24 +54,30 @@
     <Compile Include="Entity Palette\EntityWindow.Designer.cs">
       <DependentUpon>EntityWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Entity Palette\Entity.cs" />
     <Compile Include="Entity Palette\ExistingEntityList.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Entity Palette\ExistingEntityList.Designer.cs">
       <DependentUpon>ExistingEntityList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Entity Palette\Entity.cs" />
+    <Compile Include="Tab Tileset\TabLayoutTileset.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tab Tileset\TabLayoutTileset.Designer.cs">
+      <DependentUpon>TabLayoutTileset.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tileset Palette\ExistingTilesetList.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Tileset Palette\ExistingTilesetList.Designer.cs">
       <DependentUpon>ExistingTilesetList.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tileset Palette\FormLoadTileset.cs">
+    <Compile Include="Dialog Boxes\FormLoadTexture.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tileset Palette\FormLoadTileset.Designer.cs">
-      <DependentUpon>FormLoadTileset.cs</DependentUpon>
+    <Compile Include="Dialog Boxes\FormLoadTexture.Designer.cs">
+      <DependentUpon>FormLoadTexture.cs</DependentUpon>
     </Compile>
     <Compile Include="Main Screen\FormMainScreen.cs">
       <SubType>Form</SubType>
@@ -93,7 +99,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tileset Palette\RecentTileset.cs" />
+    <Compile Include="Dialog Boxes\RecentTextures.cs" />
     <Compile Include="Tileset Palette\Tileset.cs" />
     <Compile Include="Tileset Palette\TilesetPreset.cs">
       <SubType>UserControl</SubType>
@@ -125,8 +131,8 @@
     <EmbeddedResource Include="Tileset Palette\ExistingTilesetList.resx">
       <DependentUpon>ExistingTilesetList.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tileset Palette\FormLoadTileset.resx">
-      <DependentUpon>FormLoadTileset.cs</DependentUpon>
+    <EmbeddedResource Include="Dialog Boxes\FormLoadTexture.resx">
+      <DependentUpon>FormLoadTexture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Main Screen\FormMainScreen.resx">
       <DependentUpon>FormMainScreen.cs</DependentUpon>

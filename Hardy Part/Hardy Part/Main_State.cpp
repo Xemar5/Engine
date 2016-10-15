@@ -7,7 +7,7 @@
 #include "Device.h"
 #include "Sword.h"
 #include "Movement.h"
-#include "Tileset.h"
+#include "Generic.h"
 #include "Texture.h"
 #include <iostream>
 #include <ctime>
@@ -21,32 +21,33 @@ void Main_Menu::Create()
 {
 	for (auto pl : Player::Get_Players())
 		if (auto ent = Player::Get_Entity(pl.get()))
-			ent->Get_Sprite()->Scale = 1;
+			ent->Display()->Scale = 1;
 
-	auto ttt = State::Add_Entity<Tileset>
-		(
-			Tileset::Set(Texture::Load("imgs/orange-tile.png", 240, 24, 24, 24, 0, 0),
-			{
-				{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 },
-				{ 0,0,0,0,2,2,5,0,0,0,0,0,0,5,5,3,3 },
-				{ 0,0,2,2,4,6,2,0,0,0,0,0,5,4,9,9,6 },
-				{ 0,0,4,7,6,0,2,0,2,2,4,0,2,6,0,0,0 },
-				{ 0,0,3,0,0,0,5,4,2,6,2,0,4,0,0,0,0 },
-				{ 0,0,3,0,0,0,6,8,6,0,2,0,3,4,4,0,0 },
-				{ 0,0,2,0,0,2,4,5,0,2,4,0,4,8,5,0,0 },
-				{ 0,0,2,2,3,2,7,5,0,5,6,0,5,3,4,0,0 },
-				{ 0,0,6,6,8,9,0,3,0,4,0,0,6,3,6,0,0 },
-				{ 0,0,0,4,2,5,0,2,0,2,3,4,0,3,4,0,0 },
-				{ 0,0,0,3,6,5,3,4,0,6,9,5,0,6,2,0,0 },
-				{ 4,2,3,3,0,6,9,6,0,0,0,2,2,4,2,0,0 },
-				{ 6,7,7,9,0,0,0,0,0,0,0,7,8,8,6,0,0 },
-				{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
-			})
-			);
-	ttt->X = Screen::Get_Screen_Size().first / 2;
-	ttt->Y = Screen::Get_Screen_Size().second / 2;
+	auto tileset = State::Add_Entity<Entity>(0);
+	Generic::Load(
+		{
+			{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
+			{ -1,-1,-1,-1, 2, 2, 5,-1,-1,-1,-1,-1,-1, 5, 5, 3, 3 },
+			{ -1,-1, 2, 2, 4, 6, 2,-1,-1,-1,-1,-1, 5, 4, 9, 9, 6 },
+			{ -1,-1, 4, 7, 6,-1, 2,-1, 2, 2, 4,-1, 2, 6,-1,-1,-1 },
+			{ -1,-1, 3,-1,-1,-1, 5, 4, 2, 6, 2,-1, 4,-1,-1,-1,-1 },
+			{ -1,-1, 3,-1,-1,-1, 6, 8, 6,-1, 2,-1, 3, 4, 4,-1,-1 },
+			{ -1,-1, 2,-1,-1, 2, 4, 5,-1, 2, 4,-1, 4, 8, 5,-1,-1 },
+			{ -1,-1, 2, 2, 3, 2, 7, 5,-1, 5, 6,-1, 5, 3, 4,-1,-1 },
+			{ -1,-1, 6, 6, 8, 9,-1, 3,-1, 4,-1,-1, 6, 3, 6,-1,-1 },
+			{ -1,-1,-1, 4, 2, 5,-1, 2,-1, 2, 3, 4,-1, 3, 4,-1,-1 },
+			{ -1,-1,-1, 3, 6, 5, 3, 4,-1, 6, 9, 5,-1, 6, 2,-1,-1 },
+			{  4, 2, 3, 3,-1, 6, 9, 6,-1,-1,-1, 2, 2, 4, 2,-1,-1 },
+			{  6, 7, 7, 9,-1,-1,-1,-1,-1,-1,-1, 7, 8, 8, 6,-1,-1 },
+			{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 }
+		},
+		tileset.get(), "imgs/orange-tile.png", 240, 24, 0, 0, 24, 24);
+
+	tileset->X = Screen::Get_Screen_Size().first / 2;
+	tileset->Y = Screen::Get_Screen_Size().second / 2;
+	Entity::Register(tileset.get(), "tileset");
 	//Output_Handler::Output << ttt->X << std::endl;
-	//Output_Handler::Output << ttt->Get_Texture()->Get_SDL_Starting_Point().x << std::endl;
+	//Output_Handler::Output << ttt->Display()->Get_SDL_Starting_Point().x << std::endl;
 
 	int midx = Screen::Get_Screen_Size().first / 2 - 195;
 	int midy = Screen::Get_Screen_Size().second / 2 + 110;
@@ -123,7 +124,7 @@ void Main_Menu::Create()
 	//		{
 	//			auto* w = State::Add_Entity<Wall<Wall_Enum::Cobble>>(i);
 	//			w->X = wp.first;
-	//			w->Y = wp.second + Get_Tilesets()[i]->Get_Texture()->Get_Frame_Size().second;
+	//			w->Y = wp.second + Get_Tilesets()[i]->Display()->Get_Frame_Size().second;
 	//			int r = rand()%3;
 	//			switch (r)
 	//			{
@@ -136,22 +137,24 @@ void Main_Menu::Create()
 }
 void Main_Menu::Update()
 {
-	for (auto tileset : Get_Entities())
-	{
-		if (!tileset->As<Tileset>()) continue;
+	//for (auto tileset : Get_Entities())
+	//{
+	//	if (!dynamic_cast<Generic*>(tileset->Get_Texture())) continue;
+	auto tileset = Entity::Get("tileset");
 		for (auto ent : Get_Entities())
 		{
-			if (tileset == ent) continue;
+			if (tileset == ent.get()) continue;
 			if (!Get_Entities().size()) break;
-			auto tile = tileset->As<Tileset>()->Which_Tile((int)ent->X, (int)ent->Y);
+			auto tile = Generic::Which_Tile(tileset, (int)ent->X, (int)ent->Y);
 
-			if (tile == 0 || tile >= 6)
+			if (tile <= 0 || tile >= 6)
 			{
 				ent->X = Screen::Get_Screen_Size().first / 2 - 190;
 				ent->Y = Screen::Get_Screen_Size().second / 2 + 110;
 			}
 		}
-	}
+	//}
+
 	Uint32 px = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
 	Uint32 py = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
 	px = (Uint32)((double)px / (double)Screen::Get_Screen_Size().first * 255);

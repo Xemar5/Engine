@@ -20,7 +20,7 @@ Player* Player::Set(int index)
 	}
 
 	if (index < 0) index = Player::Get_First_Unused_Index();
-	if (index >= Player::Max_Players)
+	if (index >= (int)Player::Max_Players)
 	{
 		Output_Handler::Output << "MSG Player::Set : Exceding the max number of players (" << Player::Max_Players << ")\n";
 		return nullptr;
@@ -106,10 +106,18 @@ bool Player::Remove(Player * player)
 	for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
 		if (Player::Get_Players()[i].get() == player)
 		{
+			__Players[i]->__Entity = nullptr;
 			__Players.erase(__Players.begin() + i);
 			return true;
 		}
 	return false;
+}
+
+bool Player::RemoveAll()
+{
+	while (__Players.size())
+		if(!Remove(__Players[__Players.size() - 1].get())) return false;
+	return true;
 }
 
 int Player::Get_First_Unused_Index()
@@ -137,8 +145,8 @@ bool Player::Set_Controller(Player * player, Sint32 controller)
 	//	Output_Handler::Error << "Player::Set_Controller : No controller supplied\n";
 	//	return false;
 	//}
-
 	player->Controller = controller;
+	player->__ControllerName = Device::Get(controller).Name();
 	return true;
 }
 
@@ -200,8 +208,8 @@ void Player::__Update()
 			vx += sgn(ip["laright"].Held()) - sgn(ip["laleft"].Held());
 
 
-			if (vx < 0) p->__Entity->Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
-			if (vx > 0) p->__Entity->Get_Sprite()->Flip = SDL_FLIP_NONE;
+			if (vx < 0) p->__Entity->Display()->Flip = SDL_FLIP_HORIZONTAL;
+			if (vx > 0) p->__Entity->Display()->Flip = SDL_FLIP_NONE;
 			Movement::Add_Force(p->__Entity.get(), vx, vy);
 
 

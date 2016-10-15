@@ -11,34 +11,34 @@ void GameMenu_State::Create()
 {
 	for (auto pl : Player::Get_Players())
 		if (auto ent = Player::Get_Entity(pl.get()))
-			ent->Get_Sprite()->Scale = 1.5;
+			ent->Display()->Scale = 1.5;
 
 	int xoffs = 40;
 	int yoffs = 40;
 
 	auto cs1 = State::Add_Entity(1);
-	Sprite::Create(cs1.get(), Texture::Load("imgs/Character_Selection.png", 80, 48, 0, 0, 0, 0));
+	Texture::Load(cs1.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
 	cs1->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
 	cs1->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
-	cs1->Get_Sprite()->Scale = 1.5;
+	cs1->Display()->Scale = 1.5;
 
 	auto cs2 = State::Add_Entity(1);
-	Sprite::Create(cs2.get(), Texture::Load("imgs/Character_Selection.png", 80, 48, 0, 0, 0, 0));
+	Texture::Load(cs2.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
 	cs2->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
 	cs2->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
-	cs2->Get_Sprite()->Scale = 1.5;
+	cs2->Display()->Scale = 1.5;
 
 	auto cs3 = State::Add_Entity(1);
-	Sprite::Create(cs3.get(), Texture::Load("imgs/Character_Selection.png", 80, 48, 0, 0, 0, 0));
+	Texture::Load(cs3.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
 	cs3->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
 	cs3->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
-	cs3->Get_Sprite()->Scale = 1.5;
+	cs3->Display()->Scale = 1.5;
 
 	auto cs4 = State::Add_Entity(1);
-	Sprite::Create(cs4.get(), Texture::Load("imgs/Character_Selection.png", 80, 48, 0, 0, 0, 0));
+	Texture::Load(cs4.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
 	cs4->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
 	cs4->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
-	cs4->Get_Sprite()->Scale = 1.5;
+	cs4->Display()->Scale = 1.5;
 }
 
 void GameMenu_State::Update()
@@ -48,7 +48,8 @@ void GameMenu_State::Update()
 Player* Add_New_Player(Sint32 controller)
 {
 	for (auto& pl : Player::Get_Players())
-		if (pl->Controller == controller) return nullptr;
+		if (pl->Controller == controller)
+			return nullptr;
 	if (auto p = Player::Set())
 	{
 		Player::Set_Controller(p, controller);
@@ -76,8 +77,8 @@ void GameMenu_State::Events()
 
 			if (p->Controller == Device::Which())
 			{
-				Player::Remove(p.get());
 				State::Remove_Entity(Player::Get_Entity(p.get()).get());
+				Player::Remove(p.get());
 			}
 	}
 

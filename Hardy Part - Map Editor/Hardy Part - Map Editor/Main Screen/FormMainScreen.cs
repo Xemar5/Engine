@@ -39,9 +39,9 @@ namespace Hardy_Part___Map_Editor
                 EntityWindow.CurrentEntityWindow.buttonAddEntity.Enabled = true;
                 EntityWindow.CurrentEntityWindow.existingEntityList.Enabled = true;
 
-                TilesetWindow.CurrentTilesetWindow.TilesetWindowReset();
+                //TilesetWindow.CurrentTilesetWindow.TilesetWindowReset();
                 TilesetWindow.CurrentTilesetWindow.buttonAddTileset.Enabled = true;
-                TilesetWindow.CurrentTilesetWindow.existingTilesetList.Enabled = true;
+                TilesetWindow.CurrentTilesetWindow.existingEntityList.Enabled = true;
             }
             else Map.CurrentMap = lastMap;
         }

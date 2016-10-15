@@ -66,31 +66,13 @@
     <ClCompile Include="Sword.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Tileset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CobbleWall.cpp">
       <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_State.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu_State.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="Character.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files\Texture Handler</Filter>
-    </ClCompile>
     <ClCompile Include="Screen.cpp">
-      <Filter>Source Files\Texture Handler</Filter>
-    </ClCompile>
-    <ClCompile Include="Animation.cpp">
-      <Filter>Source Files\Texture Handler</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Texture Handler</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
@@ -101,9 +83,6 @@
     </ClCompile>
     <ClCompile Include="Audio.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameMenu_State.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="Output_Handler.cpp">
       <Filter>Source Files</Filter>
@@ -123,13 +102,40 @@
     <ClCompile Include="Mapping.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Controlls_State.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
     <ClCompile Include="State.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="Textfield.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Controlls_State.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMenu_State.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Main_State.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu_State.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Input2.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Source Files\Texture Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files\Texture Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Texture Handler</Filter>
+    </ClCompile>
+    <ClCompile Include="Generic.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
@@ -155,12 +161,6 @@
     <ClInclude Include="Wall.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Menu_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Main_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="Screen.h">
       <Filter>Header Files\Texture Handler</Filter>
     </ClInclude>
@@ -181,9 +181,6 @@
     </ClInclude>
     <ClInclude Include="Audio.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameMenu_State.h">
-      <Filter>Header Files\States</Filter>
     </ClInclude>
     <ClInclude Include="Output_Handler.h">
       <Filter>Header Files</Filter>
@@ -206,23 +203,40 @@
     <ClInclude Include="State.h">
       <Filter>Header Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="Controlls_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="Textfield.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Tileset.h">
+    <ClInclude Include="Generic.h">
       <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Controlls_State.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMenu_State.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Main_State.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu_State.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Input2.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="keybinds">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="packages.config" />
     <None Include="..\packages\jQuery.1.9.1\tools\jquery-1.9.1.intellisense.js">
       <Filter>Scripts</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="keybinds.txt">
+      <Filter>Header Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

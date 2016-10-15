@@ -45,8 +45,6 @@ public:
 
 	//*** Adds the entity to screen renderer queue
 	static bool Add(std::shared_ptr<Entity> ent);
-	//*** Use this after an entity changing layer
-	static bool Change_Layer(Entity* ent);
 
 	////*** Adds the Tileset to screen renderer queue
 	//static bool Add(std::shared_ptr<Tileset> tileset, unsigned layer);
@@ -83,10 +81,12 @@ private:
 	//*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
 	//*** It empties itself every frame update\
 	//*** Each sub-vector represents a layer
-	static std::vector<std::shared_ptr<Entity>> __Entities;
+	static std::vector<std::vector<std::shared_ptr<Entity>>> __Entities;
 
 	////*** A pointer to the Tileset which is to be drawn on the screen the next frame update
 	////*** It empties itself every frame update
 	//static std::vector<std::vector<std::shared_ptr<Tileset>>> __Tilesets;
 
+	friend class State;
+	friend class Entity;
 };

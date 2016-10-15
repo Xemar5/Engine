@@ -7,7 +7,7 @@ template <typename T> T sgn(T val) {
 	return (T(0) < val) - (val < T(0));
 }
 
-std::shared_ptr<Movement> Movement::Set(double & x, double & y, double speed, int mass)
+std::shared_ptr<Movement> Movement::Set(double & x, double & y, double speed, double mass)
 {
 	if (mass < -1)
 	{
@@ -23,7 +23,7 @@ std::shared_ptr<Movement> Movement::Set(double & x, double & y, double speed, in
 }
 
 
-std::shared_ptr<Movement> Movement::Set(Entity * ent, double speed, int mass)
+std::shared_ptr<Movement> Movement::Set(Entity * ent, double speed, double mass)
 {
 	if (!ent)
 	{

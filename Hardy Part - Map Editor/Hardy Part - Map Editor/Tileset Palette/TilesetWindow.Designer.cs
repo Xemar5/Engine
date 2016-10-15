@@ -33,6 +33,12 @@
             this.groupBoxTilesetPresets = new System.Windows.Forms.GroupBox();
             this.buttonAddTileset = new System.Windows.Forms.Button();
             this.groupBoxTilesetObject = new System.Windows.Forms.GroupBox();
+            this.numericUpDownRotation = new System.Windows.Forms.NumericUpDown();
+            this.labelCenterY = new System.Windows.Forms.Label();
+            this.numericUpDownCenterY = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownCenterX = new System.Windows.Forms.NumericUpDown();
+            this.labelCenterX = new System.Windows.Forms.Label();
+            this.labelRotation = new System.Windows.Forms.Label();
             this.checkBoxTilesetVisible = new System.Windows.Forms.CheckBox();
             this.labelTilesetLayer = new System.Windows.Forms.Label();
             this.numericUpDownTilesetLayer = new System.Windows.Forms.NumericUpDown();
@@ -48,9 +54,12 @@
             this.labelScale = new System.Windows.Forms.Label();
             this.checkBoxShowGrid = new System.Windows.Forms.CheckBox();
             this.buttonRemoveTileset = new System.Windows.Forms.Button();
-            this.existingTilesetList = new Hardy_Part___Map_Editor.Tileset_Palette.ExistingTilesetList();
+            this.existingEntityList = new Hardy_Part___Map_Editor.Entity_Palette.ExistingEntityList();
             this.groupBoxTilesetPresets.SuspendLayout();
             this.groupBoxTilesetObject.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRotation)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCenterY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCenterX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTilesetLayer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTilesetScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTilesetY)).BeginInit();
@@ -59,11 +68,11 @@
             // 
             // buttonImportTileset
             // 
-            this.buttonImportTileset.Location = new System.Drawing.Point(10, 184);
+            this.buttonImportTileset.Location = new System.Drawing.Point(10, 187);
             this.buttonImportTileset.Name = "buttonImportTileset";
-            this.buttonImportTileset.Size = new System.Drawing.Size(90, 23);
+            this.buttonImportTileset.Size = new System.Drawing.Size(150, 23);
             this.buttonImportTileset.TabIndex = 0;
-            this.buttonImportTileset.Text = "Import Tileset";
+            this.buttonImportTileset.Text = "Import Tileset Texture";
             this.buttonImportTileset.UseVisualStyleBackColor = true;
             this.buttonImportTileset.Click += new System.EventHandler(this.buttonImportTileset_Click);
             // 
@@ -74,16 +83,16 @@
             this.flowLayoutPanelTilesetsPresets.Location = new System.Drawing.Point(6, 19);
             this.flowLayoutPanelTilesetsPresets.Name = "flowLayoutPanelTilesetsPresets";
             this.flowLayoutPanelTilesetsPresets.Padding = new System.Windows.Forms.Padding(5);
-            this.flowLayoutPanelTilesetsPresets.Size = new System.Drawing.Size(317, 432);
+            this.flowLayoutPanelTilesetsPresets.Size = new System.Drawing.Size(317, 429);
             this.flowLayoutPanelTilesetsPresets.TabIndex = 1;
             this.flowLayoutPanelTilesetsPresets.WrapContents = false;
             // 
             // groupBoxTilesetPresets
             // 
             this.groupBoxTilesetPresets.Controls.Add(this.flowLayoutPanelTilesetsPresets);
-            this.groupBoxTilesetPresets.Location = new System.Drawing.Point(4, 213);
+            this.groupBoxTilesetPresets.Location = new System.Drawing.Point(4, 216);
             this.groupBoxTilesetPresets.Name = "groupBoxTilesetPresets";
-            this.groupBoxTilesetPresets.Size = new System.Drawing.Size(329, 457);
+            this.groupBoxTilesetPresets.Size = new System.Drawing.Size(329, 454);
             this.groupBoxTilesetPresets.TabIndex = 2;
             this.groupBoxTilesetPresets.TabStop = false;
             this.groupBoxTilesetPresets.Text = "Presets";
@@ -101,6 +110,12 @@
             // 
             // groupBoxTilesetObject
             // 
+            this.groupBoxTilesetObject.Controls.Add(this.numericUpDownRotation);
+            this.groupBoxTilesetObject.Controls.Add(this.labelCenterY);
+            this.groupBoxTilesetObject.Controls.Add(this.numericUpDownCenterY);
+            this.groupBoxTilesetObject.Controls.Add(this.numericUpDownCenterX);
+            this.groupBoxTilesetObject.Controls.Add(this.labelCenterX);
+            this.groupBoxTilesetObject.Controls.Add(this.labelRotation);
             this.groupBoxTilesetObject.Controls.Add(this.checkBoxTilesetVisible);
             this.groupBoxTilesetObject.Controls.Add(this.labelTilesetLayer);
             this.groupBoxTilesetObject.Controls.Add(this.numericUpDownTilesetLayer);
@@ -115,12 +130,103 @@
             this.groupBoxTilesetObject.Controls.Add(this.comboBoxSelectedPreset);
             this.groupBoxTilesetObject.Controls.Add(this.labelScale);
             this.groupBoxTilesetObject.Enabled = false;
-            this.groupBoxTilesetObject.Location = new System.Drawing.Point(172, 37);
+            this.groupBoxTilesetObject.Location = new System.Drawing.Point(171, 37);
             this.groupBoxTilesetObject.Name = "groupBoxTilesetObject";
-            this.groupBoxTilesetObject.Size = new System.Drawing.Size(161, 140);
+            this.groupBoxTilesetObject.Size = new System.Drawing.Size(161, 180);
             this.groupBoxTilesetObject.TabIndex = 4;
             this.groupBoxTilesetObject.TabStop = false;
             this.groupBoxTilesetObject.Text = "Current Tileset";
+            // 
+            // numericUpDownRotation
+            // 
+            this.numericUpDownRotation.DecimalPlaces = 2;
+            this.numericUpDownRotation.Location = new System.Drawing.Point(110, 153);
+            this.numericUpDownRotation.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+            this.numericUpDownRotation.Minimum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownRotation.Name = "numericUpDownRotation";
+            this.numericUpDownRotation.Size = new System.Drawing.Size(42, 20);
+            this.numericUpDownRotation.TabIndex = 27;
+            // 
+            // labelCenterY
+            // 
+            this.labelCenterY.AutoSize = true;
+            this.labelCenterY.Location = new System.Drawing.Point(56, 137);
+            this.labelCenterY.Name = "labelCenterY";
+            this.labelCenterY.Size = new System.Drawing.Size(48, 13);
+            this.labelCenterY.TabIndex = 26;
+            this.labelCenterY.Text = "Center Y";
+            // 
+            // numericUpDownCenterY
+            // 
+            this.numericUpDownCenterY.DecimalPlaces = 2;
+            this.numericUpDownCenterY.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.numericUpDownCenterY.Location = new System.Drawing.Point(59, 153);
+            this.numericUpDownCenterY.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownCenterY.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownCenterY.Name = "numericUpDownCenterY";
+            this.numericUpDownCenterY.Size = new System.Drawing.Size(42, 20);
+            this.numericUpDownCenterY.TabIndex = 24;
+            // 
+            // numericUpDownCenterX
+            // 
+            this.numericUpDownCenterX.DecimalPlaces = 2;
+            this.numericUpDownCenterX.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.numericUpDownCenterX.Location = new System.Drawing.Point(8, 153);
+            this.numericUpDownCenterX.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownCenterX.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDownCenterX.Name = "numericUpDownCenterX";
+            this.numericUpDownCenterX.Size = new System.Drawing.Size(42, 20);
+            this.numericUpDownCenterX.TabIndex = 23;
+            // 
+            // labelCenterX
+            // 
+            this.labelCenterX.AutoSize = true;
+            this.labelCenterX.Location = new System.Drawing.Point(4, 137);
+            this.labelCenterX.Name = "labelCenterX";
+            this.labelCenterX.Size = new System.Drawing.Size(48, 13);
+            this.labelCenterX.TabIndex = 25;
+            this.labelCenterX.Text = "Center X";
+            // 
+            // labelRotation
+            // 
+            this.labelRotation.AutoSize = true;
+            this.labelRotation.Location = new System.Drawing.Point(107, 137);
+            this.labelRotation.Name = "labelRotation";
+            this.labelRotation.Size = new System.Drawing.Size(47, 13);
+            this.labelRotation.TabIndex = 22;
+            this.labelRotation.Text = "Rotation";
             // 
             // checkBoxTilesetVisible
             // 
@@ -300,23 +406,22 @@
             this.buttonRemoveTileset.UseVisualStyleBackColor = false;
             this.buttonRemoveTileset.Click += new System.EventHandler(this.buttonRemoveTileset_Click);
             // 
-            // existingTilesetList
+            // existingEntityList
             // 
-            this.existingTilesetList.Enabled = false;
-            this.existingTilesetList.Location = new System.Drawing.Point(4, 4);
-            this.existingTilesetList.Name = "existingTilesetList";
-            this.existingTilesetList.SelectedTileset = null;
-            this.existingTilesetList.Size = new System.Drawing.Size(162, 173);
-            this.existingTilesetList.TabIndex = 12;
+            this.existingEntityList.Location = new System.Drawing.Point(4, 4);
+            this.existingEntityList.Name = "existingEntityList";
+            this.existingEntityList.SelectedEntity = null;
+            this.existingEntityList.Size = new System.Drawing.Size(162, 173);
+            this.existingEntityList.TabIndex = 13;
             // 
             // TilesetWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.existingEntityList);
             this.Controls.Add(this.checkBoxShowGrid);
             this.Controls.Add(this.groupBoxTilesetObject);
             this.Controls.Add(this.buttonAddTileset);
-            this.Controls.Add(this.existingTilesetList);
             this.Controls.Add(this.groupBoxTilesetPresets);
             this.Controls.Add(this.buttonImportTileset);
             this.Controls.Add(this.buttonRemoveTileset);
@@ -325,6 +430,9 @@
             this.groupBoxTilesetPresets.ResumeLayout(false);
             this.groupBoxTilesetObject.ResumeLayout(false);
             this.groupBoxTilesetObject.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRotation)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCenterY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCenterX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTilesetLayer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTilesetScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTilesetY)).EndInit();
@@ -355,7 +463,13 @@
         private System.Windows.Forms.Label labelTilesetLayer;
         public System.Windows.Forms.Button buttonAddTileset;
         public System.Windows.Forms.CheckBox checkBoxTilesetVisible;
-        public ExistingTilesetList existingTilesetList;
         public System.Windows.Forms.CheckBox checkBoxShowGrid;
+        private System.Windows.Forms.NumericUpDown numericUpDownRotation;
+        private System.Windows.Forms.Label labelCenterY;
+        private System.Windows.Forms.NumericUpDown numericUpDownCenterY;
+        private System.Windows.Forms.NumericUpDown numericUpDownCenterX;
+        private System.Windows.Forms.Label labelCenterX;
+        private System.Windows.Forms.Label labelRotation;
+        public Entity_Palette.ExistingEntityList existingEntityList;
     }
 }

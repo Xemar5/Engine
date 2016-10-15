@@ -4,8 +4,11 @@
 #include "Animation.h"
 #include "Movement.h"
 #include "Screen.h"
+#include "State.h"
 #include "Output_Handler.h"
+#include "Collider.h"
 
+std::map<std::string, Entity*> Entity::__Registered;
 
 void Entity::Create()
 {
@@ -19,34 +22,28 @@ void Entity::Events()
 {
 }
 
-std::pair<double, double> Entity::Get_Hitbox()
+std::pair<double, double> Entity::Get_Hitbox() const
 {
 	if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
-	if (!this->Get_Sprite()) { Output_Handler::Error << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
+	if (!this->Display()) { Output_Handler::Error << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
 	return std::make_pair(
-		(double)this->Get_Sprite()->Get_Frame_Size().first * this->Get_Sprite()->Scale,
-		(double)this->Get_Sprite()->Get_Frame_Size().second * this->Get_Sprite()->Scale
+		(double)this->Display()->Frame_Rect().w * this->Display()->Scale,
+		(double)this->Display()->Frame_Rect().h * this->Display()->Scale
 		);
 }
 
-std::shared_ptr<Sprite> Entity::Get_Sprite()
+template<typename T>
+T* Entity::Display() const
 {
-	if (!this) { Output_Handler::Error << "ERR Entity::Get_Sprite : No this Entity\n"; return nullptr; }
-	return __Sprite;
+	if (!this) { Output_Handler::Error << "ERR Entity::Display : No this Entity\n"; return nullptr; }
+	return dynamic_cast<T*>(__Texture.get());
 }
 
-std::shared_ptr<Texture> Entity::Get_Texture()
+double Entity::Get_Scale() const
 {
-	if (!this) { Output_Handler::Error << "ERR Entity::Get_Texture : No this Entity\n"; return nullptr; }
-	if (!Get_Sprite()) { Output_Handler::Error << "ERR Entity::Get_Texture : This entity has no sprite supplied\n"; return nullptr; }
-	return Get_Sprite()->Get_Texture();
-}
-
-double Entity::Get_Scale()
-{
-	if (!this) { Output_Handler::Error << "ERR Entity::Get_Texture : No this Entity\n"; return 1.0; }
-	if (!Get_Sprite()) { Output_Handler::Error << "ERR Entity::Get_Texture : This entity has no sprite supplied\n"; return 1.0; }
-	return Get_Sprite()->Scale;
+	if (!this) { Output_Handler::Error << "ERR Entity::Display : No this Entity\n"; return 1.0; }
+	if (!Display()) { Output_Handler::Error << "ERR Entity::Display : This entity has no sprite supplied\n"; return 1.0; }
+	return Display()->Scale;
 }
 
 //std::vector<std::shared_ptr<Action>> Entity::Get_Actions()
@@ -61,29 +58,75 @@ double Entity::Get_Scale()
 //	return __Stats;
 //}
 
-Movement * Entity::Get_Movement()
+Texture * Entity::Get_Texture() const
+{
+	if (!this) { Output_Handler::Error << "ERR Entity::Get_Texture : No this Entity\n"; return nullptr; }
+	return __Texture.get();
+}
+Movement * Entity::Get_Movement() const
 {
 	if (!this) { Output_Handler::Error << "ERR Entity::Get_Movement : No this Entity\n"; return nullptr; }
 	return __Movement.get();
 }
-
-unsigned Entity::Get_Layer()
+Collider * Entity::Get_Collider(unsigned index) const
 {
-	return ++__Layer;
+	if (!this) { Output_Handler::Error << "ERR Entity::Get_Collider : No this Entity\n"; return nullptr; }
+	if (index >= __Colliders.size()) { Output_Handler::Error << "ERR Entity::Get_Collider : Given index is greater than the number of Colliders this Entity has\n"; return nullptr; }
+	return __Colliders[index].get();
 }
 
-bool Entity::Destroy(Entity * ent)
+
+
+bool Entity::Register(Entity * ent, std::string name, bool forceRegister)
 {
-	if (!ent)
+	auto name_exists = __Registered.find(name);
+	if (name_exists != __Registered.end())
 	{
-		Output_Handler::Output << "MSG Entity::Destroy : No entity supplied\n";
-		return false;
+		if (!forceRegister) Output_Handler::Output << "MSG Entity::Register : Name already registered; re-registering\n";
+		else { Output_Handler::Error << "ERR Entity::Register : Name already registered\n"; return false; }
 	}
-	auto sprt = ent->__Sprite.get();
-	ent->__Sprite = nullptr;
-	Sprite::Destroy(sprt);
+	auto ent_registered = __Registered.end();
+	for (auto key = __Registered.begin(); key != __Registered.end(); ++key)
+	{
+		if (key->second == ent) { ent_registered = key; break; }
+	}
+	if (ent_registered != __Registered.end())
+		__Registered.erase(ent_registered->first);
+	__Registered[name] = ent;
 	return true;
 }
+
+Entity * Entity::Get(std::string name)
+{
+	auto ent = __Registered.find(name);
+	if (ent == __Registered.end()) Output_Handler::Error << "ERR Entity::Get : No entity registered with given name; returning nullptr\n";
+	return ent == __Registered.end() ? nullptr : ent->second;
+}
+
+std::vector<std::shared_ptr<Entity>> Entity::All()
+{
+	return State::Built.size() ? State::Built.back()->Get_Entities() : std::vector<std::shared_ptr<Entity>>();
+}
+
+
+
+//bool Entity::Destroy(Entity * ent)
+//{
+//	if (!ent)
+//	{
+//		Output_Handler::Output << "MSG Entity::Destroy : No entity supplied\n";
+//		return false;
+//	}
+//	for (auto it = Screen::__Entities.begin(); it != Screen::__Entities.end(); ++it)
+//		if (it->get() == ent)
+//		{
+//			Screen::__Entities.erase(it);
+//			break;
+//		}
+//	ent->Display()->Destroy();
+//	ent->__Texture = nullptr;
+//	return true;
+//}
 
 
 

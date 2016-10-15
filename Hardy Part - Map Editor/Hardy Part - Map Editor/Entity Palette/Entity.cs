@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardy_Part___Map_Editor.Tileset_Palette;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -22,8 +23,8 @@ namespace Hardy_Part___Map_Editor.Entity_Palette
         virtual public int Layer { get; set; }
         virtual public Double Scale { get; set; }
         virtual public Double Angle { get; set; }
-        private double _CenterX = 0;
-        private double _CenterY = 0;
+        public double _CenterX = 0;
+        public double _CenterY = 0;
         virtual public int CenterX
         {
             get
@@ -61,7 +62,8 @@ namespace Hardy_Part___Map_Editor.Entity_Palette
             Texture = null;
             X = 0;
             Y = 0;
-            Name = "entity" + ObjectId++;
+            if((this as Tileset) == null)
+                Name = "entity" + ObjectId++;
             Scale = 1;
             Angle = 0;
             Visible = true;

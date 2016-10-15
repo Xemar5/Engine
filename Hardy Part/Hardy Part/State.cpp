@@ -4,7 +4,7 @@
 #include "Sprite.h"
 #include "Animation.h"
 #include "Movement.h"
-#include "Tileset.h"
+#include "Generic.h"
 #include "Output_Handler.h"
 
 std::vector<std::shared_ptr<State>> State::Built;
@@ -17,21 +17,22 @@ void State::Update()
 	//	Screen::Add(tileset.get());
 	for (auto ent : __Entities)
 	{
-		if (ent->Get_Sprite())
-			if (Animation::Next_Frame(ent.get()) != -1)
-				Animation::Set_Frame(ent.get(), ent->Get_Sprite()->Get_Current_Frame());
+		if (auto t = dynamic_cast<Sprite*>(ent->Display()))
+			if (t->Current_Animation())
+				t->Current_Animation()->Next_Frame();
 
 		ent->Update();
+		auto sp = dynamic_cast<Sprite*>(ent->Display());
 
-		if (ent->Get_Movement())
+		if (ent->Get_Movement() && sp)
 		{
 			if (Movement::__Resolve_Movement(ent.get()))
-				Animation::Play(ent.get(), "move");
-			else Animation::Terminate(ent.get(), "move");
+				dynamic_cast<Sprite*>(ent->Display())->operator[]("move").Play();
+			else if(sp->Current_Animation())
+				dynamic_cast<Sprite*>(ent->Display())->Current_Animation()->Terminate();
 		}
 
-		if (ent->Get_Sprite())
-			if (!ent->Get_Sprite()->Get_Current_Animation()) Animation::Play(ent.get());
+		if (sp && !sp->Current_Animation()) dynamic_cast<Sprite*>(ent->Display())->operator[]("idle").Play();
 		//Screen::Add(ent.get());
 	}
 	Screen::Draw();
@@ -42,22 +43,29 @@ void State::Events()
 		ent->Events();
 }
 
-bool State::Remove_Entity(Entity * ent)
-{
-	if (!ent)
-	{
-		Output_Handler::Output << "MSG State::Remove_Entity : No entity supplied\n";
-		return false;
-	}
-	for (auto it = __Entities.begin(); it != __Entities.end(); ++it)
-		if (ent == it->get())
-		{
-			__Entities.erase(it);
-			return true;
-		}
-	Output_Handler::Output << "MSG State::Remove_Entity : entity not found\n";
-	return false;
-}
+//bool State::Remove_Entity(Entity * ent)
+//{
+//	if (!ent)
+//	{
+//		Output_Handler::Output << "MSG State::Remove_Entity : No entity supplied\n";
+//		return false;
+//	}
+//	for (auto it = __Entities.begin(); it != __Entities.end(); ++it)
+//		if (ent == it->get() && it->use_count() == 2)
+//		{
+//			for (auto& e = Screen::__Entities.begin(); e != Screen::__Entities.end(); ++e)
+//				if (e->get() == ent)
+//				{
+//					Screen::__Entities.erase(e);
+//					break;
+//				}
+//			Entity::Destroy(it->get());
+//			__Entities.erase(it);
+//			return true;
+//		}
+//	Output_Handler::Output << "MSG State::Remove_Entity : Entity not found\n";
+//	return false;
+//}
 
 bool State::Change_Entity_Layer(Entity* entity, unsigned new_layer)
 {
@@ -67,7 +75,6 @@ bool State::Change_Entity_Layer(Entity* entity, unsigned new_layer)
 		return false;
 	}
 	entity->__Layer = new_layer;
-	Screen::Change_Layer(entity);
 	return true;
 }
 
@@ -98,21 +105,36 @@ bool State::Change_Entity_Layer(Entity* entity, unsigned new_layer)
 //	return v;
 //}
 
-std::vector<Entity*> State::Get_Entities()
+
+std::vector<std::shared_ptr<Entity>> State::Get_Entities()
 {
-	std::vector<Entity*> v(__Entities.size());
-	for (unsigned i = 0; i < __Entities.size(); ++i)
-		v[i] = __Entities[i].get();
-	return v;
+	return __Entities;
 }
 
-Entity* State::Ent(unsigned ent)
+std::shared_ptr<Entity> State::Ent(unsigned ent)
 {
-	if (ent >= __Entities.size())
-	{
-		Output_Handler::Output << "MSG State::operator[] : State has no layer with given index; creating layer with given index and belove\n";
-		return nullptr;
-	}
-	return __Entities[ent].get();
+	if (ent >= __Entities.size()) return nullptr;
+	return __Entities[ent];
+}
+
+bool State::Remove_Entity(Entity * ent)
+{
+	for (auto it = __Entities.begin(); it != __Entities.end(); ++it)
+		if (it->get() == ent)
+		{
+			__Entities.erase(it);
+			break;
+		}
+	for(auto& l : Screen::__Entities)
+		for (auto it = l.begin(); it != l.end(); ++it)
+			if (it->get() == ent)
+			{
+				l.erase(it);
+				break;
+			}
+	for (auto it = Player::__Players.begin(); it != Player::__Players.end(); ++it)
+		if (it->get()->__Entity.get() == ent)
+			it->get()->__Entity = nullptr;
+	return true;
 }
 

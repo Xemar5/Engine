@@ -12,7 +12,15 @@ class Hitbox;
 class Stats;
 class Texture;
 class Movement;
+class Collider;
 
+
+enum EntityType
+{
+	ET_Default,
+	ET_Generic,
+	ET_Character
+};
 
 //All your Entities should NOT override this class, deriver Entity class instead.
 class Entity
@@ -28,65 +36,98 @@ public:
 	//*** Returns this as an entity derative if possible
 	template <typename T> T* As() { return dynamic_cast<T*>(this); };
 	//*** Returns the Hitbox pointer if it exists
-	std::pair<double, double> Get_Hitbox();
+	std::pair<double, double> Get_Hitbox() const;
 
-	//*** Returns the Sprite pointer if it exists
-	virtual std::shared_ptr<Sprite> Get_Sprite();
 	//*** Returns the Texture pointer if it exists
-	virtual std::shared_ptr<Texture> Get_Texture();
+	template<typename T = Texture>
+	T* Display() const;
 	//*** Returns the scale of this entity
-	virtual double Get_Scale();
+	virtual double Get_Scale() const;
 
-	////*** Returns the Actions vector
-	//virtual std::vector<std::shared_ptr<Action>> Get_Actions();
-
-	////*** Returns the Stats pointer if it exists
-	//Stats* Get_Stats();
-
+	//*** Returns the Texture pointer if it exists
+	Texture* Get_Texture() const;
 	//*** Returns the Movement pointer if it exists
-	Movement* Get_Movement();
+	Movement* Get_Movement() const;
+	//*** Returns the Collider pointer if it exists
+	Collider* Get_Collider(unsigned index) const;
 
 	//*** X coordinate of this entity position
 	double X = 0;
 	//*** Y coordinate of this entity position
 	double Y = 0;
+	//*** Z coordinate of this entity position
+	//*** determines which entity should be drawn at which point
+	double Z = 0;
 
 	//*** Returns the layer this character is set on
-	unsigned Get_Layer();
+	unsigned Get_Layer() const { return __Layer; };
+	//*** The type of this entity
+	//*** Default if not specified
+	EntityType Get_Type() const { return __Type; }
 
-	//*** Destroys given entity, its sprite and texture if it's no used
-	static bool Destroy(Entity* ent);
+
+	//*** Registers an entity with given name
+	//*** Can be retrived with Get("name")
+	//*** Can't register if name already taken
+	//*** Registering the same entity again with different name will change it
+	static bool Register(Entity* ent, std::string name, bool forceRegister = false);
+
+	//*** Returns the map of all registered entities
+	static std::map<std::string, Entity*> Registered() { return __Registered; };
+	//*** Returns an entity by its name if registered
+	static Entity* Get(std::string name);
+	//*** Returns all existing entities
+	static std::vector<std::shared_ptr<Entity>> All();
+
+
+
+	virtual ~Entity() 
+	{
+		for (auto e = __Registered.begin(); e != __Registered.end(); ++e)
+			if (e->second == this) { __Registered.erase(e->first); break; }
+
+		auto ttr = __Texture.get();
+		__Texture = nullptr;
+ 		if(ttr) ttr->Destroy();
+
+		__Movement = nullptr;
+
+		for (auto& c : __Colliders)
+			c = nullptr;
+		__Colliders.clear();
+	}
 
 protected:
-	//*** A class responsible for Colisions and size of the entity
-	//*** If nullptr, no colisions are handled
-	std::shared_ptr<Hitbox> __Hitbox = nullptr;
-
 	//*** A class containing all compounds needed for a sprite to be rendered
 	//*** If nullptr, entity wont be displayed, but still can has usage (Actions)
-	std::shared_ptr<Sprite> __Sprite = nullptr;
+	std::shared_ptr<Texture> __Texture = nullptr;
 
-	//*** Container of all actions controling the movement, abilities and/or usage of this entity
-	//*** If nullptr, entiti has no usage, but still can has sprite (Sprite)
-	std::vector<std::shared_ptr<Action>> __Actions;
-
-	//*** A class containing all statistics of the entity:
-	//***    HP, MP, Str/Dex/Int/..., Passives, ect.
-	//*** An entity doesn't have to has all the statistics;
-	Stats* __Stats = nullptr;
-
-	//*** A class containing all statistics of the entity:
-	//***    HP, MP, Str/Dex/Int/..., Passives, ect.
-	//*** An entity doesn't have to has all the statistics;
+	//*** A class resolving movement input
+	//*** If nullptr, entity can't move
 	std::shared_ptr<Movement> __Movement = nullptr;
+
+	//*** A vector of class responsible for handling collisions
+	//*** If size of 0, entity ignore all collisions
+	//*** If this Entity has no Movement specified, this entity doesn't move after collision
+	//***	and ignore all collisions from other non-moving entities
+	std::vector<std::shared_ptr<Collider>> __Colliders;
 
 	//*** The layer of the state this entity is set on
 	unsigned __Layer = -1;
+	//*** The type of this entity
+	//*** ET_Default if not specified
+	EntityType __Type = ET_Default;
+
+	//*** A map containing all registered Entities
+	static std::map<std::string, Entity*> __Registered;
 
 	friend class Sprite;
+	friend class Texture;
+	friend class Generic;
 	friend class Hitbox;
 	friend class Movement;
 	friend class State;
+	friend class Collider;
 };
 
 

@@ -43,7 +43,7 @@
             this.panelBackground.Controls.Add(this.dataGridViewExistingEntity);
             this.panelBackground.Location = new System.Drawing.Point(0, 0);
             this.panelBackground.Name = "panelBackground";
-            this.panelBackground.Size = new System.Drawing.Size(162, 212);
+            this.panelBackground.Size = new System.Drawing.Size(162, 173);
             this.panelBackground.TabIndex = 3;
             // 
             // dataGridViewExistingEntity
@@ -71,7 +71,7 @@
             this.dataGridViewExistingEntity.ShowCellToolTips = false;
             this.dataGridViewExistingEntity.ShowEditingIcon = false;
             this.dataGridViewExistingEntity.ShowRowErrors = false;
-            this.dataGridViewExistingEntity.Size = new System.Drawing.Size(160, 210);
+            this.dataGridViewExistingEntity.Size = new System.Drawing.Size(160, 171);
             this.dataGridViewExistingEntity.TabIndex = 1;
             this.dataGridViewExistingEntity.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewExistingEntity_CellContentClick);
             this.dataGridViewExistingEntity.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewExistingEntity_CellValueChanged);
@@ -104,7 +104,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelBackground);
             this.Name = "ExistingEntityList";
-            this.Size = new System.Drawing.Size(162, 212);
+            this.Size = new System.Drawing.Size(162, 173);
             this.panelBackground.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewExistingEntity)).EndInit();
             this.ResumeLayout(false);

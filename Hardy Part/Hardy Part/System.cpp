@@ -2,8 +2,9 @@
 #include "State.h"
 #include "Screen.h"
 #include "Timer.h"
-#include "Tileset.h"
+#include "Generic.h"
 #include "Entity.h"
+#include "Collider.h"
 #include <iostream>
 
 SDL_Event System::Events;
@@ -26,7 +27,6 @@ void System::_System_Update()
 		if (FPS_Clock.Get() > 1000 / System::FPS)
 		{
 			FPS_Clock.Restart();
-
 			if (State::Deleted.size()) __Delete();
 			if (State::Built.size()) __Update();
 			else { Quit_System = true; break; }
@@ -39,11 +39,17 @@ void System::_System_Update()
 		}
 		SDL_Delay(1);
 	}
+
+	Player::RemoveAll();
 	Screen::Exit();
+	TTF_Quit();
+	SDL_Quit();
 }
 
 void System::__Update()
 {
+	Keyboard::Get.Update();
+	Collider::Update();
 	std::vector<State*> stt_to_update;
 	for (unsigned i = 0; i < State::Built.size(); i++)
 	{
@@ -59,17 +65,22 @@ void System::__Update()
 }
 void System::__Events()
 {
+	unsigned size = State::Built.size();
 	Device::Events();
 	std::vector<State*> stt_to_events;
-	for (unsigned i = 0; i < State::Built.size(); i++)
+	for (unsigned i = 0; i < size; i++)
 	{
+		bool isDeleted = false;
+		for (auto d : State::Deleted)
+			if (d == i) { isDeleted = true; break; }
+		if (isDeleted) continue;
 		if (!State::Built[i]->Update_Underneath) stt_to_events.clear();
 		stt_to_events.push_back(State::Built[i].get());
 
-		if (!Screen::Is_Windowed() && System::Events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
-			for (auto ent : State::Built[i]->Get_Entities())
-				if (ent->As<Tileset>())
-					Tileset::Reset(ent->As<Tileset>());
+		//if (!Screen::Is_Windowed() && System::Events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
+		//	for (auto ent : State::Built[i]->Get_Entities())
+		//		if (dynamic_cast<Generic*>(ent->Display()))
+		//			dynamic_cast<Generic*>(ent->Display())->Reload();
 	}
 	for (unsigned i = 0; i < stt_to_events.size(); i++)
 	{
@@ -78,12 +89,28 @@ void System::__Events()
 	}
 	Device::Events_CleanUp();
 }
+
+
+
+
 void System::__Delete()
 {
 	for (unsigned del : State::Deleted)
 		for (unsigned i = 0; i < State::Built.size(); i++)
-			if (i == del) { State::Built[i] = nullptr; break; }
-	for (unsigned i = 0; i < State::Built.size(); i++)
-		if (State::Built[i] == nullptr) State::Built.erase(State::Built.begin() + i--);
+			if (i == del)
+			{
+				//for (auto& ent : State::Built[i]->__Entities)
+				//	if (ent.use_count() == 2)
+				//		Entity::Destroy(ent.get());
+				if (State::Built[i] == nullptr) continue;
+				State::Built[i]->__Entities.clear();
+				State::Built[i] = nullptr;
+				break;
+			}
+	for (auto it = State::Built.begin(); it != State::Built.end();)
+	{
+		if (!(*it)) it = State::Built.erase(it);
+		else ++it;
+	}
 	State::Deleted.clear();
 }

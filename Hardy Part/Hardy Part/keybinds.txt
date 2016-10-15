@@ -1,39 +1,26 @@
-[5-osiowy 13-przyciskowy joystick z prze³¹cznikiem ustawieñ]
-a = button 0
-b = button 1
-ddown = hat(0) 2
-dleft = hat(0) 1
-dright = hat(0) 3
-dup = hat(0) 0
-l1 = button 6
-l2 = button 7
-l3 = button 12
-ladown = axis 1
-laright = axis 0
-r1 = button 4
-r2 = button 5
-r3 = button 11
-radown = axis 2
-raright = axis 3
-select = button 14
-start = button 13
-x = button 2
-y = button 3
-
-
 [Keyboard]
-a = key 32
-b = key 113
+l1 = key 101
 ladown = key 115
 laleft = key 97
 laright = key 100
 laup = key 119
+r1 = key 113
 start = key 27
-x = mbutton 1
-y = key 114
+x = key 32
+y = key 1073742049
 
 
-[WansGamepad ]
-#No Keybinds Set
+[PS2700 Rumble Pad]
+a = button 1
+b = button 2
+l1 = button 4
+ladown = axis 1
+laright = axis 0
+r1 = button 5
+radown = axis 4
+raright = axis 2
+start = button 9
+x = button 0
+y = button 3
 
 

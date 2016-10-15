@@ -1,4 +1,6 @@
-﻿namespace Hardy_Part___Map_Editor.Entity_Palette
+﻿using Hardy_Part___Map_Editor.Tileset_Palette;
+
+namespace Hardy_Part___Map_Editor.Entity_Palette
 {
     partial class EntityWindow
     {
@@ -33,12 +35,11 @@
             this.labelCenterY = new System.Windows.Forms.Label();
             this.numericUpDownCenterY = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownCenterX = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxEntityVisible = new System.Windows.Forms.CheckBox();
             this.labelCenterX = new System.Windows.Forms.Label();
             this.labelRotation = new System.Windows.Forms.Label();
-            this.checkBoxEntityVisible = new System.Windows.Forms.CheckBox();
-            this.labelTilesetLayer = new System.Windows.Forms.Label();
             this.numericUpDownEntityLayer = new System.Windows.Forms.NumericUpDown();
-            this.buttonRemoveEntity = new System.Windows.Forms.Button();
+            this.labelTilesetLayer = new System.Windows.Forms.Label();
             this.numericUpDownEntityScale = new System.Windows.Forms.NumericUpDown();
             this.textBoxEntityName = new System.Windows.Forms.TextBox();
             this.labelEntityName = new System.Windows.Forms.Label();
@@ -49,7 +50,11 @@
             this.labelSelectedTemplate = new System.Windows.Forms.Label();
             this.comboBoxSelectedTemplate = new System.Windows.Forms.ComboBox();
             this.labelScale = new System.Windows.Forms.Label();
+            this.buttonRemoveEntity = new System.Windows.Forms.Button();
             this.buttonAddEntity = new System.Windows.Forms.Button();
+            this.buttonImportTexture = new System.Windows.Forms.Button();
+            this.groupBoxTilesetPresets = new System.Windows.Forms.GroupBox();
+            this.flowLayoutPanelTilesetsPresets = new System.Windows.Forms.FlowLayoutPanel();
             this.existingEntityList = new Hardy_Part___Map_Editor.Entity_Palette.ExistingEntityList();
             this.groupBoxEntityObject.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownRotation)).BeginInit();
@@ -59,6 +64,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEntityScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEntityY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEntityX)).BeginInit();
+            this.groupBoxTilesetPresets.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxEntityObject
@@ -83,7 +89,7 @@
             this.groupBoxEntityObject.Controls.Add(this.comboBoxSelectedTemplate);
             this.groupBoxEntityObject.Controls.Add(this.labelScale);
             this.groupBoxEntityObject.Enabled = false;
-            this.groupBoxEntityObject.Location = new System.Drawing.Point(170, 37);
+            this.groupBoxEntityObject.Location = new System.Drawing.Point(171, 37);
             this.groupBoxEntityObject.Name = "groupBoxEntityObject";
             this.groupBoxEntityObject.Size = new System.Drawing.Size(161, 180);
             this.groupBoxEntityObject.TabIndex = 5;
@@ -99,14 +105,14 @@
             0,
             0,
             0});
+            this.numericUpDownRotation.Minimum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            -2147483648});
             this.numericUpDownRotation.Name = "numericUpDownRotation";
             this.numericUpDownRotation.Size = new System.Drawing.Size(42, 20);
             this.numericUpDownRotation.TabIndex = 21;
-            this.numericUpDownRotation.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // labelCenterY
             // 
@@ -163,6 +169,19 @@
             this.numericUpDownCenterX.Size = new System.Drawing.Size(42, 20);
             this.numericUpDownCenterX.TabIndex = 17;
             // 
+            // checkBoxEntityVisible
+            // 
+            this.checkBoxEntityVisible.AutoSize = true;
+            this.checkBoxEntityVisible.Checked = true;
+            this.checkBoxEntityVisible.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxEntityVisible.Location = new System.Drawing.Point(101, 75);
+            this.checkBoxEntityVisible.Name = "checkBoxEntityVisible";
+            this.checkBoxEntityVisible.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkBoxEntityVisible.Size = new System.Drawing.Size(56, 17);
+            this.checkBoxEntityVisible.TabIndex = 15;
+            this.checkBoxEntityVisible.Text = "Visible";
+            this.checkBoxEntityVisible.UseVisualStyleBackColor = true;
+            // 
             // labelCenterX
             // 
             this.labelCenterX.AutoSize = true;
@@ -181,18 +200,13 @@
             this.labelRotation.TabIndex = 16;
             this.labelRotation.Text = "Rotation";
             // 
-            // checkBoxEntityVisible
+            // numericUpDownEntityLayer
             // 
-            this.checkBoxEntityVisible.AutoSize = true;
-            this.checkBoxEntityVisible.Checked = true;
-            this.checkBoxEntityVisible.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxEntityVisible.Location = new System.Drawing.Point(99, 75);
-            this.checkBoxEntityVisible.Name = "checkBoxEntityVisible";
-            this.checkBoxEntityVisible.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.checkBoxEntityVisible.Size = new System.Drawing.Size(56, 17);
-            this.checkBoxEntityVisible.TabIndex = 15;
-            this.checkBoxEntityVisible.Text = "Visible";
-            this.checkBoxEntityVisible.UseVisualStyleBackColor = true;
+            this.numericUpDownEntityLayer.Location = new System.Drawing.Point(53, 74);
+            this.numericUpDownEntityLayer.Name = "numericUpDownEntityLayer";
+            this.numericUpDownEntityLayer.Size = new System.Drawing.Size(42, 20);
+            this.numericUpDownEntityLayer.TabIndex = 13;
+            this.numericUpDownEntityLayer.ValueChanged += new System.EventHandler(this.numericUpDownEntityLayer_ValueChanged);
             // 
             // labelTilesetLayer
             // 
@@ -202,26 +216,6 @@
             this.labelTilesetLayer.Size = new System.Drawing.Size(33, 13);
             this.labelTilesetLayer.TabIndex = 14;
             this.labelTilesetLayer.Text = "Layer";
-            // 
-            // numericUpDownEntityLayer
-            // 
-            this.numericUpDownEntityLayer.Location = new System.Drawing.Point(53, 74);
-            this.numericUpDownEntityLayer.Name = "numericUpDownEntityLayer";
-            this.numericUpDownEntityLayer.Size = new System.Drawing.Size(42, 20);
-            this.numericUpDownEntityLayer.TabIndex = 13;
-            this.numericUpDownEntityLayer.ValueChanged += new System.EventHandler(this.numericUpDownEntityLayer_ValueChanged);
-            // 
-            // buttonRemoveEntity
-            // 
-            this.buttonRemoveEntity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(223)))), ((int)(((byte)(224)))));
-            this.buttonRemoveEntity.Enabled = false;
-            this.buttonRemoveEntity.Location = new System.Drawing.Point(277, 8);
-            this.buttonRemoveEntity.Name = "buttonRemoveEntity";
-            this.buttonRemoveEntity.Size = new System.Drawing.Size(51, 23);
-            this.buttonRemoveEntity.TabIndex = 11;
-            this.buttonRemoveEntity.Text = "Delete";
-            this.buttonRemoveEntity.UseVisualStyleBackColor = false;
-            this.buttonRemoveEntity.Click += new System.EventHandler(this.buttonRemoveEntity_Click);
             // 
             // numericUpDownEntityScale
             // 
@@ -339,10 +333,22 @@
             this.labelScale.TabIndex = 2;
             this.labelScale.Text = "Scale";
             // 
+            // buttonRemoveEntity
+            // 
+            this.buttonRemoveEntity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(223)))), ((int)(((byte)(224)))));
+            this.buttonRemoveEntity.Enabled = false;
+            this.buttonRemoveEntity.Location = new System.Drawing.Point(282, 8);
+            this.buttonRemoveEntity.Name = "buttonRemoveEntity";
+            this.buttonRemoveEntity.Size = new System.Drawing.Size(51, 23);
+            this.buttonRemoveEntity.TabIndex = 11;
+            this.buttonRemoveEntity.Text = "Delete";
+            this.buttonRemoveEntity.UseVisualStyleBackColor = false;
+            this.buttonRemoveEntity.Click += new System.EventHandler(this.buttonRemoveEntity_Click);
+            // 
             // buttonAddEntity
             // 
             this.buttonAddEntity.Enabled = false;
-            this.buttonAddEntity.Location = new System.Drawing.Point(218, 8);
+            this.buttonAddEntity.Location = new System.Drawing.Point(223, 8);
             this.buttonAddEntity.Name = "buttonAddEntity";
             this.buttonAddEntity.Size = new System.Drawing.Size(53, 23);
             this.buttonAddEntity.TabIndex = 7;
@@ -350,20 +356,53 @@
             this.buttonAddEntity.UseVisualStyleBackColor = true;
             this.buttonAddEntity.Click += new System.EventHandler(this.buttonAddEntity_Click);
             // 
+            // buttonImportTexture
+            // 
+            this.buttonImportTexture.Location = new System.Drawing.Point(10, 187);
+            this.buttonImportTexture.Name = "buttonImportTexture";
+            this.buttonImportTexture.Size = new System.Drawing.Size(150, 23);
+            this.buttonImportTexture.TabIndex = 12;
+            this.buttonImportTexture.Text = "Import Sprite / Texture";
+            this.buttonImportTexture.UseVisualStyleBackColor = true;
+            this.buttonImportTexture.Click += new System.EventHandler(this.buttonImportTexture_Click);
+            // 
+            // groupBoxTilesetPresets
+            // 
+            this.groupBoxTilesetPresets.Controls.Add(this.flowLayoutPanelTilesetsPresets);
+            this.groupBoxTilesetPresets.Location = new System.Drawing.Point(0, 216);
+            this.groupBoxTilesetPresets.Name = "groupBoxTilesetPresets";
+            this.groupBoxTilesetPresets.Size = new System.Drawing.Size(329, 454);
+            this.groupBoxTilesetPresets.TabIndex = 13;
+            this.groupBoxTilesetPresets.TabStop = false;
+            this.groupBoxTilesetPresets.Text = "Sprites / Textures";
+            // 
+            // flowLayoutPanelTilesetsPresets
+            // 
+            this.flowLayoutPanelTilesetsPresets.AutoScroll = true;
+            this.flowLayoutPanelTilesetsPresets.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutPanelTilesetsPresets.Location = new System.Drawing.Point(6, 19);
+            this.flowLayoutPanelTilesetsPresets.Name = "flowLayoutPanelTilesetsPresets";
+            this.flowLayoutPanelTilesetsPresets.Padding = new System.Windows.Forms.Padding(5);
+            this.flowLayoutPanelTilesetsPresets.Size = new System.Drawing.Size(317, 429);
+            this.flowLayoutPanelTilesetsPresets.TabIndex = 1;
+            this.flowLayoutPanelTilesetsPresets.WrapContents = false;
+            // 
             // existingEntityList
             // 
             this.existingEntityList.Location = new System.Drawing.Point(4, 4);
             this.existingEntityList.Name = "existingEntityList";
             this.existingEntityList.SelectedEntity = null;
-            this.existingEntityList.Size = new System.Drawing.Size(162, 213);
-            this.existingEntityList.TabIndex = 6;
+            this.existingEntityList.Size = new System.Drawing.Size(162, 173);
+            this.existingEntityList.TabIndex = 14;
             // 
             // EntityWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.buttonAddEntity);
             this.Controls.Add(this.existingEntityList);
+            this.Controls.Add(this.groupBoxTilesetPresets);
+            this.Controls.Add(this.buttonImportTexture);
+            this.Controls.Add(this.buttonAddEntity);
             this.Controls.Add(this.groupBoxEntityObject);
             this.Controls.Add(this.buttonRemoveEntity);
             this.Name = "EntityWindow";
@@ -377,6 +416,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEntityScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEntityY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEntityX)).EndInit();
+            this.groupBoxTilesetPresets.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -404,6 +444,9 @@
         private System.Windows.Forms.Label labelCenterX;
         private System.Windows.Forms.Label labelRotation;
         public System.Windows.Forms.Button buttonAddEntity;
+        private System.Windows.Forms.Button buttonImportTexture;
+        private System.Windows.Forms.GroupBox groupBoxTilesetPresets;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelTilesetsPresets;
         public ExistingEntityList existingEntityList;
     }
 }

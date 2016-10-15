@@ -17,12 +17,12 @@ public:
 	//*** - x/y - coordinates of the position of an entity
 	//*** - speed - how many pixels this entity moves by every frame
 	//*** - mass - changes the way the entity accelerates/breaks and behave on different surfaces
-	static std::shared_ptr<Movement> Set(double& x, double& y, double speed, int mass);
+	static std::shared_ptr<Movement> Set(double& x, double& y, double speed, double mass);
 	//*** Creates and initialises the movement class
 	//*** - ent - an entity movement class is being created for
 	//*** - speed - how many pixels this entity moves by every frame
 	//*** - mass - changes the way the entity accelerates/breaks and behave on different surfaces
-	static std::shared_ptr<Movement> Set(Entity* ent, double speed, int mass);
+	static std::shared_ptr<Movement> Set(Entity* ent, double speed, double mass);
 
 
 	//*** Changes given Movement class' X and Y to a given x and y direction
@@ -57,9 +57,9 @@ private:
 	//*** The mass of an entity
 	//*** Changes the way it accelerates/breaks and bevahe in contact with other entities
 	//*** - -1 - this entiti's mass is infinit, can't be moved
-	//*** -  0 - no mass; no traction, never slows down on it's own
+	//*** -  0 - no mass; no traction, can't start without an external force nor slow down on it's own
 	//*** - >0 - the greater the mass te slower it accelerates and breaks
-	int __Mass = -1;
+	double __Mass = -1;
 	//*** the x-dimension velocity
 	double __vx = 0;
 	//*** the y-dimension velocity

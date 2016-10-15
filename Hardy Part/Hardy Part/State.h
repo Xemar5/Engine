@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include "Entity.h"
 
 
 
@@ -26,15 +27,22 @@ class Texture;
 //};
 
 
-class State
+class State : protected Entity
 {
 public:
+	////***  Virtual Create function, should be overriden by derivering states
+	//virtual void Create() = 0;
+	////***  Virtual Update function, should be overriden by derivering states
+	//virtual void Update();
+	////***  Virtual Events function, should be overriden by derivering states
+	//virtual void Events();
+
 	//***  Virtual Create function, should be overriden by derivering states
-	virtual void Create() = 0;
+	void Create() override = 0;
 	//***  Virtual Update function, should be overriden by derivering states
-	virtual void Update();
+	void Update() override;
 	//***  Virtual Events function, should be overriden by derivering states
-	virtual void Events();
+	void Events() override;
 
 
 	//*** Stores all layers of this State
@@ -57,9 +65,7 @@ public:
 	//*** 			if the layer doesn't exist yet, this function will create all layers between
 	template<typename T = Entity> std::shared_ptr<Entity> Add_Entity(unsigned layer = unsigned(0));
 	//*** Adds supplied entity to the state as new object independent from the parent
-	template<typename T> std::shared_ptr<Entity> Add_Entity(std::shared_ptr<T> entity, unsigned layer = -1);
-	//*** Removes given entity from the state and destroys it
-	bool Remove_Entity(Entity* ent);
+	template<typename T> std::shared_ptr<Entity> Add_Entity(std::shared_ptr<T> entity, unsigned layer = 0);
 	//*** Changes the Layer of an entity
 	static bool Change_Entity_Layer(Entity* entity, unsigned new_layer);
 
@@ -92,9 +98,11 @@ public:
 	////*** Returns the container of all Tilesets from all layers in this State
 	//std::vector<Tileset*> Get_Tilesets();
 	//*** Returns the container of all Entities from all layers in this State
-	std::vector<Entity*> Get_Entities();
+	std::vector<std::shared_ptr<Entity>> Get_Entities();
 	//*** Returns an entity with given index if it exists
-	Entity* Ent(unsigned ent);
+	std::shared_ptr<Entity> Ent(unsigned ent);
+	//*** Removes this entity from the state, from players controlls and destroys it
+	bool Remove_Entity(Entity* ent);
 
 	//	//*** Returns the container of all Walls from all layers in this State
 	//	std::vector<std::shared_ptr<Entity>> Get_Walls();
@@ -106,18 +114,21 @@ private:
 	//*** The container of all Entities this state has
 	//*** To add an entity use Add_Entity functions
 	std::vector<std::shared_ptr<Entity>> __Entities;
+
+	friend class System;
 };
+
 
 
 #include "Screen.h"
 #include "Output_Handler.h"
 #include "Entity.h"
-#include "Movement.h"
+#include "Player.h"
+
 #include "Menu_State.h"
 #include "Main_State.h"
 #include "GameMenu_State.h"
 #include "Controlls_State.h"
-#include "Player.h"
 
 
 //*** Creates an entity of supplied type to this state and creates it
@@ -132,7 +143,8 @@ std::shared_ptr<Entity> State::Add_Entity(unsigned layer)
 		Output_Handler::Error << "ERR State::Add_Entity : No this state\n";
 		return nullptr;
 	}
-	__Entities.emplace_back(std::make_shared<T>());
+	auto e = std::make_shared<T>();
+	__Entities.push_back(e);
 	__Entities.back()->__Layer = layer;
 	__Entities.back()->Create();
 	Screen::Add(__Entities.back());
@@ -156,13 +168,9 @@ std::shared_ptr<Entity> State::Add_Entity(std::shared_ptr<T> entity, unsigned la
 	__Entities.push_back(entity);
 	if(layer != -1)	__Entities.back()->__Layer = layer;
 	__Entities.back()->Create();
+
 	Screen::Add(__Entities.back());
 	return __Entities.back();
-	//__Entities.emplace_back(entity);
-	//(*this)[layer].Entities.back()->__Layer = layer;
-	//(*this)[layer].Entities.back()->Create();
-	//Screen::Add((*this)[layer].Entities.back(), layer);
-	//return (*this)[layer].Entities.back();
 }
 
 
@@ -172,25 +180,30 @@ std::shared_ptr<Entity> State::Add_Entity(std::shared_ptr<T> entity, unsigned la
 template <typename T>
 T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities, unsigned flag)
 {
-	std::cout << Sprite::__Sprites.size() << std::endl;
+	Device::ClearAllDeviceInput();
+	Entity::__Registered.clear();
+
 	for (unsigned i = 0; i < State::Built.size(); i++)
 		State::Deleted.push_back(i);
+
+	for (auto& p : Player::Get_Players())
+	{
+		bool has_persis_ent = false;
+		for (auto& e : persistant_entities)
+			if (p->__Entity == e)
+			{
+				has_persis_ent = true;
+				break;
+			}
+		if (!has_persis_ent) p->__Entity = nullptr;
+	}
+	Screen::__Entities.clear();
+	Screen::__Entities.push_back({});
 	State::Built.emplace_back(std::make_shared<T>());
-	//for (auto& ent : persistant_entities)
-	//{
-	//	if (!ent) continue;
-	//	auto e = State::Built.back()->Add_Entity(ent, ent->Get_Layer());
 
-	//	auto oldmv = ent->Get_Movement();
-	//	if (oldmv) Movement::Set(e.get(), oldmv->Get_Speed(), (int)oldmv->Get_Mass());
+	for(auto& ptr : persistant_entities)
+		if(ptr.get()) State::Built.back()->Add_Entity(ptr, ptr->Get_Layer());
 
-	//	for (auto& p : Player::Get_Players())
-	//		if (Player::Get_Entity(p.get()) == ent)
-	//		{
-	//			Player::Set_Entity(p.get(), e);
-	//			break;
-	//		}
-	//}
 	State::Built.back().get()->Create();
 	return dynamic_cast<T*>(State::Built.back().get());
 }
@@ -203,6 +216,8 @@ T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities, unsigned
 template <typename T>
 T* State::New_Layer(bool update_underneath)
 {
+	Device::ClearAllDeviceInput();
+	Screen::__Entities.push_back({});
 	State::Built.emplace_back(std::make_shared<T>());
 	State::Built.back().get()->Update_Underneath = update_underneath;
 	State::Built.back().get()->Create();
@@ -213,12 +228,18 @@ T* State::New_Layer(bool update_underneath)
 template <bool T>
 void State::Exit_Layer()
 {
+	Device::ClearAllDeviceInput();
+	Screen::__Entities.pop_back();
 	State::Deleted.push_back(State::Built.size() - 1);
 }
-template <bool T>
+
+
 //*** Exits the game 
+template <bool T>
 void State::Exit_Game()
 {
+	Device::ClearAllDeviceInput();
+	Screen::__Entities.clear();
 	for (unsigned i = 0; i < State::Built.size(); i++)
 		State::Deleted.push_back(i);
 }

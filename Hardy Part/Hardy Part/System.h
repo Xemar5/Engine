@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include <SDL_net.h>
 #include <vector>
 #include <memory>
 #include <stdio.h>
@@ -31,6 +32,7 @@ protected:
 	//*** Main System loop, where all the states are updated
 	static void _System_Update();
 private:
+
 	static void __Delete();
 	static void __Update();
 	static void __Events();

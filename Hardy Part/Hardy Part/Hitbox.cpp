@@ -12,7 +12,7 @@ std::shared_ptr<Hitbox> Hitbox::Set(Entity* ent, unsigned width, unsigned height
 	std::shared_ptr<Hitbox> h = std::make_shared<Hitbox>();
 	h->__Width = width;
 	h->__Height = height;
-	if (ent) ent->__Hitbox = h;
+	//if (ent) ent-> = h;
 	return h;
 }
 

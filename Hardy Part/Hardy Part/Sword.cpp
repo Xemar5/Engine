@@ -12,7 +12,7 @@
 
 void Sword::Create()
 {
-	auto sp = Sprite::Create(this, Texture::Load("imgs/xord.png", 24, 24, 24, 24, 0, 1));
+	auto sp = Sprite::Load(this, "imgs/xord.png", 24, 24, 0, 1, 24, 24);
 }
 void Sword::Update()
 {
@@ -30,21 +30,32 @@ void Sword::Update()
 	}
 	if (Wealder)
 	{
-		double a = Device::Get(Wealder->Controller)["raright"].Held() - Device::Get(Wealder->Controller)["raleft"].Held();
-		double b = Device::Get(Wealder->Controller)["radown"].Held() - Device::Get(Wealder->Controller)["raup"].Held();
+		double a = 0, b = 0;
+		auto r = Device::Get(Wealder->Controller)["raright"];
+		auto l = Device::Get(Wealder->Controller)["raleft"];
+		auto d = Device::Get(Wealder->Controller)["radown"];
+		auto u = Device::Get(Wealder->Controller)["raup"];
+
+		a = r.Held() - l.Held();
+		b = d.Held() - u.Held();
+		if (r.Type() == IT_MOUSE_AXIS)
+			a -= Player::Get_Entity(Wealder)->X;
+		if (d.Type() == IT_MOUSE_AXIS)
+			b -= Player::Get_Entity(Wealder)->Y;
+
 		double ang = __Old_Angle;
 		if (a || b)
 			ang = (atan2(b, a) * 180 / M_PI) + 90 + (Max_Swing / 2 * __On_Left) + __Angle_Offset;
 		double x, y;
 		x = Player::Get_Entity(Wealder)->X;
 		y = Player::Get_Entity(Wealder)->Y - 8;
-		Get_Sprite()->Rotation = ang;
+		Display()->Rotation = ang;
 		X = Player::Get_Entity(Wealder)->X - cos(ang * M_PI / 180 + M_PI / 2) * 20;
 		Y = Player::Get_Entity(Wealder)->Y - 8 - sin(ang * M_PI / 180 + M_PI / 2) * 20;
 		if (abs(ang - __Old_Angle) > 3  && abs(ang - __Old_Angle) < 180)
 		{
-			if (ang < __Old_Angle) Get_Sprite()->Flip = SDL_FLIP_HORIZONTAL;
-			if (ang > __Old_Angle) Get_Sprite()->Flip = SDL_FLIP_NONE;
+			if (ang < __Old_Angle) Display()->Flip = SDL_FLIP_HORIZONTAL;
+			if (ang > __Old_Angle) Display()->Flip = SDL_FLIP_NONE;
 		}
 		__Old_Angle = ang;
 	}
