@@ -26,8 +26,8 @@ std::string Input::KeyName() const
 	std::string mbutton = "";
 	switch (__Type)
 	{
-	case IT_GAMEPAD_AXIS: return "Gamepad Axis " + std::to_string(__Key);
-	case IT_GAMEPAD_HAT: return "Gamepad Hat " + (__Variant ? std::to_string(__Variant) : "") + std::to_string(__Key);
+	case IT_GAMEPAD_AXIS: return "Gamepad Axis " + (__Variant ? "(" + std::to_string(__Variant) + ") " : "") + std::to_string(__Key);
+	case IT_GAMEPAD_HAT: return "Gamepad Hat " + (__Variant ? "(" + std::to_string(__Variant) + ") " : "") + std::to_string(__Key);
 	case IT_GAMEPAD_BUTTON: return "Gamepad Button " + std::to_string(__Key);
 	case IT_KEYBOARD_KEY: return "Keyboard Key " + std::string(SDL_GetKeyName(__Key));
 	case IT_MOUSE_AXIS: return "Mouse " + (__Key == MA_X ? std::string("Horizontal") : std::string("Vertical"));

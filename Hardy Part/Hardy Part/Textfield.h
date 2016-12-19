@@ -7,6 +7,10 @@
 class Textfield : public Entity
 {
 public:
+	void Create() override {};
+	void Update() override {};
+	void Events() override {};
+
 	//*** Returns an SDL_Color from given hex
 	static SDL_Color Color(unsigned int hex);
 

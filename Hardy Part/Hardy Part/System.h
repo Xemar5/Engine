@@ -43,6 +43,7 @@ private:
 #include "Output_Handler.h"
 #include "Screen.h"
 #include "Device.h"
+#include "Network.h"
 
 template <typename T>
 void System::Start()
@@ -59,6 +60,7 @@ void System::Start()
 	Gamepad::Init("keybinds.txt");
 	Screen::Init();
 	Audio::Init();
+	Network::Init();
 	State::New<T>();
 	//Audio::Play_Music(Audio::Load_Music("imgs/Baker Cat.mp3"));
 	//Screen::Change_Window_State();

@@ -19,7 +19,6 @@ void System::_System_Update()
 
 	In_Game_Timer.Start();
 	FPS_Clock.Start();
-
 	if (!System::FPS || System::FPS > 1000) System::FPS = 60;
 
 	while (!Quit_System)
@@ -43,11 +42,14 @@ void System::_System_Update()
 	Player::RemoveAll();
 	Screen::Exit();
 	TTF_Quit();
+	SDL_AudioQuit();
+	SDLNet_Quit();
 	SDL_Quit();
 }
 
 void System::__Update()
 {
+	Network::Update();
 	Keyboard::Get.Update();
 	Collider::Update();
 	std::vector<State*> stt_to_update;
@@ -62,6 +64,7 @@ void System::__Update()
 		stt_to_update[i]->State::Update();
 	}
 	Player::__Update();
+	Network::SendAll();
 }
 void System::__Events()
 {

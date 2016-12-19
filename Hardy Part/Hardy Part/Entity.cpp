@@ -10,18 +10,6 @@
 
 std::map<std::string, Entity*> Entity::__Registered;
 
-void Entity::Create()
-{
-}
-
-void Entity::Update()
-{
-}
-
-void Entity::Events()
-{
-}
-
 std::pair<double, double> Entity::Get_Hitbox() const
 {
 	if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
@@ -45,18 +33,6 @@ double Entity::Get_Scale() const
 	if (!Display()) { Output_Handler::Error << "ERR Entity::Display : This entity has no sprite supplied\n"; return 1.0; }
 	return Display()->Scale;
 }
-
-//std::vector<std::shared_ptr<Action>> Entity::Get_Actions()
-//{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Get_Actions : No this Entity\n"; return{}; }
-//	return __Actions;
-//}
-//
-//Stats * Entity::Get_Stats()
-//{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Get_Stats : No this Entity\n"; return nullptr; }
-//	return __Stats;
-//}
 
 Texture * Entity::Get_Texture() const
 {
@@ -107,26 +83,6 @@ std::vector<std::shared_ptr<Entity>> Entity::All()
 {
 	return State::Built.size() ? State::Built.back()->Get_Entities() : std::vector<std::shared_ptr<Entity>>();
 }
-
-
-
-//bool Entity::Destroy(Entity * ent)
-//{
-//	if (!ent)
-//	{
-//		Output_Handler::Output << "MSG Entity::Destroy : No entity supplied\n";
-//		return false;
-//	}
-//	for (auto it = Screen::__Entities.begin(); it != Screen::__Entities.end(); ++it)
-//		if (it->get() == ent)
-//		{
-//			Screen::__Entities.erase(it);
-//			break;
-//		}
-//	ent->Display()->Destroy();
-//	ent->__Texture = nullptr;
-//	return true;
-//}
 
 
 

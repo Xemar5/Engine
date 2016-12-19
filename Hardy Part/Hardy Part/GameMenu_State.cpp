@@ -67,7 +67,7 @@ void GameMenu_State::Events()
 	{
 		if (auto* p = Add_New_Player(Device::Which()))
 		{
-			auto m1 = Character::Add(this, "Nerk", 100, 100, 3, 1.5);
+			auto m1 = Character::Add(0, "Nerk", 100, 100, 3, 1.5);
 			Player::Set_Entity(p, m1);
 		}
 	}

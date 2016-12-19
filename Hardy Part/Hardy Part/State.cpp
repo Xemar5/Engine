@@ -13,8 +13,6 @@ std::vector<unsigned> State::Deleted;
 
 void State::Update()
 {
-	//for (auto tileset : __Tilesets)
-	//	Screen::Add(tileset.get());
 	for (auto ent : __Entities)
 	{
 		if (auto t = dynamic_cast<Sprite*>(ent->Display()))
@@ -33,7 +31,6 @@ void State::Update()
 		}
 
 		if (sp && !sp->Current_Animation()) dynamic_cast<Sprite*>(ent->Display())->operator[]("idle").Play();
-		//Screen::Add(ent.get());
 	}
 	Screen::Draw();
 }

@@ -5,24 +5,27 @@
 
 std::shared_ptr<Texture> Sprite::Load(Entity* ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
 {
-	if (!path.size())
-	{
-		Output_Handler::Error << "ERR Texture::Load : No path supplied\n";
-		return false;
-	}
-
 	SDL_Texture* tr = nullptr;
-	for (auto& ttr : Texture::__Textures)
-		if (path == ttr->__Path)
-		{
-			tr = ttr->Get_SDL_Texture();
-		}
-	if (!tr) tr = IMG_LoadTexture(Screen::Renderer, path.c_str());
-
-	if (!tr)
+	if (Screen::ShowWindow)
 	{
-		Output_Handler::Error << "ERR Texture::Load : No valid texture file supplied\n";
-		return false;
+		if (!path.size())
+		{
+			Output_Handler::Error << "ERR Texture::Load : No path supplied\n";
+			return false;
+		}
+
+		for (auto& ttr : Texture::__Textures)
+			if (path == ttr->__Path)
+			{
+				tr = ttr->Get_SDL_Texture();
+			}
+		if (!tr) tr = IMG_LoadTexture(Screen::Renderer, path.c_str());
+
+		if (!tr)
+		{
+			Output_Handler::Error << "ERR Texture::Load : No valid texture file supplied\n";
+			return false;
+		}
 	}
 
 	Texture::__Textures.emplace_back(std::make_shared<Sprite>());

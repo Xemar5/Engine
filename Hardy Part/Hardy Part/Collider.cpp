@@ -39,17 +39,17 @@ bool Collider::Overlap(Collider* c1, Collider* c2)
 
 void Collider::Update()
 {
-	for (auto c = _Colliders.begin(); c != _Colliders.end(); ++c)
-	{
-		for (auto c2 = c + 1; c2 != _Colliders.end(); ++c2)
-		{
-			if (Overlap(c->get(), c2->get())) std::cout << "OVERLAP\n";
-		}
-		for (auto c2 = _StaticColliders.begin(); c2 != _StaticColliders.end(); ++c2)
-		{
-			if (Overlap(c->get(), c2->get())) std::cout << "OVERLAP STATIC\n";
-		}
-	}
+	//for (auto c = _Colliders.begin(); c != _Colliders.end(); ++c)
+	//{
+	//	for (auto c2 = c + 1; c2 != _Colliders.end(); ++c2)
+	//	{
+	//		//if (Overlap(c->get(), c2->get())) std::cout << "OVERLAP\n";
+	//	}
+	//	for (auto c2 = _StaticColliders.begin(); c2 != _StaticColliders.end(); ++c2)
+	//	{
+	//		if (Overlap(c->get(), c2->get())) std::cout << "OVERLAP STATIC\n";
+	//	}
+	//}
 }
 
 Collider::~Collider()

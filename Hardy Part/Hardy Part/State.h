@@ -49,6 +49,12 @@ public:
 	//*** That's where all entities are stored
 	//std::vector<std::shared_ptr<Layer>> Layers;
 
+	//*** Returns the top-most built state
+	static State* CurrentState() { return Built.back().get(); }
+	//*** Returns the position of the top-most state in Built states vector
+	static unsigned CurrentStateNo() { return Built.size() - 1; }
+	//*** Returns the position of the given state in Built states vector
+	static unsigned StateNo(State* stt) { for (unsigned i = 0; i < Built.size(); ++i) if (Built[i].get() == stt) return i; }
 	//*** All Built States
 	//*** Atleast one of them will get Update'd and Evente'd
 	//*** (most of the time the the top State or all of them)
@@ -73,7 +79,7 @@ public:
 
 	//*** Builds and creates a new state of given type
 	//*** Deletes all previously built states and state layers
-	template <typename T> static T* New(std::vector<std::shared_ptr<Entity>> persistant_entities = {}, unsigned flag = 0);
+	template <typename T> static T* New(std::vector<std::shared_ptr<Entity>> persistant_entities = {});
 	//*** Builds and creates a new state layer of given type
 	//*** - update_underneath - if true, System will update all state layers
 	//***     aswell as the main state built before
@@ -178,7 +184,7 @@ std::shared_ptr<Entity> State::Add_Entity(std::shared_ptr<T> entity, unsigned la
 //*** Template parameter must be supplied with an State derative
 //*** Destroys all built State layers and creates new stack
 template <typename T>
-T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities, unsigned flag)
+T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities)
 {
 	Device::ClearAllDeviceInput();
 	Entity::__Registered.clear();
@@ -200,6 +206,8 @@ T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities, unsigned
 	Screen::__Entities.clear();
 	Screen::__Entities.push_back({});
 	State::Built.emplace_back(std::make_shared<T>());
+	NetworkID::Reset();
+	Network::RPC_Saved.clear();
 
 	for(auto& ptr : persistant_entities)
 		if(ptr.get()) State::Built.back()->Add_Entity(ptr, ptr->Get_Layer());

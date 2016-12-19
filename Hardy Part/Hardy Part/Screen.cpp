@@ -10,6 +10,7 @@
 
 bool Screen::__Initialized = false;
 
+bool Screen::ShowWindow = true;
 SDL_Window* Screen::Window;
 SDL_Renderer* Screen::Renderer;
 
@@ -46,12 +47,12 @@ bool Screen::Is_Windowed()
 
 bool Screen::Change_Window_State()
 {
-	if (!Screen::Is_Windowed()) return Screen::Set_Windowed();
-	return Screen::Set_Fullscreen();
+	return !Screen::Is_Windowed() ? Screen::Set_Windowed() : Screen::Set_Fullscreen();
 }
 
 bool Screen::Set_Fullscreen()
 {
+	if (!ShowWindow) return false;
 	SDL_DisplayMode mode;
 	if (!SDL_GetCurrentDisplayMode(0, &mode))
 	{
@@ -70,6 +71,7 @@ bool Screen::Set_Fullscreen()
 
 bool Screen::Set_Windowed()
 {
+	if (!ShowWindow) return false;
 	//SDL_SetWindowSize(Screen::Window, Screen::Width, Screen::Height);
 	Screen::__Width = 800;
 	Screen::__Height = 600;
@@ -94,6 +96,11 @@ bool Screen::Init()
 		return false;
 	}
 	Screen::__Initialized = true;
+	if (!ShowWindow)
+	{
+		Output_Handler::Output << "MSG Screen::Start : Program run in console-only mode\n";
+		return true;
+	}
 	Screen::Window = SDL_CreateWindow("Gmae", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Screen::__Width, Screen::__Height, SDL_WINDOW_SHOWN);
 	Screen::Renderer = SDL_CreateRenderer(Screen::Window, -1, SDL_RENDERER_ACCELERATED);
 	return true;
@@ -132,43 +139,45 @@ bool Screen::Add(std::shared_ptr<Entity> ent)
 
 void Screen::Draw()
 {
-	SDL_RenderClear(Screen::Renderer);
-	Screen::__Reorder();
-	for (unsigned layer = 0; layer < __Entities.size(); ++layer)
-		for (auto ent = __Entities[layer].begin(); ent != __Entities[layer].end();)
-		{
-			auto* ttr = ent->get()->Display();
-			if (!ttr || !ttr->Get_SDL_Texture())
+	if (ShowWindow)
+	{
+		SDL_RenderClear(Screen::Renderer);
+		Screen::__Reorder();
+		for (unsigned layer = 0; layer < __Entities.size(); ++layer)
+			for (auto ent = __Entities[layer].begin(); ent != __Entities[layer].end();)
 			{
-				Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
-				++ent;
-				continue;
-			}
-			SDL_Texture* sdl_texture = ttr->Get_SDL_Texture();
+				auto* ttr = ent->get()->Display();
+				if (!ttr || !ttr->Get_SDL_Texture())
+				{
+					Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
+					++ent;
+					continue;
+				}
+				SDL_Texture* sdl_texture = ttr->Get_SDL_Texture();
 
-			double px = (double)ttr->Starting_Point().x * Screen::Get_Scale() * ttr->Scale;
-			double py = (double)ttr->Starting_Point().y * Screen::Get_Scale() * ttr->Scale;
+				double px = (double)ttr->Starting_Point().x * Screen::Get_Scale() * ttr->Scale;
+				double py = (double)ttr->Starting_Point().y * Screen::Get_Scale() * ttr->Scale;
 
-			SDL_Point p = { (int)px, (int)py };
-
-
-			SDL_Rect frame_rect;
-			SDL_Rect draw_rect;
-			SDL_RendererFlip flip;
-			double rotation;
-
-			frame_rect = ttr->Frame_Rect();
-			draw_rect = ttr->Draw_Rect();
-			draw_rect.x = (int)(((double)draw_rect.x + ent->get()->X) * Get_Scale());
-			draw_rect.y = (int)(((double)draw_rect.y + ent->get()->Y) * Get_Scale());
-			draw_rect.w *= (int)Get_Scale();
-			draw_rect.h *= (int)Get_Scale();
-
-			flip = ttr->Flip;
-			rotation = ttr->Rotation;
+				SDL_Point p = { (int)px, (int)py };
 
 
-			SDL_RenderCopyEx
+				SDL_Rect frame_rect;
+				SDL_Rect draw_rect;
+				SDL_RendererFlip flip;
+				double rotation;
+
+				frame_rect = ttr->Frame_Rect();
+				draw_rect = ttr->Draw_Rect();
+				draw_rect.x = (int)(((double)draw_rect.x + ent->get()->X) * Get_Scale());
+				draw_rect.y = (int)(((double)draw_rect.y + ent->get()->Y) * Get_Scale());
+				draw_rect.w *= (int)Get_Scale();
+				draw_rect.h *= (int)Get_Scale();
+
+				flip = ttr->Flip;
+				rotation = ttr->Rotation;
+
+
+				SDL_RenderCopyEx
 				(
 					Screen::Renderer,
 					sdl_texture,
@@ -176,10 +185,11 @@ void Screen::Draw()
 					rotation,
 					&p,
 					flip
-					);
-			++ent;
-		}
-	SDL_RenderPresent(Screen::Renderer);
+				);
+				++ent;
+			}
+		SDL_RenderPresent(Screen::Renderer);
+	}
 }
 
 void Screen::Exit()

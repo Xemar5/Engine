@@ -10,6 +10,8 @@ class Tileset;
 class Screen
 {
 public:
+	//*** If false, only console output
+	static bool ShowWindow;
 	//*** SDL Window handler
 	static SDL_Window* Window;
 	//*** SDL Renderer handler

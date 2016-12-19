@@ -5,6 +5,7 @@
 #include <memory>
 #include <SDL.h>
 #include "Sprite.h"
+#include "Network.h"
 
 class Sprite;
 class Action;
@@ -23,15 +24,16 @@ enum EntityType
 };
 
 //All your Entities should NOT override this class, deriver Entity class instead.
+
 class Entity
 {
 public:
 	//***  Virtual Create function, should be overriden by derivering entites
-	virtual void Create();
+	virtual void Create() {};
 	//***  Virtual Update function, should be overriden by derivering entites
-	virtual void Update();
+	virtual void Update() {};
 	//***  Virtual Events function, should be overriden by derivering entites
-	virtual void Events();
+	virtual void Events() {};
 
 	//*** Returns this as an entity derative if possible
 	template <typename T> T* As() { return dynamic_cast<T*>(this); };
@@ -64,6 +66,9 @@ public:
 	//*** The type of this entity
 	//*** Default if not specified
 	EntityType Get_Type() const { return __Type; }
+
+	//*** The ID of this entity in the network
+	NetworkID networkID;
 
 
 	//*** Registers an entity with given name

@@ -5,7 +5,6 @@
 #include "Movement.h"
 #include "Texture.h"
 #include "System.h"
-#include "Hitbox.h"
 #include <SDL.h>
 #include "Player.h"
 #include "Device.h"
