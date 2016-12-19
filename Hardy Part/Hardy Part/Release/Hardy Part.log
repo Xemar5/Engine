@@ -1,0 +1,379 @@
+﻿  Character.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  CobbleWall.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Collider.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Controlls_State.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2039: 'RPC_Saved': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+  Controlls_State.cpp(189): note: see reference to function template instantiation 'T *State::New<Controlls_State>(std::vector<std::shared_ptr<Entity>,std::allocator<_Ty>>)' being compiled
+          with
+          [
+              T=Controlls_State,
+              _Ty=std::shared_ptr<Entity>
+          ]
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2065: 'RPC_Saved': undeclared identifier
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2228: left of '.clear' must have class/struct/union
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): note: type is 'unknown-type'
+  Device.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Entity.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  GameMenu_State.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2039: 'RPC_Saved': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+  GameMenu_State.cpp(87): note: see reference to function template instantiation 'T *State::New<Main_Menu>(std::vector<std::shared_ptr<Entity>,std::allocator<_Ty>>)' being compiled
+          with
+          [
+              T=Main_Menu,
+              _Ty=std::shared_ptr<Entity>
+          ]
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2065: 'RPC_Saved': undeclared identifier
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2228: left of '.clear' must have class/struct/union
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): note: type is 'unknown-type'
+  Input.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Main_State.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2039: 'RPC_Saved': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+  Main_State.cpp(211): note: see reference to function template instantiation 'T *State::New<GameMenu_State>(std::vector<std::shared_ptr<Entity>,std::allocator<_Ty>>)' being compiled
+          with
+          [
+              T=GameMenu_State,
+              _Ty=std::shared_ptr<Entity>
+          ]
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2065: 'RPC_Saved': undeclared identifier
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2228: left of '.clear' must have class/struct/union
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): note: type is 'unknown-type'
+  Menu_State.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2039: 'RPC_Saved': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+  Menu_State.cpp(79): note: see reference to function template instantiation 'T *State::New<GameMenu_State>(std::vector<std::shared_ptr<Entity>,std::allocator<_Ty>>)' being compiled
+          with
+          [
+              T=GameMenu_State,
+              _Ty=std::shared_ptr<Entity>
+          ]
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2065: 'RPC_Saved': undeclared identifier
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): error C2228: left of '.clear' must have class/struct/union
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\State.h(210): note: type is 'unknown-type'
+  Movement.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Action.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Network.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+Network.cpp(17): error C2039: 'RPC_Map': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+Network.cpp(21): error C2039: 'RPC_Saved': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+Network.cpp(22): error C2039: 'RPC_Regex': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+Network.cpp(29): error C2039: 'RPC_RegisterStored': is not a member of 'Network'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(122): note: see declaration of 'Network'
+Network.cpp(29): error C3861: 'RPC_RegisterStored': identifier not found
+Network.cpp(179): error C2039: '_Decode': is not a member of 'RPC'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(70): note: see declaration of 'RPC'
+Network.cpp(179): error C3861: '_Decode': identifier not found
+  Player.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Profile.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  RPC.cpp
+  Screen.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\utility(200): warning C4244: 'initializing': conversion from 'double' to 'unsigned int', possible loss of data
+  Screen.cpp(40): note: see reference to function template instantiation 'std::pair<unsigned int,unsigned int>::pair<double,double,void,0>(std::pair<double,double> &&) noexcept' being compiled
+  Screen.cpp(40): note: see reference to function template instantiation 'std::pair<unsigned int,unsigned int>::pair<double,double,void,0>(std::pair<double,double> &&) noexcept' being compiled
+  Sprite.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Sword.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Textfield.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Compiling...
+  State.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  System.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Texture.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  Generic.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+  __Source.cpp
+  Please define _WIN32_WINNT or _WIN32_WINDOWS appropriately. For example:
+  - add -D_WIN32_WINNT=0x0501 to the compiler command line; or
+  - add _WIN32_WINNT=0x0501 to your project's Preprocessor Definitions.
+  Assuming _WIN32_WINNT=0x0501 (i.e. Windows XP target).
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\Network.h(12): warning C4005: 'RPC_REG': macro redefinition
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(7): note: see previous definition of 'RPC_REG'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\MultiplayerState.h(24): error C2039: 'Set': is not a member of 'RPC'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(70): note: see declaration of 'RPC'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\MultiplayerState.h(24): error C3861: 'Set': identifier not found
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\MultiplayerState.h(37): error C2039: 'Set': is not a member of 'RPC'
+  c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\RPC.h(70): note: see declaration of 'RPC'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\MultiplayerState.h(37): error C3861: 'Set': identifier not found
