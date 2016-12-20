@@ -2,8 +2,8 @@
 #include <vector>
 #include <memory>
 #include <SDL.h>
+#include "Entity.h"
 
-class Entity;
 class Tileset;
 
 
@@ -46,7 +46,7 @@ public:
 	static bool Init();
 
 	//*** Adds the entity to screen renderer queue
-	static bool Add(std::shared_ptr<Entity> ent);
+	static bool Add(Entity<> ent);
 
 	////*** Adds the Tileset to screen renderer queue
 	//static bool Add(std::shared_ptr<Tileset> tileset, unsigned layer);
@@ -83,12 +83,13 @@ private:
 	//*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
 	//*** It empties itself every frame update\
 	//*** Each sub-vector represents a layer
-	static std::vector<std::vector<std::shared_ptr<Entity>>> __Entities;
+	static std::vector<std::vector<Entity<>>> __Entities;
 
 	////*** A pointer to the Tileset which is to be drawn on the screen the next frame update
 	////*** It empties itself every frame update
 	//static std::vector<std::vector<std::shared_ptr<Tileset>>> __Tilesets;
 
 	friend class State;
+	template<typename T>
 	friend class Entity;
 };

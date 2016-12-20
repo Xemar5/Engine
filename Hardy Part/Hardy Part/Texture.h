@@ -7,6 +7,7 @@
 #include <vector>
 #include "Output_Handler.h"
 #include "Animation.h"
+#include "Entity.h"
 
 class Animation;
 class Sprite_Handler;
@@ -25,7 +26,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static std::shared_ptr<Texture> Load(Entity* ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
 	//*** Load new sprite from a path
 	//*** - texture - an existing SDL_Texture that is not being used yet
 	//*** - width - of loading texture
@@ -36,7 +37,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static std::shared_ptr<Texture> Load(Entity* ent, SDL_Texture* texture, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> Load(Entity<> ent, SDL_Texture* texture, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
 
 	//*** If true, SDL_Texture will be reloaded when exiting and re-entering the window
 	bool Needs_Reloading = false;
@@ -80,7 +81,7 @@ public:
 
 private:
 	//*** Initializes supplied texture with given parameters
-	static std::shared_ptr<Texture> __Load(Entity* ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> __Load(Entity<> ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
 
 	//*** Path to the image
 	std::string __Path = "";

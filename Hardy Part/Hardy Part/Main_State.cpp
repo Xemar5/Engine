@@ -20,10 +20,10 @@ class GameMenu_State;
 void Main_Menu::Create()
 {
 	for (auto pl : Player::Get_Players())
-		if (auto ent = Player::Get_Entity(pl.get()))
-			ent->Display()->Scale = 1;
+		if (auto ent = Player::Get_Entity(pl))
+			ent->texture->Scale = 1;
 
-	auto tileset = State::Add_Entity<Entity>(0);
+	auto tileset = State::Add_Entity<>(0);
 	Generic::Load(
 		{
 			{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
@@ -45,7 +45,7 @@ void Main_Menu::Create()
 
 	tileset->X = Screen::Get_Screen_Size().first / 2;
 	tileset->Y = Screen::Get_Screen_Size().second / 2;
-	Entity::Register(tileset.get(), "tileset");
+	//Entity::Register(tileset.get(), "tileset");
 	//Output_Handler::Output << ttt->X << std::endl;
 	//Output_Handler::Output << ttt->Display()->Get_SDL_Starting_Point().x << std::endl;
 
@@ -115,7 +115,7 @@ void Main_Menu::Create()
 	if (Player::Get_Players().size())
 	{
 		auto s1 = State::Add_Entity<Sword>(1);
-		dynamic_cast<Sword*>(s1.get())->Wealder = Player::Get_Players().front().get();
+		((Entity<Sword>)s1)->Wealder = Player::Get_Players().front();
 	}
 	//srand((unsigned)time(0));
 	//if (this->Layers[0]->Entities.size())
@@ -140,20 +140,20 @@ void Main_Menu::Update()
 	//for (auto tileset : Get_Entities())
 	//{
 	//	if (!dynamic_cast<Generic*>(tileset->Get_Texture())) continue;
-	auto tileset = Entity::Get("tileset");
-		for (auto ent : Get_Entities())
-		{
-			if (tileset == ent.get()) continue;
-			if (!Get_Entities().size()) break;
-			auto tile = Generic::Which_Tile(tileset, (int)ent->X, (int)ent->Y);
+	//auto tileset = Entity::Get("tileset");
+	//	for (auto ent : Get_Entities())
+	//	{
+	//		if (tileset == ent.get()) continue;
+	//		if (!Get_Entities().size()) break;
+	//		auto tile = Generic::Which_Tile(tileset, (int)ent->X, (int)ent->Y);
 
-			if (tile <= 0 || tile >= 6)
-			{
-				ent->X = Screen::Get_Screen_Size().first / 2 - 190;
-				ent->Y = Screen::Get_Screen_Size().second / 2 + 110;
-			}
-		}
-	//}
+	//		if (tile <= 0 || tile >= 6)
+	//		{
+	//			ent->X = Screen::Get_Screen_Size().first / 2 - 190;
+	//			ent->Y = Screen::Get_Screen_Size().second / 2 + 110;
+	//		}
+	//	}
+	////}
 
 	Uint32 px = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
 	Uint32 py = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();

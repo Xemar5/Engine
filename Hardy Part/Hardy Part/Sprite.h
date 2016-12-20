@@ -5,9 +5,9 @@
 #include <memory>
 #include <SDL.h>
 #include "Texture.h"
+#include "Entity.h"
 
 class Animation;
-class Entity;
 class Sprite;
 
 
@@ -25,7 +25,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static std::shared_ptr<Texture> Load(Entity* ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0, int frame_width = 0, int frame_height = 0);
+	static std::shared_ptr<Texture> Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0, int frame_width = 0, int frame_height = 0);
 
 
 	//*** Width of a frame, greater than 0 and less than Width of the image
@@ -46,7 +46,7 @@ public:
 	
 	//*** Adds given animation to this Sprite
 	//*** Does nothing if the name is already taken or sequence is empty
-	static bool Add_Animation(Texture* texture, Animation& anim);
+	static bool Add_Animation(std::shared_ptr<Texture> texture, Animation& anim);
 	//*** Returns the animation with given name
 	//*** If no name supplied or animation not found, returns "idle"
 	Animation& operator[](std::string name);

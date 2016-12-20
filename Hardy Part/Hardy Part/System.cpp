@@ -49,7 +49,7 @@ void System::_System_Update()
 
 void System::__Update()
 {
-	Network::Update();
+	//Network::Update();
 	Keyboard::Get.Update();
 	Collider::Update();
 	std::vector<State*> stt_to_update;
@@ -64,7 +64,7 @@ void System::__Update()
 		stt_to_update[i]->State::Update();
 	}
 	Player::__Update();
-	Network::SendAll();
+	//Network::SendAll();
 }
 void System::__Events()
 {

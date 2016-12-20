@@ -130,7 +130,6 @@
     <ClCompile Include="Menu_State.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="Action.cpp" />
-    <ClCompile Include="Network.cpp" />
     <ClCompile Include="Output_Handler.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Profile.cpp" />
@@ -162,7 +161,6 @@
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Action.h" />
     <ClInclude Include="MultiplayerState.h" />
-    <ClInclude Include="Network.h" />
     <ClInclude Include="RPC.h" />
     <ClInclude Include="Output_Handler.h" />
     <ClInclude Include="Player.h" />

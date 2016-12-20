@@ -48,13 +48,13 @@ void Sword::Update()
 		double x, y;
 		x = Player::Get_Entity(Wealder)->X;
 		y = Player::Get_Entity(Wealder)->Y - 8;
-		Display()->Rotation = ang;
+		texture->Rotation = ang;
 		X = Player::Get_Entity(Wealder)->X - cos(ang * M_PI / 180 + M_PI / 2) * 20;
 		Y = Player::Get_Entity(Wealder)->Y - 8 - sin(ang * M_PI / 180 + M_PI / 2) * 20;
 		if (abs(ang - __Old_Angle) > 3  && abs(ang - __Old_Angle) < 180)
 		{
-			if (ang < __Old_Angle) Display()->Flip = SDL_FLIP_HORIZONTAL;
-			if (ang > __Old_Angle) Display()->Flip = SDL_FLIP_NONE;
+			if (ang < __Old_Angle) texture->Flip = SDL_FLIP_HORIZONTAL;
+			if (ang > __Old_Angle) texture->Flip = SDL_FLIP_NONE;
 		}
 		__Old_Angle = ang;
 	}

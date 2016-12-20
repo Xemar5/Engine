@@ -2,10 +2,10 @@
 #include "Entity.h"
 class Player;
 
-class Sword : public Entity
+class Sword : public EntityObject
 {
 public:
-	Player* Wealder = nullptr;
+	std::shared_ptr<Player> Wealder = nullptr;
 	void Create() override;
 	void Update() override;
 	void Events() override;

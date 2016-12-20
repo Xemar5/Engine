@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include "Animation.h"
 
-std::shared_ptr<Texture> Sprite::Load(Entity* ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
+std::shared_ptr<Texture> Sprite::Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
 {
 	SDL_Texture* tr = nullptr;
 	if (Screen::ShowWindow)
@@ -29,7 +29,7 @@ std::shared_ptr<Texture> Sprite::Load(Entity* ent, std::string path, unsigned wi
 	}
 
 	Texture::__Textures.emplace_back(std::make_shared<Sprite>());
-	Sprite* sp = dynamic_cast<Sprite*>(__Textures.back().get());
+	std::shared_ptr<Sprite> sp = std::dynamic_pointer_cast<Sprite>(__Textures.back());
 	sp->__Path = path;
 	sp->__SDL_Texture = tr;
 
@@ -87,14 +87,14 @@ SDL_Point Sprite::Starting_Point()
 }
 
 
-bool Sprite::Add_Animation(Texture* texture, Animation& anim)
+bool Sprite::Add_Animation(std::shared_ptr<Texture> texture, Animation& anim)
 {
-	if (!texture || !dynamic_cast<Sprite*>(texture))
+	if (!texture || !std::dynamic_pointer_cast<Sprite>(texture))
 	{
 		Output_Handler::Output << "MSG Sprite::Add_Animation : No Sprite supplied\n";
 		return false;
 	}
-	auto sp = dynamic_cast<Sprite*>(texture);
+	auto sp = std::dynamic_pointer_cast<Sprite>(texture);
 	if (!anim.Name().size()) return false;
 	if (!anim.Sequence().size()) return false;
 	for (auto& a : sp->__Animations)

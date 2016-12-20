@@ -19,7 +19,7 @@ unsigned Screen::__Height = 600;
 double Screen::__Scale = 2;
 bool Screen::__Windowed = true;
 
-std::vector<std::vector<std::shared_ptr<Entity>>> Screen::__Entities;
+std::vector<std::vector<Entity<>>> Screen::__Entities;
 //std::vector<std::vector<std::shared_ptr<Tileset>>> Screen::__Tilesets;
 
 template <typename T>
@@ -106,7 +106,7 @@ bool Screen::Init()
 	return true;
 }
 
-bool Screen::Add(std::shared_ptr<Entity> ent)
+bool Screen::Add(Entity<> ent)
 {
 	if (!ent) { Output_Handler::Error << "ERR Screen::Add : No entity supplied\n"; return false; }
 	//if (!ent->Display()) { Output_Handler::Output << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
@@ -114,7 +114,7 @@ bool Screen::Add(std::shared_ptr<Entity> ent)
 	for (auto it = __Entities.back().begin(); it != __Entities.back().end(); ++it)
 	{
 		if (ent == *it) return false;
-		if (it->get()->Get_Layer() < ent->Get_Layer()) continue;
+		if (it->get()->layer < ent->layer) continue;
 		if (it->get()->Y < ent->Y) continue;
 		__Entities.back().insert(it, ent);
 		return true;
@@ -146,7 +146,7 @@ void Screen::Draw()
 		for (unsigned layer = 0; layer < __Entities.size(); ++layer)
 			for (auto ent = __Entities[layer].begin(); ent != __Entities[layer].end();)
 			{
-				auto* ttr = ent->get()->Display();
+				auto ttr = (*ent)->texture;
 				if (!ttr || !ttr->Get_SDL_Texture())
 				{
 					Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
@@ -206,7 +206,7 @@ bool Screen::__Reorder()
 	{
 		auto temp = __Entities.back()[i];
 		int j = i - 1;
-		while (j >= 0 && __Entities.back()[i]->Get_Layer() < __Entities.back()[j]->Get_Layer())
+		while (j >= 0 && __Entities.back()[i]->layer < __Entities.back()[j]->layer)
 		{
 			__Entities.back()[j + 1] = __Entities.back()[j];
 			--j;
@@ -217,7 +217,7 @@ bool Screen::__Reorder()
 	{
 		auto temp = __Entities.back()[i];
 		int j = i - 1;
-		while (j >= 0 && __Entities.back()[i]->Get_Layer() == __Entities.back()[j]->Get_Layer() && __Entities.back()[j]->Y > temp->Y)
+		while (j >= 0 && __Entities.back()[i]->layer == __Entities.back()[j]->layer && __Entities.back()[j]->Y > temp->Y)
 		{
 			__Entities.back()[j + 1] = __Entities.back()[j];
 			--j;

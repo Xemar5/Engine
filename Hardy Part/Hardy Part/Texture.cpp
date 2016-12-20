@@ -4,7 +4,7 @@
 
 std::vector<std::shared_ptr<Texture>> Texture::__Textures;
 
-std::shared_ptr<Texture> Texture::Load(Entity * ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
+std::shared_ptr<Texture> Texture::Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
 {
 	if (!path.size())
 	{
@@ -34,7 +34,7 @@ std::shared_ptr<Texture> Texture::Load(Entity * ent, std::string path, unsigned 
 }
 
 
-std::shared_ptr<Texture> Texture::Load(Entity * ent, SDL_Texture * texture, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
+std::shared_ptr<Texture> Texture::Load(Entity<> ent, SDL_Texture * texture, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
 {
 	if (!texture)
 	{
@@ -116,12 +116,12 @@ bool Texture::Destroy()
 	return true;
 }
 
-std::shared_ptr<Texture> Texture::__Load(Entity * ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
+std::shared_ptr<Texture> Texture::__Load(Entity<> ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
 {
 	t->__Width = width;
 	t->__Height = height;
 	t->__X_Off = starting_point_x;
 	t->__Y_Off = starting_point_y;
-	if (ent) ent->__Texture = t;
+	if (ent) ent->texture = t;
 	return t;
 }

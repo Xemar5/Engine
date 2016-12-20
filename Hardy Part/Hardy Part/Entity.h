@@ -1,138 +1,189 @@
 #pragma once
-#include <iostream>
-#include <string>
+//#include <iostream>
+//#include <string>
 #include <vector>
 #include <memory>
-#include <SDL.h>
-#include "Sprite.h"
-#include "Network.h"
+//#include <SDL.h>
+//#include "Sprite.h"
+//#include "Network.h"
 
-class Sprite;
-class Action;
-class Hitbox;
-class Stats;
+
 class Texture;
 class Movement;
 class Collider;
 
 
-enum EntityType
-{
-	ET_Default,
-	ET_Generic,
-	ET_Character
-};
-
-//All your Entities should NOT override this class, deriver Entity class instead.
-
-class Entity
+class EntityObject : protected std::enable_shared_from_this<EntityObject>
 {
 public:
-	//***  Virtual Create function, should be overriden by derivering entites
 	virtual void Create() {};
-	//***  Virtual Update function, should be overriden by derivering entites
 	virtual void Update() {};
-	//***  Virtual Events function, should be overriden by derivering entites
 	virtual void Events() {};
 
-	//*** Returns this as an entity derative if possible
-	template <typename T> T* As() { return dynamic_cast<T*>(this); };
-	//*** Returns the Hitbox pointer if it exists
-	std::pair<double, double> Get_Hitbox() const;
 
-	//*** Returns the Texture pointer if it exists
-	template<typename T = Texture>
-	T* Display() const;
-	//*** Returns the scale of this entity
-	virtual double Get_Scale() const;
+	double scale = 1;
+	std::shared_ptr<Texture> texture = nullptr;
+	std::shared_ptr<Movement> movement = nullptr;
+	std::vector<std::shared_ptr<Collider>> colliders;
+	std::pair<double, double> hitbox();
 
-	//*** Returns the Texture pointer if it exists
-	Texture* Get_Texture() const;
-	//*** Returns the Movement pointer if it exists
-	Movement* Get_Movement() const;
-	//*** Returns the Collider pointer if it exists
-	Collider* Get_Collider(unsigned index) const;
-
-	//*** X coordinate of this entity position
 	double X = 0;
-	//*** Y coordinate of this entity position
 	double Y = 0;
-	//*** Z coordinate of this entity position
-	//*** determines which entity should be drawn at which point
 	double Z = 0;
 
-	//*** Returns the layer this character is set on
-	unsigned Get_Layer() const { return __Layer; };
-	//*** The type of this entity
-	//*** Default if not specified
-	EntityType Get_Type() const { return __Type; }
+	unsigned layer = 0;
+	//EntityType type;
+	//NetworkID networkID;
 
-	//*** The ID of this entity in the network
-	NetworkID networkID;
+	virtual ~EntityObject() = default;
+	EntityObject() = default;
+	EntityObject(const EntityObject&) = delete;
+	EntityObject& operator=(const EntityObject&) = delete;
 
-
-	//*** Registers an entity with given name
-	//*** Can be retrived with Get("name")
-	//*** Can't register if name already taken
-	//*** Registering the same entity again with different name will change it
-	static bool Register(Entity* ent, std::string name, bool forceRegister = false);
-
-	//*** Returns the map of all registered entities
-	static std::map<std::string, Entity*> Registered() { return __Registered; };
-	//*** Returns an entity by its name if registered
-	static Entity* Get(std::string name);
-	//*** Returns all existing entities
-	static std::vector<std::shared_ptr<Entity>> All();
-
-
-
-	virtual ~Entity() 
-	{
-		for (auto e = __Registered.begin(); e != __Registered.end(); ++e)
-			if (e->second == this) { __Registered.erase(e->first); break; }
-
-		auto ttr = __Texture.get();
-		__Texture = nullptr;
- 		if(ttr) ttr->Destroy();
-
-		__Movement = nullptr;
-
-		for (auto& c : __Colliders)
-			c = nullptr;
-		__Colliders.clear();
-	}
-
-protected:
-	//*** A class containing all compounds needed for a sprite to be rendered
-	//*** If nullptr, entity wont be displayed, but still can has usage (Actions)
-	std::shared_ptr<Texture> __Texture = nullptr;
-
-	//*** A class resolving movement input
-	//*** If nullptr, entity can't move
-	std::shared_ptr<Movement> __Movement = nullptr;
-
-	//*** A vector of class responsible for handling collisions
-	//*** If size of 0, entity ignore all collisions
-	//*** If this Entity has no Movement specified, this entity doesn't move after collision
-	//***	and ignore all collisions from other non-moving entities
-	std::vector<std::shared_ptr<Collider>> __Colliders;
-
-	//*** The layer of the state this entity is set on
-	unsigned __Layer = -1;
-	//*** The type of this entity
-	//*** ET_Default if not specified
-	EntityType __Type = ET_Default;
-
-	//*** A map containing all registered Entities
-	static std::map<std::string, Entity*> __Registered;
-
-	friend class Sprite;
-	friend class Texture;
-	friend class Generic;
-	friend class Hitbox;
-	friend class Movement;
+	template <typename T>
+	friend class Entity;
 	friend class State;
-	friend class Collider;
 };
+
+
+
+
+
+
+
+template <typename T = EntityObject>
+class Entity final
+{
+public:
+	T* get() const;
+	std::shared_ptr<T> get_shared() const;
+	size_t count() const;
+
+	template <typename N>
+	Entity(std::shared_ptr<N> ent);
+	Entity();
+	Entity(const Entity& ent);
+	Entity(EntityObject* ent);
+	Entity(std::nullptr_t null);
+	~Entity() = default;
+
+	template<typename N> operator Entity<N>();
+	template<typename N> operator std::shared_ptr<N>();
+						 operator std::shared_ptr<T>();
+						 operator bool();
+
+	std::shared_ptr<T>& operator->();
+	bool operator==(const Entity& ent);
+
+						 Entity& operator=(const Entity& ent);
+						 Entity& operator=(std::nullptr_t null);
+						 Entity& operator=(EntityObject* ent);
+	template<typename N> Entity& operator=(std::shared_ptr<N> ent);
+
+private:
+	std::shared_ptr<T> _entity = nullptr;
+
+	template<typename N>
+	friend class Entity;
+};
+
+
+
+
+
+template<typename T>					  Entity<T>::operator bool()
+{
+	return _entity ? true : false;
+}
+template<typename T>					  Entity<T>::operator std::shared_ptr<T>()
+{
+	return _entity;
+}
+template<typename T> template<typename N> Entity<T>::operator std::shared_ptr<N>()
+{
+	return std::dynamic_pointer_cast<N>(_entity);
+}
+template<typename T> template<typename N> Entity<T>::operator Entity<N>()
+{
+	std::shared_ptr<N> e = std::dynamic_pointer_cast<N, T>(_entity);
+	if (e)
+	{
+		Entity<N> e_n;
+		e_n._entity = e;
+		return e_n;
+	}
+	else return nullptr;
+}
+
+template<typename T> template<typename N> Entity<T> & Entity<T>::operator=(std::shared_ptr<N> ent)
+{
+	_entity = std::dynamic_pointer_cast<T>(ent);
+	return *this;
+}
+template<typename T>					  Entity<T> & Entity<T>::operator=(std::nullptr_t null)
+{
+	//std::cout << "nullptr asigned Entity\n";
+	_entity = null;
+	return *this;
+}
+template<typename T>					  Entity<T> & Entity<T>::operator=(EntityObject * ent)
+{
+	_entity = ent->shared_from_this();
+	return *this;
+}
+template<typename T>					  Entity<T> & Entity<T>::operator=(const Entity<T> & ent)
+{
+	//std::cout << "asigned Entity\n";
+	_entity = ent._entity;
+	return *this;
+}
+
+template<typename T> std::shared_ptr<T> & Entity<T>::operator->()
+{
+	return _entity;
+}
+template<typename T> bool Entity<T>::operator==(const Entity<T> & ent)
+{
+	return _entity == ent._entity;
+}
+
+template<typename T>				T * Entity<T>::get() const
+{
+	return _entity.get();
+}
+template<typename T> std::shared_ptr<T> Entity<T>::get_shared() const
+{
+	return _entity;
+}
+template<typename T>			 size_t Entity<T>::count() const
+{
+	return _entity ? _entity.use_count() : 0;
+}
+
+template<typename T>					  Entity<T>::Entity()
+{
+	//std::cout << "default constructed Entity\n";
+	_entity = std::make_shared<T>();
+}
+template<typename T>					  Entity<T>::Entity(const Entity<T> & ent)
+{
+	//std::cout << "copy constructed Entity\n";
+	_entity = ent._entity;
+}
+template<typename T>					  Entity<T>::Entity(EntityObject * ent)
+{
+	_entity = ent->shared_from_this();
+}
+template<typename T>					  Entity<T>::Entity(std::nullptr_t null)
+{
+	//std::cout << "nullptr constructed Entity\n";
+	_entity = null;
+}
+template<typename T> template<typename N> Entity<T>::Entity(std::shared_ptr<N> ent)
+{
+	_entity = std::dynamic_pointer_cast<T>(ent);
+}
+
+
 
 

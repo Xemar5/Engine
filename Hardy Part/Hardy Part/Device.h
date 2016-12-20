@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "System.h"
 #include "Mapping.h"
+#include "Entity.h"
 
 #define KEYBOARD -1
 
@@ -81,7 +82,7 @@ public:
 	//*** The global Keyboard/Mouse object
 	static Keyboard Get;
 	//*** Returns true if given entity contains mouse cursor
-	static bool Contains_Mouse(Entity* ent);
+	static bool Contains_Mouse(Entity<> ent);
 	//*** The time after which mouse is considered idle
 	static double MouseIdleTime;
 private:

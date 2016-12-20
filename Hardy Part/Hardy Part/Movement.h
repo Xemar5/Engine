@@ -5,8 +5,7 @@
 #include <memory>
 
 #include "Action.h"
-
-class Entity;
+#include "Entity.h"
 
 
 
@@ -22,19 +21,19 @@ public:
 	//*** - ent - an entity movement class is being created for
 	//*** - speed - how many pixels this entity moves by every frame
 	//*** - mass - changes the way the entity accelerates/breaks and behave on different surfaces
-	static std::shared_ptr<Movement> Set(Entity* ent, double speed, double mass);
+	static std::shared_ptr<Movement> Set(Entity<> ent, double speed, double mass);
 
 
 	//*** Changes given Movement class' X and Y to a given x and y direction
 	//*** - force_x - how fast the entity goes in x dimension
 	//*** - force_y - how fast the entity goes in y dimension
 	//*** - traction - of the floor, in range from 0 (no traction) to 1 (default traction)
-	static bool Add_Force(Movement* movement, double force_x, double force_y);
+	static bool Add_Force(std::shared_ptr<Movement> movement, double force_x, double force_y);
 	//*** Moves the entity in a given x and y direction
 	//*** - force_x - how fast the entity goes in x dimension
 	//*** - force_y - how fast the entity goes in y dimension
 	//*** - traction - of the floor, in range from 0 (no traction) to 1 (default traction)
-	static bool Add_Force(Entity* ent, double force_x, double force_y);
+	static bool Add_Force(Entity<> ent, double force_x, double force_y);
 
 
 	//*** Returns the max speed
@@ -72,9 +71,9 @@ private:
 	//*** Empties itself every frame
 	std::vector<std::pair<double, double>> __Forces;
 	//*** Moves the entity at the end of each frames
-	static bool __Resolve_Movement(Movement* movement);
+	static bool __Resolve_Movement(std::shared_ptr<Movement> movement);
 	//*** Moves the entity at the end of each frames
-	static bool __Resolve_Movement(Entity* movement);
+	static bool __Resolve_Movement(Entity<> movement);
 
 	friend class State;
 };

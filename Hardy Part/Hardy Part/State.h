@@ -7,6 +7,7 @@
 
 
 class Tileset;
+template<typename t>
 class Entity;
 class Texture;
 
@@ -27,7 +28,7 @@ class Texture;
 //};
 
 
-class State : protected Entity
+class State : protected EntityObject, protected std::enable_shared_from_this<State>
 {
 public:
 	////***  Virtual Create function, should be overriden by derivering states
@@ -69,22 +70,22 @@ public:
 	//*** Supplied entity has to deriver from Entity class
 	//*** - layer - adds the entity to given layer
 	//*** 			if the layer doesn't exist yet, this function will create all layers between
-	template<typename T = Entity> std::shared_ptr<Entity> Add_Entity(unsigned layer = unsigned(0));
+	template<typename T = EntityObject> Entity<T> Add_Entity(unsigned layer = unsigned(0));
 	//*** Adds supplied entity to the state as new object independent from the parent
-	template<typename T> std::shared_ptr<Entity> Add_Entity(std::shared_ptr<T> entity, unsigned layer = 0);
+	template<typename T>				Entity<T> Add_Entity(std::shared_ptr<T> entity, unsigned layer = 0);
 	//*** Changes the Layer of an entity
-	static bool Change_Entity_Layer(Entity* entity, unsigned new_layer);
+	static bool Change_Entity_Layer(Entity<> entity, unsigned new_layer);
 
 
 
 	//*** Builds and creates a new state of given type
 	//*** Deletes all previously built states and state layers
-	template <typename T> static T* New(std::vector<std::shared_ptr<Entity>> persistant_entities = {});
+	template <typename T> static std::shared_ptr<T> New(std::vector<Entity<>> persistant_entities = {});
 	//*** Builds and creates a new state layer of given type
 	//*** - update_underneath - if true, System will update all state layers
 	//***     aswell as the main state built before
 	//*** 	else only this state layer will be updated
-	template <typename T> static T* New_Layer(bool update_underneath = false);
+	template <typename T> static std::shared_ptr<T> New_Layer(bool update_underneath = false);
 	//*** Exits the current state layer and destroys it
 	//*** Works only if there is at least one state layer built, prints MSG otherwise
 	template <bool = true> static void Exit_Layer();
@@ -104,11 +105,11 @@ public:
 	////*** Returns the container of all Tilesets from all layers in this State
 	//std::vector<Tileset*> Get_Tilesets();
 	//*** Returns the container of all Entities from all layers in this State
-	std::vector<std::shared_ptr<Entity>> Get_Entities();
+	std::vector<Entity<>> Get_Entities();
 	//*** Returns an entity with given index if it exists
-	std::shared_ptr<Entity> Ent(unsigned ent);
+	Entity<> Ent(unsigned ent);
 	//*** Removes this entity from the state, from players controlls and destroys it
-	bool Remove_Entity(Entity* ent);
+	bool Remove_Entity(Entity<> ent);
 
 	//	//*** Returns the container of all Walls from all layers in this State
 	//	std::vector<std::shared_ptr<Entity>> Get_Walls();
@@ -119,7 +120,7 @@ public:
 private:
 	//*** The container of all Entities this state has
 	//*** To add an entity use Add_Entity functions
-	std::vector<std::shared_ptr<Entity>> __Entities;
+	std::vector<Entity<>> __Entities;
 
 	friend class System;
 };
@@ -142,16 +143,16 @@ private:
 //*** - layer - adds the entity to given layer
 //*** 			if the layer doesn't exist yet, this function will create all layers between
 template <typename T>
-std::shared_ptr<Entity> State::Add_Entity(unsigned layer)
+Entity<T> State::Add_Entity(unsigned layer)
 {
 	if (!this)
 	{
 		Output_Handler::Error << "ERR State::Add_Entity : No this state\n";
 		return nullptr;
 	}
-	auto e = std::make_shared<T>();
+	Entity<T> e = std::make_shared<T>();
 	__Entities.push_back(e);
-	__Entities.back()->__Layer = layer;
+	__Entities.back()->layer = layer;
 	__Entities.back()->Create();
 	Screen::Add(__Entities.back());
 	return __Entities.back();
@@ -159,7 +160,7 @@ std::shared_ptr<Entity> State::Add_Entity(unsigned layer)
 
 //*** Adds supplied entity to the state as new object independent from the parent
 template <typename T>
-std::shared_ptr<Entity> State::Add_Entity(std::shared_ptr<T> entity, unsigned layer)
+Entity<T> State::Add_Entity(std::shared_ptr<T> entity, unsigned layer)
 {
 	if (!this)
 	{
@@ -172,7 +173,7 @@ std::shared_ptr<Entity> State::Add_Entity(std::shared_ptr<T> entity, unsigned la
 		return nullptr;
 	}
 	__Entities.push_back(entity);
-	if(layer != -1)	__Entities.back()->__Layer = layer;
+	if(layer != -1)	__Entities.back()->layer = layer;
 	__Entities.back()->Create();
 
 	Screen::Add(__Entities.back());
@@ -184,10 +185,10 @@ std::shared_ptr<Entity> State::Add_Entity(std::shared_ptr<T> entity, unsigned la
 //*** Template parameter must be supplied with an State derative
 //*** Destroys all built State layers and creates new stack
 template <typename T>
-T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities)
+std::shared_ptr<T> State::New(std::vector<Entity<>> persistant_entities)
 {
 	Device::ClearAllDeviceInput();
-	Entity::__Registered.clear();
+	//Entity::__Registered.clear();
 
 	for (unsigned i = 0; i < State::Built.size(); i++)
 		State::Deleted.push_back(i);
@@ -205,15 +206,16 @@ T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities)
 	}
 	Screen::__Entities.clear();
 	Screen::__Entities.push_back({});
-	State::Built.emplace_back(std::make_shared<T>());
-	NetworkID::Reset();
-	Network::RPC_Saved.clear();
+	State::Built.push_back(std::make_shared<T>());
+	////NetworkID::Reset();
+	////Network::RPC_Saved.clear();
 
-	for(auto& ptr : persistant_entities)
-		if(ptr.get()) State::Built.back()->Add_Entity(ptr, ptr->Get_Layer());
+	for(auto ptr : persistant_entities)
+		if(ptr) State::Built.back()->Add_Entity(ptr.get_shared(), ptr->layer);
 
 	State::Built.back().get()->Create();
-	return dynamic_cast<T*>(State::Built.back().get());
+	return std::static_pointer_cast<T>(State::Built.back());
+	//return nullptr;
 }
 
 
@@ -222,14 +224,14 @@ T* State::New(std::vector<std::shared_ptr<Entity>> persistant_entities)
 //*** Layers underneath are not destroyed
 //*** - update_underneath - if true, layers underneath will be updated every game tick
 template <typename T>
-T* State::New_Layer(bool update_underneath)
+std::shared_ptr<T> State::New_Layer(bool update_underneath)
 {
 	Device::ClearAllDeviceInput();
 	Screen::__Entities.push_back({});
 	State::Built.emplace_back(std::make_shared<T>());
 	State::Built.back().get()->Update_Underneath = update_underneath;
 	State::Built.back().get()->Create();
-	return dynamic_cast<T*>(State::Built.back().get());
+	return std::static_pointer_cast<T>(State::Built.back());
 }
 
 //*** Exits the top State layer and destroys it

@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include "Entity.h"
+
+template <typename T>
 class Entity;
 
 class Collider
@@ -8,14 +11,14 @@ class Collider
 public:
 	//*** Creates and adds a new collider to the given entity
 	//*** Stores the location of the collider in _Static_Colliders or _Colliders vector
-	static Collider* Add(Entity* ent);
+	static std::shared_ptr<Collider> Add(Entity<> ent);
 	
 	//*** Checks for all encountered collisions and resloves them
 	//*** Fired from main timeline - use only when necessary
 	static void Update();
 
 	//*** Returns true if given colliders overlap
-	static bool Overlap(Collider* c1, Collider* c2);
+	static bool Overlap(std::shared_ptr<Collider> c1, std::shared_ptr<Collider> c2);
 
 	double W = 30;
 	double H = 30;
@@ -28,6 +31,6 @@ protected:
 	static std::vector<std::shared_ptr<Collider>> _StaticColliders;
 
 	//*** The entity this collider is attached to
-	Entity* _Parent = nullptr;
+	Entity<> _Parent = nullptr;
 
 };

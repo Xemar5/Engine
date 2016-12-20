@@ -1,27 +1,26 @@
 #include "Collider.h"
-#include "Entity.h"
 #include "Output_Handler.h"
 std::vector<std::shared_ptr<Collider>> Collider::_Colliders;
 std::vector<std::shared_ptr<Collider>> Collider::_StaticColliders;
 
 
 
-Collider* Collider::Add(Entity * ent)
+std::shared_ptr<Collider> Collider::Add(Entity<> ent)
 {
 	if (!ent) { Output_Handler::Error << "ERR Collider::Add : No Entity supplied\n"; return nullptr; }
 	auto c = std::make_shared<Collider>();
-	ent->__Colliders.push_back(c);
+	ent->colliders.push_back(c);
 	
-	if (ent->Get_Movement())
+	if (ent->movement)
 		_Colliders.push_back(c);
 	else
 		_StaticColliders.push_back(c);
 	c->_Parent = ent;
 
-	return c.get();
+	return c;
 }
 
-bool Collider::Overlap(Collider* c1, Collider* c2)
+bool Collider::Overlap(std::shared_ptr<Collider> c1, std::shared_ptr<Collider> c2)
 {
 	if (!c1 || !c2) { Output_Handler::Output << "MSG Collider::Overlap : No colliders supplied\n"; return false; }
 	auto c1l = c1->_Parent->X - c1->W / 2;

@@ -1,8 +1,9 @@
 #include "Generic.h"
+#include "Texture.h"
 #include "Screen.h"
 
 
-std::shared_ptr<Texture> Generic::Load(std::vector<std::vector<int>> map, Entity * ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
+std::shared_ptr<Texture> Generic::Load(std::vector<std::vector<int>> map, Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
 {
 	if (!path.size())
 	{
@@ -43,7 +44,7 @@ std::shared_ptr<Texture> Generic::Load(std::vector<std::vector<int>> map, Entity
 
 	Texture::__Textures.emplace_back(std::make_shared<Generic>());
 	Texture::__Load(ent, Texture::__Textures.back(), frame_width * map[0].size(), frame_height * map.size(), starting_point_x, starting_point_y);
-	Generic* ts = dynamic_cast<Generic*>(Texture::__Textures.back().get());
+	std::shared_ptr<Generic> ts = std::static_pointer_cast<Generic>(Texture::__Textures.back());
 
 
 
@@ -64,7 +65,7 @@ std::shared_ptr<Texture> Generic::Load(std::vector<std::vector<int>> map, Entity
 	else if (frame_height < 0) ts->Frame_Height = height / -frame_height;
 	else ts->Frame_Height = frame_height;
 
-	if (ent) ent->__Texture = Texture::__Textures.back();
+	if (ent) ent->texture = Texture::__Textures.back();
 
 
 	SDL_SetTextureBlendMode(ts->__SDL_Texture, SDL_BLENDMODE_BLEND);
@@ -113,7 +114,7 @@ std::shared_ptr<Texture> Generic::Load(std::vector<std::vector<int>> map, Entity
 		dst.x = 0;
 	}
 
-	ent->__Type = ET_Generic;
+	//ent->__Type = ET_Generic;
 	SDL_SetRenderTarget(Screen::Renderer, NULL);
 	return Texture::__Textures.back();
 }
@@ -126,7 +127,7 @@ bool Generic::Reload()
 	if (__Generic_Texture) SDL_DestroyTexture(__Generic_Texture);
 	__SDL_Texture = nullptr;
 	__Generic_Texture = nullptr;
-	*this = *dynamic_cast<Generic*>(Load(__Tilemap, nullptr, __Path, __Width, __Height, __X_Off, __Y_Off, Frame_Width, Frame_Height).get());
+	*this = *std::dynamic_pointer_cast<Generic>(Load(__Tilemap, nullptr, __Path, __Width, __Height, __X_Off, __Y_Off, Frame_Width, Frame_Height));
 
 	return true;
 }
@@ -147,13 +148,13 @@ bool Generic::Reload()
 //	return __Tilemap[y][x];
 //}
 
-int Generic::Which_Tile(Entity * ent, int x, int y)
+int Generic::Which_Tile(Entity<> ent, int x, int y)
 {
 	if (!ent) { Output_Handler::Error << "ERR Generic::Which_Tile : No Entity supplied\n"; return -1; }
-	if (!ent->Get_Texture()) { Output_Handler::Error << "ERR Generic::Which_Tile : Supplied Entity has no Texture\n"; return -1; }
-	if (!dynamic_cast<Generic*>(ent->Get_Texture())) { Output_Handler::Error << "ERR Generic::Which_Tile : Supplied Entity has no Generic type Texture\n"; return -1; }
+	if (!ent->texture) { Output_Handler::Error << "ERR Generic::Which_Tile : Supplied Entity has no Texture\n"; return -1; }
+	if (!std::dynamic_pointer_cast<Generic>(ent->texture)) { Output_Handler::Error << "ERR Generic::Which_Tile : Supplied Entity has no Generic type Texture\n"; return -1; }
 
-	auto gt = dynamic_cast<Generic*>(ent->Get_Texture());
+	auto gt = std::dynamic_pointer_cast<Generic>(ent->texture);
 	if (!gt->Frame_Width || !gt->Frame_Height) { Output_Handler::Error << "ERR Generic::Which_Tile : Frame size has width/height equal to 0\n"; return -1; }
 
 	x -= gt->Draw_Rect().x + (int)ent->X;
@@ -176,8 +177,8 @@ bool Generic::Destroy()
 	if (__Generic_Texture)
 	{
 		for (auto& ttr : __Textures)
-			if (auto cast = dynamic_cast<Generic*>(ttr.get()))
-				if (cast != this && cast->__Generic_Texture == __Generic_Texture)
+			if (auto cast = std::dynamic_pointer_cast<Generic>(ttr))
+				if (cast.get() != this && cast->__Generic_Texture == __Generic_Texture)
 					return Texture::Destroy();
 		SDL_DestroyTexture(__Generic_Texture);
 		__Generic_Texture = nullptr;

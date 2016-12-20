@@ -6,6 +6,7 @@
 #include "Movement.h"
 #include "Generic.h"
 #include "Output_Handler.h"
+#include "Texture.h"
 
 std::vector<std::shared_ptr<State>> State::Built;
 std::vector<unsigned> State::Deleted;
@@ -15,22 +16,22 @@ void State::Update()
 {
 	for (auto ent : __Entities)
 	{
-		if (auto t = dynamic_cast<Sprite*>(ent->Display()))
-			if (t->Current_Animation())
-				t->Current_Animation()->Next_Frame();
+		auto sp = std::dynamic_pointer_cast<Sprite>(ent->texture);
+		if (sp)
+			if (sp->Current_Animation())
+				sp->Current_Animation()->Next_Frame();
 
 		ent->Update();
-		auto sp = dynamic_cast<Sprite*>(ent->Display());
 
-		if (ent->Get_Movement() && sp)
+		if (ent->movement && sp)
 		{
-			if (Movement::__Resolve_Movement(ent.get()))
-				dynamic_cast<Sprite*>(ent->Display())->operator[]("move").Play();
+			if (Movement::__Resolve_Movement(ent))
+				sp->operator[]("move").Play();
 			else if(sp->Current_Animation())
-				dynamic_cast<Sprite*>(ent->Display())->Current_Animation()->Terminate();
+				sp->Current_Animation()->Terminate();
 		}
 
-		if (sp && !sp->Current_Animation()) dynamic_cast<Sprite*>(ent->Display())->operator[]("idle").Play();
+		if (sp && !sp->Current_Animation()) sp->operator[]("idle").Play();
 	}
 	Screen::Draw();
 }
@@ -64,14 +65,14 @@ void State::Events()
 //	return false;
 //}
 
-bool State::Change_Entity_Layer(Entity* entity, unsigned new_layer)
+bool State::Change_Entity_Layer(Entity<> entity, unsigned new_layer)
 {
 	if (!entity)
 	{
 		Output_Handler::Error << "ERR State::Set_Entity_Layer : No Entity supplied\n";
 		return false;
 	}
-	entity->__Layer = new_layer;
+	entity->layer = new_layer;
 	return true;
 }
 
@@ -103,35 +104,35 @@ bool State::Change_Entity_Layer(Entity* entity, unsigned new_layer)
 //}
 
 
-std::vector<std::shared_ptr<Entity>> State::Get_Entities()
+std::vector<Entity<>> State::Get_Entities()
 {
 	return __Entities;
 }
 
-std::shared_ptr<Entity> State::Ent(unsigned ent)
+Entity<> State::Ent(unsigned ent)
 {
 	if (ent >= __Entities.size()) return nullptr;
 	return __Entities[ent];
 }
 
-bool State::Remove_Entity(Entity * ent)
+bool State::Remove_Entity(Entity<> ent)
 {
 	for (auto it = __Entities.begin(); it != __Entities.end(); ++it)
-		if (it->get() == ent)
+		if (*it == ent)
 		{
 			__Entities.erase(it);
 			break;
 		}
 	for(auto& l : Screen::__Entities)
 		for (auto it = l.begin(); it != l.end(); ++it)
-			if (it->get() == ent)
+			if (*it == ent)
 			{
 				l.erase(it);
 				break;
 			}
 	for (auto it = Player::__Players.begin(); it != Player::__Players.end(); ++it)
-		if (it->get()->__Entity.get() == ent)
-			it->get()->__Entity = nullptr;
+		if ((*it)->__Entity == ent)
+			(*it)->__Entity = nullptr;
 	return true;
 }
 

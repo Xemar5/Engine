@@ -2,6 +2,8 @@
 #include <memory>
 #include <vector>
 #include <map>
+
+template <typename T>
 class Entity;
 class Texture;
 class Sprite;
@@ -76,7 +78,7 @@ private:
 	//*** The Sequence of frames in this animation
 	std::vector<unsigned> __Frame_Sequence;
 	//*** The Sprite this Animation is given to
-	Sprite* __User = nullptr;
+	std::shared_ptr<Sprite> __User = nullptr;
 
 
 	//*** helps Animation::Decode function

@@ -23,17 +23,17 @@ std::shared_ptr<Movement> Movement::Set(double & x, double & y, double speed, do
 }
 
 
-std::shared_ptr<Movement> Movement::Set(Entity * ent, double speed, double mass)
+std::shared_ptr<Movement> Movement::Set(Entity<> ent, double speed, double mass)
 {
 	if (!ent)
 	{
 		Output_Handler::Error << "ERR Movement::Set : No entity supplied; use the other Movement::Set if only object needed\n";
 		return nullptr;
 	}
-	return ent->__Movement = Movement::Set(ent->X, ent->Y, speed, mass);
+	return ent->movement = Movement::Set(ent->X, ent->Y, speed, mass);
 }
 
-bool Movement::Add_Force(Movement * movement, double force_x, double force_y)
+bool Movement::Add_Force(std::shared_ptr<Movement> movement, double force_x, double force_y)
 {
 	if (!movement)
 	{
@@ -49,19 +49,19 @@ bool Movement::Add_Force(Movement * movement, double force_x, double force_y)
 	return true;
 }
 
-bool Movement::Add_Force(Entity * ent, double force_x, double force_y)
+bool Movement::Add_Force(Entity<> ent, double force_x, double force_y)
 {
 	if (!ent)
 	{
 		Output_Handler::Error << "ERR Movement::Move : No entity supplied; use the other Movement::Move function instead\n";
 		return false;
 	}
-	if (!ent->Get_Movement())
+	if (!ent->movement)
 	{
 		Output_Handler::Error << "ERR Movement::Move : Given entity has no Movement\n";
 		return false;
 	}
-	Movement::Add_Force(ent->Get_Movement(), force_x, force_y);
+	Movement::Add_Force(ent->movement, force_x, force_y);
 	return true;
 }
 
@@ -91,7 +91,7 @@ double Movement::Set_Speed(double speed)
 }
 
 
-bool Movement::__Resolve_Movement(Movement * movement)
+bool Movement::__Resolve_Movement(std::shared_ptr<Movement> movement)
 {
 	if (!movement)
 	{
@@ -122,12 +122,12 @@ bool Movement::__Resolve_Movement(Movement * movement)
 	return movement->__vx || movement->__vy;
 }
 
-bool Movement::__Resolve_Movement(Entity * ent)
+bool Movement::__Resolve_Movement(Entity<> ent)
 {
 	if (!ent)
 	{
 		Output_Handler::Error << "ERR Movement::__Resolve_Movement : No Entity supplied\n";
 		return false;
 	}
-	return Movement::__Resolve_Movement(ent->Get_Movement());
+	return Movement::__Resolve_Movement(ent->movement);
 }

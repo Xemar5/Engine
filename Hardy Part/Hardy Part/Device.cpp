@@ -124,14 +124,14 @@ void Keyboard::Update()
 
 
 
-bool Keyboard::Contains_Mouse(Entity* ent)
+bool Keyboard::Contains_Mouse(Entity<> ent)
 {
 	if (!ent)
 	{
 		Output_Handler::Error << "ERR Entity::Contains_Mouse : No entity supplied\n";
 		return false;
 	}
-	if (!ent->Display())
+	if (!ent->texture)
 	{
 		Output_Handler::Error << "ERR Entity::Contains_Mouse : Given entity has no texture supplied\n";
 		return false;
@@ -140,14 +140,14 @@ bool Keyboard::Contains_Mouse(Entity* ent)
 	double py = (double)System::Events.motion.y / Screen::Get_Scale();
 	//double px = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
 	//double py = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
-	auto sp = ent->Display();
+	auto sp = ent->texture;
 	double offx = sp->Starting_Point().x * sp->Scale;
 	double offy = sp->Starting_Point().y * sp->Scale;
 	return (
 		px >= ent->X - offx &&
-		px <= ent->X - offx + ent->Get_Hitbox().first &&
+		px <= ent->X - offx + ent->hitbox().first &&
 		py >= ent->Y - offy &&
-		py <= ent->Y - offy + ent->Get_Hitbox().second
+		py <= ent->Y - offy + ent->hitbox().second
 		);
 }
 

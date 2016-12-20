@@ -1,4 +1,5 @@
 #include "Textfield.h"
+#include "Texture.h"
 #include "Screen.h"
 #include "Output_Handler.h"
 
@@ -12,18 +13,18 @@ SDL_Color Textfield::Color(unsigned int hex)
 	return c;
 }
 
-Textfield * Textfield::SetText(Entity * ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
+Entity<Textfield> Textfield::SetText(Entity<> ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
 {
 	if (!ent) { Output_Handler::Error << "MSG Textfield::SetText : No Entity supplied\n"; return nullptr; }
-	if (!ent->As<Textfield>()) { Output_Handler::Error << "MSG Textfield::SetText : Given entity is not a Textfield\n"; return nullptr; }
-	return ent->As<Textfield>()->SetText(text, font, size, color, width);
+	if (!(Entity<Textfield>)ent) { Output_Handler::Error << "MSG Textfield::SetText : Given entity is not a Textfield\n"; return nullptr; }
+	return ((Entity<Textfield>)ent)->SetText(text, font, size, color, width);
 }
 
-Textfield* Textfield::SetText(std::string text, std::string font_path, Uint32 size,  SDL_Color color, unsigned width)
+Entity<Textfield> Textfield::SetText(std::string text, std::string font_path, Uint32 size,  SDL_Color color, unsigned width)
 {
-	if (Display())
+	if (texture)
 	{
-		Display()->Destroy();
+		texture->Destroy();
 		//Output_Handler::Output << "MSG Textfield::Set : Textfield already set\n";
 		//return this;
 	}
@@ -42,11 +43,11 @@ Textfield* Textfield::SetText(std::string text, std::string font_path, Uint32 si
 		return nullptr;
 	}
 	SDL_Texture* ttr = SDL_CreateTextureFromSurface(Screen::Renderer, srf);
-	Texture::Load(this, ttr, srf->w, srf->h, 0, 0);
+	Texture::Load(Entity<Textfield>(this->shared_from_this()), ttr, srf->w, srf->h, 0, 0);
 	SDL_FreeSurface(srf);
 	TTF_CloseFont(font);
-	if(Display()) Display()->Scale = 1 / Screen::Get_Scale();
+	if(texture) texture->Scale = 1 / Screen::Get_Scale();
 
 	_Text = text;
-	return this;
+	return Entity<Textfield>(this->shared_from_this());
 }

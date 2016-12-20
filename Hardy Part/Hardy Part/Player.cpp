@@ -10,9 +10,9 @@ std::vector<std::shared_ptr<Player>> Player::__Players;
 std::vector<std::string> Player::__Used_Presets;
 unsigned Player::Max_Players = 4;
 
-Player* Player::Set(int index)
+std::shared_ptr<Player> Player::Set(int index)
 {
-	auto* pl = Player::Get(index);
+	auto pl = Player::Get(index);
 	if (pl)
 	{
 		Output_Handler::Output << "MSG Player::Set : Payer with a given index already exists; returning existing player\n";
@@ -27,7 +27,7 @@ Player* Player::Set(int index)
 	}
 	Player::__Players.push_back(std::make_shared<Player>());
 	Player::__Players.back()->__Index = index;
-	return Player::__Players.back().get();
+	return Player::__Players.back();
 }
 
 
@@ -85,18 +85,18 @@ Player* Player::Set(int index)
 //	return true;
 //}
 
-Player * Player::Get(int index)
+std::shared_ptr<Player> Player::Get(int index)
 {
 	if (index < 0) return nullptr;
 
 	for (int i = 0; (unsigned)i < Player::__Players.size(); i++)
 		if (Player::__Players[i]->__Index == index)
-			return Player::__Players[i].get();
+			return Player::__Players[i];
 
 	return nullptr;
 }
 
-bool Player::Remove(Player * player)
+bool Player::Remove(std::shared_ptr<Player> player)
 {
 	if (!player)
 	{
@@ -104,7 +104,7 @@ bool Player::Remove(Player * player)
 		return false;
 	}
 	for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
-		if (Player::Get_Players()[i].get() == player)
+		if (Player::Get_Players()[i] == player)
 		{
 			__Players[i]->__Entity = nullptr;
 			__Players.erase(__Players.begin() + i);
@@ -116,7 +116,7 @@ bool Player::Remove(Player * player)
 bool Player::RemoveAll()
 {
 	while (__Players.size())
-		if(!Remove(__Players[__Players.size() - 1].get())) return false;
+		if(!Remove(__Players[__Players.size() - 1])) return false;
 	return true;
 }
 
@@ -133,7 +133,7 @@ int Player::Get_First_Unused_Index()
 	return index;
 }
 
-bool Player::Set_Controller(Player * player, Sint32 controller)
+bool Player::Set_Controller(std::shared_ptr<Player> player, Sint32 controller)
 {
 	if (!player)
 	{
@@ -150,7 +150,7 @@ bool Player::Set_Controller(Player * player, Sint32 controller)
 	return true;
 }
 
-bool Player::Set_Entity(Player* player, std::shared_ptr<Entity> ent)
+bool Player::Set_Entity(std::shared_ptr<Player> player, Entity<> ent)
 {
 	if (!player)
 	{
@@ -161,7 +161,7 @@ bool Player::Set_Entity(Player* player, std::shared_ptr<Entity> ent)
 	return true;
 }
 
-std::shared_ptr<Entity> Player::Get_Entity(Player* player)
+Entity<> Player::Get_Entity(std::shared_ptr<Player> player)
 {
 	if (!player)
 	{
@@ -181,11 +181,11 @@ std::vector<std::shared_ptr<Player>> Player::Get_Players()
 	return __Players;
 }
 
-std::vector<std::shared_ptr<Entity>> Player::Get_Controlled_Entities()
+std::vector<Entity<>> Player::Get_Controlled_Entities()
 {
-	std::vector<std::shared_ptr<Entity>> v(Player::Get_Players().size());
+	std::vector<Entity<>> v(Player::Get_Players().size());
 	for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
-		v[i] = Player::Get_Entity(Player::Get_Players()[i].get());
+		v[i] = Player::Get_Entity(Player::Get_Players()[i]);
 	return v;
 }
 
@@ -196,7 +196,7 @@ void Player::__Update()
 	for(auto p : Player::__Players)
 	{
 		if (p->Controller == -2) continue;
-		if (auto ent = Get_Entity(p.get()))
+		if (auto ent = Get_Entity(p))
 		{
 
 			auto& ip = Device::Get(p->Controller);
@@ -208,9 +208,9 @@ void Player::__Update()
 			vx += sgn(ip["laright"].Held()) - sgn(ip["laleft"].Held());
 
 
-			if (vx < 0) p->__Entity->Display()->Flip = SDL_FLIP_HORIZONTAL;
-			if (vx > 0) p->__Entity->Display()->Flip = SDL_FLIP_NONE;
-			Movement::Add_Force(p->__Entity.get(), vx, vy);
+			if (vx < 0) p->__Entity->texture->Flip = SDL_FLIP_HORIZONTAL;
+			if (vx > 0) p->__Entity->texture->Flip = SDL_FLIP_NONE;
+			Movement::Add_Force(p->__Entity, vx, vy);
 
 
 			double(*foo)(std::vector<Sint32>) = nullptr;
