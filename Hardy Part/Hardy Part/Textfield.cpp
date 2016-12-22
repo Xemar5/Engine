@@ -13,14 +13,14 @@ SDL_Color Textfield::Color(unsigned int hex)
 	return c;
 }
 
-Entity<Textfield> Textfield::SetText(Entity<> ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
+ent::Entity<Textfield> Textfield::SetText(ent::Entity<> ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
 {
 	if (!ent) { Output_Handler::Error << "MSG Textfield::SetText : No Entity supplied\n"; return nullptr; }
-	if (!(Entity<Textfield>)ent) { Output_Handler::Error << "MSG Textfield::SetText : Given entity is not a Textfield\n"; return nullptr; }
-	return ((Entity<Textfield>)ent)->SetText(text, font, size, color, width);
+	if (!(ent::Entity<Textfield>)ent) { Output_Handler::Error << "MSG Textfield::SetText : Given entity is not a Textfield\n"; return nullptr; }
+	return ((ent::Entity<Textfield>)ent)->SetText(text, font, size, color, width);
 }
 
-Entity<Textfield> Textfield::SetText(std::string text, std::string font_path, Uint32 size,  SDL_Color color, unsigned width)
+ent::Entity<Textfield> Textfield::SetText(std::string text, std::string font_path, Uint32 size,  SDL_Color color, unsigned width)
 {
 	if (texture)
 	{
@@ -43,11 +43,11 @@ Entity<Textfield> Textfield::SetText(std::string text, std::string font_path, Ui
 		return nullptr;
 	}
 	SDL_Texture* ttr = SDL_CreateTextureFromSurface(Screen::Renderer, srf);
-	Texture::Load(Entity<Textfield>(this->shared_from_this()), ttr, srf->w, srf->h, 0, 0);
+	Texture::Load(ent::Entity<Textfield>(this->shared_from_this()), ttr, srf->w, srf->h, 0, 0);
 	SDL_FreeSurface(srf);
 	TTF_CloseFont(font);
 	if(texture) texture->Scale = 1 / Screen::Get_Scale();
 
 	_Text = text;
-	return Entity<Textfield>(this->shared_from_this());
+	return ent::Entity<Textfield>(this->shared_from_this());
 }

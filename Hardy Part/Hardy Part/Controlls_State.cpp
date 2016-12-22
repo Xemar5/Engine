@@ -4,11 +4,12 @@
 #include "Device.h"
 #include "Textfield.h"
 
-Entity<Textfield> selectedDevice = nullptr;
+
+ent::Entity<Textfield> selectedDevice = nullptr;
 std::string actionName = "";
 SDL_Point lastMousePos;
 
-void selectDevice(Entity<Textfield> tf)
+void selectDevice(ent::Entity<Textfield> tf)
 {
 	if (selectedDevice) Textfield::SetText(selectedDevice, selectedDevice->Text(), "imgs/clacon.ttf", 32, Textfield::Color(0xffffff00));
 	selectedDevice = tf;
@@ -33,10 +34,12 @@ class Controlls_State_Popup : public State
 };
 void Controlls_State_Popup::Create()
 {
-	auto e = (Entity<Textfield>)State::Add_Entity<Textfield>();
-	e->SetText("Select", "imgs/clacon.ttf", 32, Textfield::Color(0x24ef49ff));
-	e->Y = 20;
-	e->X = Screen::Get_Screen_Size().first / 2;
+	auto e = ent::Add<Textfield>([](auto e)
+	{
+		e->SetText("Select", "imgs/clacon.ttf", 32, Textfield::Color(0x24ef49ff));
+		e->Y = 20;
+		e->X = Screen::Get_Screen_Size().first / 2;
+	});
 }
 void Controlls_State_Popup::Update()
 {
@@ -127,17 +130,19 @@ void Controlls_State::Create()
 	int yPos = 100;
 	int xPos = Screen::Get_Screen_Size().first / 2;
 
-	auto save_btn = (Entity<Textfield>)State::Add_Entity<Textfield>(0);
+	auto save_btn = ent::Add<Textfield>([](auto e)
+	{
+		e->SetText("Save", "imgs/clacon.ttf", 32);
+		e->X = e->TextWidth() / 2 + 20;
+		e->Y = e->TextHeight() / 2 + 20;
+	});
 	//Entity::Register(save_btn, "save_btn");
-	save_btn->SetText("Save", "imgs/clacon.ttf", 32);
-	save_btn->X = save_btn->TextWidth() / 2 + 20;
-	save_btn->Y = save_btn->TextHeight() / 2 + 20;
 
 
 	for (auto i : inputs)
 	{
-		auto action = (Entity<Textfield>)State::Add_Entity<Textfield>(0);
-		auto input = (Entity<Textfield>)State::Add_Entity<Textfield>(0);
+		auto action = ent::Add<Textfield>();
+		auto input = ent::Add<Textfield>();
 		//Entity::Register(action, "action" + std::to_string(ind));
 		//Entity::Register(input, i);
 		action->SetText(i, "imgs/clacon.ttf", 32);
@@ -153,7 +158,7 @@ void Controlls_State::Create()
 	yPos = 100;
 	for (auto d : Gamepad::All())
 	{
-		auto tf = (Entity<Textfield>)State::Add_Entity<Textfield>(0);
+		auto tf = ent::Add<Textfield>();
 		//Entity::Register(tf, "device" + std::to_string(ind));
 		tf->SetText(d->Name(), "imgs/clacon.ttf", 32);
 		tf->X = 20 + tf->TextWidth() / 2;

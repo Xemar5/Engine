@@ -150,7 +150,7 @@ bool Player::Set_Controller(std::shared_ptr<Player> player, Sint32 controller)
 	return true;
 }
 
-bool Player::Set_Entity(std::shared_ptr<Player> player, Entity<> ent)
+bool Player::Set_Entity(std::shared_ptr<Player> player, ent::Entity<> ent)
 {
 	if (!player)
 	{
@@ -161,7 +161,7 @@ bool Player::Set_Entity(std::shared_ptr<Player> player, Entity<> ent)
 	return true;
 }
 
-Entity<> Player::Get_Entity(std::shared_ptr<Player> player)
+ent::Entity<> Player::Get_Entity(std::shared_ptr<Player> player)
 {
 	if (!player)
 	{
@@ -181,9 +181,9 @@ std::vector<std::shared_ptr<Player>> Player::Get_Players()
 	return __Players;
 }
 
-std::vector<Entity<>> Player::Get_Controlled_Entities()
+std::vector<ent::Entity<>> Player::Get_Controlled_Entities()
 {
-	std::vector<Entity<>> v(Player::Get_Players().size());
+	std::vector<ent::Entity<>> v(Player::Get_Players().size());
 	for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
 		v[i] = Player::Get_Entity(Player::Get_Players()[i]);
 	return v;

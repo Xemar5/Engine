@@ -14,7 +14,7 @@ std::vector<unsigned> State::Deleted;
 
 void State::Update()
 {
-	for (auto ent : __Entities)
+	for (auto ent : ent::All)
 	{
 		auto sp = std::dynamic_pointer_cast<Sprite>(ent->texture);
 		if (sp)
@@ -37,7 +37,7 @@ void State::Update()
 }
 void State::Events()
 {
-	for (auto ent : __Entities)
+	for (auto ent : ent::All)
 		ent->Events();
 }
 
@@ -65,7 +65,7 @@ void State::Events()
 //	return false;
 //}
 
-bool State::Change_Entity_Layer(Entity<> entity, unsigned new_layer)
+bool State::Change_Entity_Layer(ent::Entity<> entity, unsigned new_layer)
 {
 	if (!entity)
 	{
@@ -104,35 +104,35 @@ bool State::Change_Entity_Layer(Entity<> entity, unsigned new_layer)
 //}
 
 
-std::vector<Entity<>> State::Get_Entities()
-{
-	return __Entities;
-}
+//std::vector<ent::Entity<>> State::Get_Entities()
+//{
+//	return ent::All;
+//}
 
-Entity<> State::Ent(unsigned ent)
-{
-	if (ent >= __Entities.size()) return nullptr;
-	return __Entities[ent];
-}
+//ent::Entity<> State::Ent(unsigned ent)
+//{
+//	if (ent >= ent::All.size()) return nullptr;
+//	return __Entities[ent];
+//}
 
-bool State::Remove_Entity(Entity<> ent)
-{
-	for (auto it = __Entities.begin(); it != __Entities.end(); ++it)
-		if (*it == ent)
-		{
-			__Entities.erase(it);
-			break;
-		}
-	for(auto& l : Screen::__Entities)
-		for (auto it = l.begin(); it != l.end(); ++it)
-			if (*it == ent)
-			{
-				l.erase(it);
-				break;
-			}
-	for (auto it = Player::__Players.begin(); it != Player::__Players.end(); ++it)
-		if ((*it)->__Entity == ent)
-			(*it)->__Entity = nullptr;
-	return true;
-}
+//bool State::Remove_Entity(ent::Entity<> ent)
+//{
+//	for (auto it = __Entities.begin(); it != __Entities.end(); ++it)
+//		if (*it == ent)
+//		{
+//			__Entities.erase(it);
+//			break;
+//		}
+//	for(auto& l : Screen::__Entities)
+//		for (auto it = l.begin(); it != l.end(); ++it)
+//			if (*it == ent)
+//			{
+//				l.erase(it);
+//				break;
+//			}
+//	for (auto it = Player::__Players.begin(); it != Player::__Players.end(); ++it)
+//		if ((*it)->__Entity == ent)
+//			(*it)->__Entity = nullptr;
+//	return true;
+//}
 

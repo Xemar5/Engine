@@ -106,7 +106,7 @@ void System::__Delete()
 				//	if (ent.use_count() == 2)
 				//		Entity::Destroy(ent.get());
 				if (State::Built[i] == nullptr) continue;
-				State::Built[i]->__Entities.clear();
+				//State::Built[i]->__Entities.clear();
 				State::Built[i] = nullptr;
 				break;
 			}

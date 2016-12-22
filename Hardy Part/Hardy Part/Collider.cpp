@@ -5,7 +5,7 @@ std::vector<std::shared_ptr<Collider>> Collider::_StaticColliders;
 
 
 
-std::shared_ptr<Collider> Collider::Add(Entity<> ent)
+std::shared_ptr<Collider> Collider::Add(ent::Entity<> ent)
 {
 	if (!ent) { Output_Handler::Error << "ERR Collider::Add : No Entity supplied\n"; return nullptr; }
 	auto c = std::make_shared<Collider>();

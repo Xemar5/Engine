@@ -23,7 +23,7 @@ std::shared_ptr<Movement> Movement::Set(double & x, double & y, double speed, do
 }
 
 
-std::shared_ptr<Movement> Movement::Set(Entity<> ent, double speed, double mass)
+std::shared_ptr<Movement> Movement::Set(ent::Entity<> ent, double speed, double mass)
 {
 	if (!ent)
 	{
@@ -49,7 +49,7 @@ bool Movement::Add_Force(std::shared_ptr<Movement> movement, double force_x, dou
 	return true;
 }
 
-bool Movement::Add_Force(Entity<> ent, double force_x, double force_y)
+bool Movement::Add_Force(ent::Entity<> ent, double force_x, double force_y)
 {
 	if (!ent)
 	{
@@ -122,7 +122,7 @@ bool Movement::__Resolve_Movement(std::shared_ptr<Movement> movement)
 	return movement->__vx || movement->__vy;
 }
 
-bool Movement::__Resolve_Movement(Entity<> ent)
+bool Movement::__Resolve_Movement(ent::Entity<> ent)
 {
 	if (!ent)
 	{

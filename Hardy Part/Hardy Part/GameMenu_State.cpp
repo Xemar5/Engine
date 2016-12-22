@@ -16,29 +16,41 @@ void GameMenu_State::Create()
 	int xoffs = 40;
 	int yoffs = 40;
 
-	auto cs1 = State::Add_Entity(1);
-	Texture::Load(cs1.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
-	cs1->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
-	cs1->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
-	cs1->texture->Scale = 1.5;
+	auto cs1 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
+	{
+		e->layer = 1;
+		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+		e->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
+		e->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
+		e->texture->Scale = 1.5;
+	});
 
-	auto cs2 = State::Add_Entity(1);
-	Texture::Load(cs2.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
-	cs2->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
-	cs2->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
-	cs2->texture->Scale = 1.5;
+	auto cs2 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
+	{
+		e->layer = 1;
+		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+		e->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
+		e->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
+		e->texture->Scale = 1.5;
+	});
 
-	auto cs3 = State::Add_Entity(1);
-	Texture::Load(cs3.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
-	cs3->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
-	cs3->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
-	cs3->texture->Scale = 1.5;
+	auto cs3 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
+	{
+		e->layer = 1;
+		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+		e->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
+		e->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
+		e->texture->Scale = 1.5;
+	});
 
-	auto cs4 = State::Add_Entity(1);
-	Texture::Load(cs4.get(), "imgs/Character_Selection.png", 80, 48, 0, 0);
-	cs4->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
-	cs4->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
-	cs4->texture->Scale = 1.5;
+	auto cs4 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
+	{
+		e->layer = 1;
+		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+		e->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
+		e->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
+		e->texture->Scale = 1.5;
+	});
 }
 
 void GameMenu_State::Update()
@@ -77,7 +89,7 @@ void GameMenu_State::Events()
 
 			if (p->Controller == Device::Which())
 			{
-				State::Remove_Entity(Player::Get_Entity(p));
+				//State::Remove_Entity(Player::Get_Entity(p));
 				Player::Remove(p);
 			}
 	}

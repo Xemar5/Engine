@@ -8,7 +8,7 @@ enum class Wall_Enum
 #include "Entity.h"
 
 template <Wall_Enum type>
-class Wall : public EntityObject
+class Wall : public ent::EntityObject
 {
 public:
 	Wall_Enum Type = type;

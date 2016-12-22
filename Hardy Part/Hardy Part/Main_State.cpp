@@ -23,7 +23,7 @@ void Main_Menu::Create()
 		if (auto ent = Player::Get_Entity(pl))
 			ent->texture->Scale = 1;
 
-	auto tileset = State::Add_Entity<>(0);
+	auto tileset = ent::Add<>();
 	Generic::Load(
 		{
 			{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
@@ -114,8 +114,8 @@ void Main_Menu::Create()
 	//	);
 	if (Player::Get_Players().size())
 	{
-		auto s1 = State::Add_Entity<Sword>(1);
-		((Entity<Sword>)s1)->Wealder = Player::Get_Players().front();
+		auto s1 = ent::Add<Sword>([](auto e) { e->layer = 1; });
+		((ent::Entity<Sword>)s1)->Wealder = Player::Get_Players().front();
 	}
 	//srand((unsigned)time(0));
 	//if (this->Layers[0]->Entities.size())

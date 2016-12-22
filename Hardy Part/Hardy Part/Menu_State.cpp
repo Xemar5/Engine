@@ -15,7 +15,7 @@
 
 void Menu_Menu::Create()
 {
-	auto bg = State::Add_Entity<>(0);
+	auto bg = ent::Add<>();
 	Texture::Load(bg, "imgs/Hardy Part.png", 80, 60, 0, 0);
 	//Player::Set_Entity(p, m1);
 	//Animation::Add(bg, "idle", "24-47x4", true);
@@ -27,10 +27,11 @@ void Menu_Menu::Create()
 	//auto start_btn = State::Add_Entity(1);
 	//auto options_btn = State::Add_Entity(1);
 	//auto exit_btn = State::Add_Entity(1);
-
-	auto start_btn = State::Add_Entity<Textfield>(1);
-	auto options_btn = State::Add_Entity<Textfield>(1);
-	auto exit_btn = State::Add_Entity<Textfield>(1);
+	auto f = [](auto e) { e->layer = 1; };
+	
+	auto start_btn = ent::Add<Textfield>(f);
+	auto options_btn = ent::Add<Textfield>(f);
+	auto exit_btn = ent::Add<Textfield>(f);
 
 	Textfield::SetText(start_btn, "start", "imgs/slkscr.ttf", 32);
 	Textfield::SetText(options_btn, "options", "imgs/slkscr.ttf", 32);
@@ -62,25 +63,25 @@ void Menu_Menu::Create()
 }
 void Menu_Menu::Update()
 {
-	Ent(0)->X = Screen::Get_Screen_Size().first / 2 + sin(System::In_Game_Timer.Get() / 370.0) * 50;
-	Ent(0)->Y = Screen::Get_Screen_Size().second / 2 + cos(System::In_Game_Timer.Get() / 420.0) * 30 - 50;
-	Ent(0)->texture->Scale = pow(sin(System::In_Game_Timer.Get() / 450.0), 2)/2 + 2;
-	Ent(0)->texture->Rotation = sin(System::In_Game_Timer.Get() / 500.0) * 20;
+	ent::All[0]->X = Screen::Get_Screen_Size().first / 2 + sin(System::In_Game_Timer.Get() / 370.0) * 50;
+	ent::All[0]->Y = Screen::Get_Screen_Size().second / 2 + cos(System::In_Game_Timer.Get() / 420.0) * 30 - 50;
+	ent::All[0]->texture->Scale = pow(sin(System::In_Game_Timer.Get() / 450.0), 2)/2 + 2;
+	ent::All[0]->texture->Rotation = sin(System::In_Game_Timer.Get() / 500.0) * 20;
 
-	Ent(1)->X = Screen::Get_Screen_Size().first / 2;
-	Ent(1)->Y = Screen::Get_Screen_Size().second / 2 + 100;
-	Ent(2)->X = Screen::Get_Screen_Size().first / 2;
-	Ent(2)->Y = Screen::Get_Screen_Size().second / 2 + 120;
-	Ent(3)->X = Screen::Get_Screen_Size().first / 2;
-	Ent(3)->Y = Screen::Get_Screen_Size().second / 2 + 140;
+	ent::All[1]->X = Screen::Get_Screen_Size().first / 2;
+	ent::All[1]->Y = Screen::Get_Screen_Size().second / 2 + 100;
+	ent::All[2]->X = Screen::Get_Screen_Size().first / 2;
+	ent::All[2]->Y = Screen::Get_Screen_Size().second / 2 + 120;
+	ent::All[3]->X = Screen::Get_Screen_Size().first / 2;
+	ent::All[3]->Y = Screen::Get_Screen_Size().second / 2 + 140;
 }
 void Menu_Menu::Events()
 {
 	if (Mouse::Get[Input::Set(IT_MOUSE_BUTTON, SDL_BUTTON_LEFT)].Up())
 	{
-		if (Mouse::Contains_Mouse(Ent(1))) State::New<GameMenu_State>();
-		if (Mouse::Contains_Mouse(Ent(2))) State::New<Controlls_State>();
-		if (Mouse::Contains_Mouse(Ent(3))) State::Exit_Game();
+		if (Mouse::Contains_Mouse(ent::All[1])) State::New<GameMenu_State>();
+		if (Mouse::Contains_Mouse(ent::All[2])) State::New<Controlls_State>();
+		if (Mouse::Contains_Mouse(ent::All[3])) State::Exit_Game();
 		//{
 		//	Screen::Change_Window_State();
 		//	SDL_WarpMouseInWindow(

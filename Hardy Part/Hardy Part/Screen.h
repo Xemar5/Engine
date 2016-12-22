@@ -45,8 +45,8 @@ public:
 	//*** Use only once at the start of the System
 	static bool Init();
 
-	//*** Adds the entity to screen renderer queue
-	static bool Add(Entity<> ent);
+	////*** Adds the entity to screen renderer queue
+	//static bool Add(Entity<> ent);
 
 	////*** Adds the Tileset to screen renderer queue
 	//static bool Add(std::shared_ptr<Tileset> tileset, unsigned layer);
@@ -80,10 +80,10 @@ private:
 	//*** The greater the index, the later it's printed to the screen
 	static bool __Reorder();
 
-	//*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
-	//*** It empties itself every frame update\
-	//*** Each sub-vector represents a layer
-	static std::vector<std::vector<Entity<>>> __Entities;
+	////*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
+	////*** It empties itself every frame update\
+	////*** Each sub-vector represents a layer
+	//static std::vector<std::vector<Entity<>>> __Entities;
 
 	////*** A pointer to the Tileset which is to be drawn on the screen the next frame update
 	////*** It empties itself every frame update

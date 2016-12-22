@@ -11,7 +11,7 @@ class Collider
 public:
 	//*** Creates and adds a new collider to the given entity
 	//*** Stores the location of the collider in _Static_Colliders or _Colliders vector
-	static std::shared_ptr<Collider> Add(Entity<> ent);
+	static std::shared_ptr<Collider> Add(ent::Entity<> ent);
 	
 	//*** Checks for all encountered collisions and resloves them
 	//*** Fired from main timeline - use only when necessary
@@ -31,6 +31,6 @@ protected:
 	static std::vector<std::shared_ptr<Collider>> _StaticColliders;
 
 	//*** The entity this collider is attached to
-	Entity<> _Parent = nullptr;
+	ent::Entity<> _Parent = nullptr;
 
 };

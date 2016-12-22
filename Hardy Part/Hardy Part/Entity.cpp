@@ -1,12 +1,12 @@
 #include "Entity.h"
-//#include "Entity.h"
 #include "Texture.h"
+#include "Output_Handler.h"
+
 //#include "Sprite.h"
 //#include "Animation.h"
 //#include "Movement.h"
 //#include "Screen.h"
 //#include "State.h"
-#include "Output_Handler.h"
 //#include "Collider.h"
 //
 //std::map<std::string, Entity*> Entity::__Registered;
@@ -88,12 +88,20 @@
 //
 //
 
-std::pair<double, double> EntityObject::hitbox()
+namespace ent
 {
+	std::vector<Entity<>> All;
+	std::map<std::shared_ptr<State>, std::map<int, std::vector<Entity<>>>> Ordered;
+	std::map<std::string, Entity<>> Registered;
+
+
+	std::pair<double, double> EntityObject::hitbox()
+	{
 		if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
 		if (!this->texture) { Output_Handler::Error << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
 		return std::make_pair(
 			(double)this->texture->Frame_Rect().w * this->texture->Scale,
 			(double)this->texture->Frame_Rect().h * this->texture->Scale
-			);
+		);
+	}
 }

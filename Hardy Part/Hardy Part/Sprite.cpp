@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include "Animation.h"
 
-std::shared_ptr<Texture> Sprite::Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
+std::shared_ptr<Texture> Sprite::Load(ent::Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
 {
 	SDL_Texture* tr = nullptr;
 	if (Screen::ShowWindow)

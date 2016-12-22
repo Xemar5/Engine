@@ -19,7 +19,7 @@ unsigned Screen::__Height = 600;
 double Screen::__Scale = 2;
 bool Screen::__Windowed = true;
 
-std::vector<std::vector<Entity<>>> Screen::__Entities;
+//std::vector<std::vector<ent::Entity<>>> Screen::__Entities;
 //std::vector<std::vector<std::shared_ptr<Tileset>>> Screen::__Tilesets;
 
 template <typename T>
@@ -106,22 +106,22 @@ bool Screen::Init()
 	return true;
 }
 
-bool Screen::Add(Entity<> ent)
-{
-	if (!ent) { Output_Handler::Error << "ERR Screen::Add : No entity supplied\n"; return false; }
-	//if (!ent->Display()) { Output_Handler::Output << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
-	if (!__Entities.size()) return false;
-	for (auto it = __Entities.back().begin(); it != __Entities.back().end(); ++it)
-	{
-		if (ent == *it) return false;
-		if (it->get()->layer < ent->layer) continue;
-		if (it->get()->Y < ent->Y) continue;
-		__Entities.back().insert(it, ent);
-		return true;
-	}
-	__Entities.back().push_back(ent);
-	return true;
-}
+//bool Screen::Add(ent::Entity<> ent)
+//{
+//	if (!ent) { Output_Handler::Error << "ERR Screen::Add : No entity supplied\n"; return false; }
+//	//if (!ent->Display()) { Output_Handler::Output << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
+//	if (!ent::Entity<>::All.size()) return false;
+//	for (auto it = ent::Entity<>::All.back().begin(); it != __Entities.back().end(); ++it)
+//	{
+//		if (ent == *it) return false;
+//		if (it->get()->layer < ent->layer) continue;
+//		if (it->get()->Y < ent->Y) continue;
+//		__Entities.back().insert(it, ent);
+//		return true;
+//	}
+//	__Entities.back().push_back(ent);
+//	return true;
+//}
 
 //bool Screen::Add(std::shared_ptr<Tileset> tileset, unsigned layer)
 //{
@@ -143,86 +143,105 @@ void Screen::Draw()
 	{
 		SDL_RenderClear(Screen::Renderer);
 		Screen::__Reorder();
-		for (unsigned layer = 0; layer < __Entities.size(); ++layer)
-			for (auto ent = __Entities[layer].begin(); ent != __Entities[layer].end();)
+		for (auto state : ent::Ordered)
+		{
+			for (auto layer : state.second)
 			{
-				auto ttr = (*ent)->texture;
-				if (!ttr || !ttr->Get_SDL_Texture())
+				for (auto ent : layer.second)
 				{
-					Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
-					++ent;
-					continue;
+					auto ttr = ent->texture;
+					if (!ttr || !ttr->Get_SDL_Texture())
+					{
+						Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
+						continue;
+					}
+					SDL_Texture* sdl_texture = ttr->Get_SDL_Texture();
+
+					double px = (double)ttr->Starting_Point().x * Screen::Get_Scale() * ttr->Scale;
+					double py = (double)ttr->Starting_Point().y * Screen::Get_Scale() * ttr->Scale;
+
+					SDL_Point p = { (int)px, (int)py };
+
+
+					SDL_Rect frame_rect;
+					SDL_Rect draw_rect;
+					SDL_RendererFlip flip;
+					double rotation;
+
+					frame_rect = ttr->Frame_Rect();
+					draw_rect = ttr->Draw_Rect();
+					draw_rect.x = (int)(((double)draw_rect.x + ent->X) * Get_Scale());
+					draw_rect.y = (int)(((double)draw_rect.y + ent->Y) * Get_Scale());
+					draw_rect.w *= (int)Get_Scale();
+					draw_rect.h *= (int)Get_Scale();
+
+					flip = ttr->Flip;
+					rotation = ttr->Rotation;
+
+
+					SDL_RenderCopyEx
+					(
+						Screen::Renderer,
+						sdl_texture,
+						&frame_rect, &draw_rect,
+						rotation,
+						&p,
+						flip
+					);
 				}
-				SDL_Texture* sdl_texture = ttr->Get_SDL_Texture();
-
-				double px = (double)ttr->Starting_Point().x * Screen::Get_Scale() * ttr->Scale;
-				double py = (double)ttr->Starting_Point().y * Screen::Get_Scale() * ttr->Scale;
-
-				SDL_Point p = { (int)px, (int)py };
-
-
-				SDL_Rect frame_rect;
-				SDL_Rect draw_rect;
-				SDL_RendererFlip flip;
-				double rotation;
-
-				frame_rect = ttr->Frame_Rect();
-				draw_rect = ttr->Draw_Rect();
-				draw_rect.x = (int)(((double)draw_rect.x + ent->get()->X) * Get_Scale());
-				draw_rect.y = (int)(((double)draw_rect.y + ent->get()->Y) * Get_Scale());
-				draw_rect.w *= (int)Get_Scale();
-				draw_rect.h *= (int)Get_Scale();
-
-				flip = ttr->Flip;
-				rotation = ttr->Rotation;
-
-
-				SDL_RenderCopyEx
-				(
-					Screen::Renderer,
-					sdl_texture,
-					&frame_rect, &draw_rect,
-					rotation,
-					&p,
-					flip
-				);
-				++ent;
 			}
+		}
 		SDL_RenderPresent(Screen::Renderer);
 	}
 }
 
 void Screen::Exit()
 {
-	__Entities.clear();
 	SDL_DestroyRenderer(Screen::Renderer);
 	SDL_DestroyWindow(Screen::Window);
 }
 
 bool Screen::__Reorder()
 {
-	if (!__Entities.size()) return false;
-	for (unsigned i = 1; i < __Entities.back().size(); ++i)
+	if (ent::Ordered.size()) return false;
+	for (auto state : ent::Ordered)
 	{
-		auto temp = __Entities.back()[i];
-		int j = i - 1;
-		while (j >= 0 && __Entities.back()[i]->layer < __Entities.back()[j]->layer)
+		for (auto layer : state.second)
 		{
-			__Entities.back()[j + 1] = __Entities.back()[j];
-			--j;
+			for (unsigned i = 1; i < layer.second.size(); ++i)
+			{
+				auto temp = layer.second[i];
+				int j = i - 1;
+				while (j >= 0 && layer.second[j]->Y > temp->Y)
+				{
+					layer.second[j + 1] = layer.second[j];
+					--j;
+				}
+				layer.second[j + 1] = temp;
+			}
 		}
-		__Entities.back()[j + 1] = temp;
 	}
-	for (unsigned i = 1; i < __Entities.back().size(); ++i)
-	{
-		auto temp = __Entities.back()[i];
-		int j = i - 1;
-		while (j >= 0 && __Entities.back()[i]->layer == __Entities.back()[j]->layer && __Entities.back()[j]->Y > temp->Y)
-		{
-			__Entities.back()[j + 1] = __Entities.back()[j];
-			--j;
-		}
-		__Entities.back()[j + 1] = temp;
-	}
+	//for (unsigned i = 1; i < ent::Ordered.back().size(); ++i)
+	//{
+	//	auto temp = __Entities.back()[i];
+	//	int j = i - 1;
+	//	while (j >= 0 && __Entities.back()[i]->layer < __Entities.back()[j]->layer)
+	//	{
+	//		__Entities.back()[j + 1] = __Entities.back()[j];
+	//		--j;
+	//	}
+	//	__Entities.back()[j + 1] = temp;
+	//}
+	//for (unsigned i = 1; i < __Entities.back().size(); ++i)
+	//{
+	//	auto temp = __Entities.back()[i];
+	//	int j = i - 1;
+	//	while (j >= 0 && __Entities.back()[i]->layer == __Entities.back()[j]->layer && __Entities.back()[j]->Y > temp->Y)
+	//	{
+	//		__Entities.back()[j + 1] = __Entities.back()[j];
+	//		--j;
+	//	}
+	//	__Entities.back()[j + 1] = temp;
+	//}
 	return true;
 }
