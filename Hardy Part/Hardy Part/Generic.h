@@ -19,18 +19,18 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static std::shared_ptr<Texture> Load(std::vector<std::vector<int>> map, ent::Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0, int frame_width = 0, int frame_height = 0);
+	static std::shared_ptr<Texture> Load(std::vector<std::vector<int>> map, Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0, int frame_width = 0, int frame_height = 0);
 
 	//*** Reload current tileset and it's texture
 	//*** Use when the tileset is not drawn properly
 	bool Reload() override;
 
 	//*** Returns the tile that contains the given coordinates
-	static int Which_Tile(ent::Entity<> ent, int x, int y);
+	static int Which_Tile(Entity<> ent, int x, int y);
 	//unsigned Which_Tile(int x, int y);
 
 	//*** Returns the visible SDL_Texture created by this Tileset class
-	//*** Created when Set function is called
+	//*** Created when Change function is called
 	SDL_Texture* Generic_Texture() { return __Generic_Texture; }
 
 
@@ -48,7 +48,7 @@ public:
 private:
 
 	//*** The visible  SDL_Texture of this tileset
-	//*** Created when Set function is called
+	//*** Created when Change function is called
 	SDL_Texture* __Generic_Texture = nullptr;
 	//*** Width of the generic image
 	unsigned __Generic_Width;

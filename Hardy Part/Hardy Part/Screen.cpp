@@ -16,29 +16,23 @@ SDL_Renderer* Screen::Renderer;
 
 unsigned Screen::__Width = 800;
 unsigned Screen::__Height = 600;
-double Screen::__Scale = 2;
 bool Screen::__Windowed = true;
 
-//std::vector<std::vector<ent::Entity<>>> Screen::__Entities;
+//std::vector<std::vector<Entity<>>> Screen::__Entities;
 //std::vector<std::vector<std::shared_ptr<Tileset>>> Screen::__Tilesets;
 
-template <typename T>
-T max(T v1, T v2)
-{
-	return v1 > v2 ? v1 : v2;
-}
+//template <typename T>
+//T max(T v1, T v2)
+//{
+//	return v1 > v2 ? v1 : v2;
+//}
 
 
-std::pair<unsigned, unsigned> Screen::Get_Window_Size()
+std::pair<unsigned, unsigned> Screen::Window_Size()
 {
 	return std::make_pair(__Width, __Height);
 }
 
-std::pair<unsigned, unsigned> Screen::Get_Screen_Size()
-{
-	if (!Screen::__Scale) return std::make_pair(Screen::__Width, Screen::__Height);
-	return std::make_pair(Screen::__Width / Screen::__Scale, Screen::__Height / Screen::__Scale);
-}
 
 bool Screen::Is_Windowed()
 {
@@ -59,9 +53,8 @@ bool Screen::Set_Fullscreen()
 		//SDL_SetWindowSize(Screen::Window, mode.w, mode.h);
 		//Screen::__Windowed_Width = Screen::Width;
 		//Screen::__Windowed_Height = Screen::Height;
-		Screen::__Width = mode.w;
-		Screen::__Height = mode.h;
-		Screen::__Scale = mode.w / 500;
+		Screen::__Width = (unsigned)mode.w;
+		Screen::__Height = (unsigned)mode.h;
 		SDL_SetWindowFullscreen(Screen::Window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 		__Windowed = false;
 		return true;
@@ -75,16 +68,9 @@ bool Screen::Set_Windowed()
 	//SDL_SetWindowSize(Screen::Window, Screen::Width, Screen::Height);
 	Screen::__Width = 800;
 	Screen::__Height = 600;
-	Screen::__Scale = 2;
 	SDL_SetWindowFullscreen(Screen::Window, 0);
 	__Windowed = true;
 	return true;
-}
-
-double Screen::Get_Scale()
-{
-	if (!__Scale) return 1.0;
-	return __Scale;
 }
 
 
@@ -106,12 +92,12 @@ bool Screen::Init()
 	return true;
 }
 
-//bool Screen::Add(ent::Entity<> ent)
+//bool Screen::Add(Entity<> ent)
 //{
 //	if (!ent) { Output_Handler::Error << "ERR Screen::Add : No entity supplied\n"; return false; }
 //	//if (!ent->Display()) { Output_Handler::Output << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
-//	if (!ent::Entity<>::All.size()) return false;
-//	for (auto it = ent::Entity<>::All.back().begin(); it != __Entities.back().end(); ++it)
+//	if (!Entity<>::All.size()) return false;
+//	for (auto it = Entity<>::All.back().begin(); it != __Entities.back().end(); ++it)
 //	{
 //		if (ent == *it) return false;
 //		if (it->get()->layer < ent->layer) continue;
@@ -142,54 +128,10 @@ void Screen::Draw()
 	if (ShowWindow)
 	{
 		SDL_RenderClear(Screen::Renderer);
-		Screen::__Reorder();
-		for (auto state : ent::Ordered)
+		for (auto state : State::Built)
 		{
-			for (auto layer : state.second)
-			{
-				for (auto ent : layer.second)
-				{
-					auto ttr = ent->texture;
-					if (!ttr || !ttr->Get_SDL_Texture())
-					{
-						Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
-						continue;
-					}
-					SDL_Texture* sdl_texture = ttr->Get_SDL_Texture();
-
-					double px = (double)ttr->Starting_Point().x * Screen::Get_Scale() * ttr->Scale;
-					double py = (double)ttr->Starting_Point().y * Screen::Get_Scale() * ttr->Scale;
-
-					SDL_Point p = { (int)px, (int)py };
-
-
-					SDL_Rect frame_rect;
-					SDL_Rect draw_rect;
-					SDL_RendererFlip flip;
-					double rotation;
-
-					frame_rect = ttr->Frame_Rect();
-					draw_rect = ttr->Draw_Rect();
-					draw_rect.x = (int)(((double)draw_rect.x + ent->X) * Get_Scale());
-					draw_rect.y = (int)(((double)draw_rect.y + ent->Y) * Get_Scale());
-					draw_rect.w *= (int)Get_Scale();
-					draw_rect.h *= (int)Get_Scale();
-
-					flip = ttr->Flip;
-					rotation = ttr->Rotation;
-
-
-					SDL_RenderCopyEx
-					(
-						Screen::Renderer,
-						sdl_texture,
-						&frame_rect, &draw_rect,
-						rotation,
-						&p,
-						flip
-					);
-				}
-			}
+			for(auto child : state->children)
+				__Draw(child, 0, 0, 1, 0);
 		}
 		SDL_RenderPresent(Screen::Renderer);
 	}
@@ -201,47 +143,57 @@ void Screen::Exit()
 	SDL_DestroyWindow(Screen::Window);
 }
 
-bool Screen::__Reorder()
+
+bool Screen::__Draw(Entity<> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation)
 {
-	if (ent::Ordered.size()) return false;
-	for (auto state : ent::Ordered)
+	if (auto e = std::dynamic_pointer_cast<Container>(ent.get_shared()))
 	{
-		for (auto layer : state.second)
+		e->Reorder();
+		for (auto child : e->children)
 		{
-			for (unsigned i = 1; i < layer.second.size(); ++i)
-			{
-				auto temp = layer.second[i];
-				int j = i - 1;
-				while (j >= 0 && layer.second[j]->Y > temp->Y)
-				{
-					layer.second[j + 1] = layer.second[j];
-					--j;
-				}
-				layer.second[j + 1] = temp;
-			}
+			__Draw(child, parent_x + e->Child_X(ent->X), parent_y + e->Child_Y(ent->Y), parent_scale * ent->scale, parent_rotation + ent->rotation);
 		}
+		if (!ent->texture || !ent->texture->Get_SDL_Texture()) return true;
 	}
-	//for (unsigned i = 1; i < ent::Ordered.back().size(); ++i)
-	//{
-	//	auto temp = __Entities.back()[i];
-	//	int j = i - 1;
-	//	while (j >= 0 && __Entities.back()[i]->layer < __Entities.back()[j]->layer)
-	//	{
-	//		__Entities.back()[j + 1] = __Entities.back()[j];
-	//		--j;
-	//	}
-	//	__Entities.back()[j + 1] = temp;
-	//}
-	//for (unsigned i = 1; i < __Entities.back().size(); ++i)
-	//{
-	//	auto temp = __Entities.back()[i];
-	//	int j = i - 1;
-	//	while (j >= 0 && __Entities.back()[i]->layer == __Entities.back()[j]->layer && __Entities.back()[j]->Y > temp->Y)
-	//	{
-	//		__Entities.back()[j + 1] = __Entities.back()[j];
-	//		--j;
-	//	}
-	//	__Entities.back()[j + 1] = temp;
-	//}
+
+	auto ttr = ent->texture;
+	if (!ttr || !ttr->Get_SDL_Texture())
+	{
+		Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
+		return false;
+	}
+	SDL_Texture* sdl_texture = ttr->Get_SDL_Texture();
+
+	double px = (double)ttr->Starting_Point().x * ent->scale * parent_scale;
+	double py = (double)ttr->Starting_Point().y * ent->scale * parent_scale;
+
+	SDL_Point p = { (int)px, (int)py };
+
+
+	SDL_Rect frame_rect;
+	SDL_Rect draw_rect;
+	SDL_RendererFlip flip;
+	double rotation;
+
+	frame_rect = ttr->Frame_Rect();
+	draw_rect = ttr->Draw_Rect();
+	draw_rect.x = (int)(((double)draw_rect.x * ent->scale + ent->X) * parent_scale + parent_x);
+	draw_rect.y = (int)(((double)draw_rect.y * ent->scale + ent->Y) * parent_scale + parent_y);
+	draw_rect.w = (int)((double)draw_rect.w * parent_scale * ent->scale);
+	draw_rect.h = (int)((double)draw_rect.h * parent_scale * ent->scale);
+
+	flip = ttr->Flip;
+	rotation = ent->rotation + parent_rotation;
+
+
+	SDL_RenderCopyEx
+	(
+		Screen::Renderer,
+		sdl_texture,
+		&frame_rect, &draw_rect,
+		rotation,
+		&p,
+		flip
+	);
 	return true;
 }

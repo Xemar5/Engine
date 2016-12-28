@@ -23,11 +23,11 @@ std::shared_ptr<Movement> Movement::Set(double & x, double & y, double speed, do
 }
 
 
-std::shared_ptr<Movement> Movement::Set(ent::Entity<> ent, double speed, double mass)
+std::shared_ptr<Movement> Movement::Set(Entity<> ent, double speed, double mass)
 {
 	if (!ent)
 	{
-		Output_Handler::Error << "ERR Movement::Set : No entity supplied; use the other Movement::Set if only object needed\n";
+		Output_Handler::Error << "ERR Movement::Change : No entity supplied; use the other Movement::Change if only object needed\n";
 		return nullptr;
 	}
 	return ent->movement = Movement::Set(ent->X, ent->Y, speed, mass);
@@ -37,7 +37,7 @@ bool Movement::Add_Force(std::shared_ptr<Movement> movement, double force_x, dou
 {
 	if (!movement)
 	{
-		Output_Handler::Error << "ERR Movement::Set : No Movement Supplied\n";
+		Output_Handler::Error << "ERR Movement::Change : No Movement Supplied\n";
 		return false;
 	}
 	if (movement->__Mass == -1) return true;
@@ -49,7 +49,7 @@ bool Movement::Add_Force(std::shared_ptr<Movement> movement, double force_x, dou
 	return true;
 }
 
-bool Movement::Add_Force(ent::Entity<> ent, double force_x, double force_y)
+bool Movement::Add_Force(Entity<> ent, double force_x, double force_y)
 {
 	if (!ent)
 	{
@@ -115,14 +115,14 @@ bool Movement::__Resolve_Movement(std::shared_ptr<Movement> movement)
 	movement->__vy += acc * sgn(fy - movement->__vy);
 	if (abs(fx - movement->__vx) < acc) movement->__vx = fx;
 	if (abs(fy - movement->__vy) < acc) movement->__vy = fy;
-	*movement->__X += movement->__vx * Screen::Get_Scale();
-	*movement->__Y += movement->__vy * Screen::Get_Scale();
+	*movement->__X += movement->__vx;
+	*movement->__Y += movement->__vy;
 
 	movement->__Forces.clear();
 	return movement->__vx || movement->__vy;
 }
 
-bool Movement::__Resolve_Movement(ent::Entity<> ent)
+bool Movement::__Resolve_Movement(Entity<> ent)
 {
 	if (!ent)
 	{

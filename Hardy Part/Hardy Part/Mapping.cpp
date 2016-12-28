@@ -14,37 +14,37 @@ void Mapping::Init(std::string path)
 	Mapping::Default_Path = path;
 	//Mapping::Default_Bindings =
 	//{
-	//	{ "a", Input::Set(IT_UNDEFINED) },
-	//	{ "b", Input::Set(IT_UNDEFINED) },
-	//	{ "x", Input::Set(IT_UNDEFINED) },
-	//	{ "y", Input::Set(IT_UNDEFINED) },
+	//	{ "a", Input::Change(IT_UNDEFINED) },
+	//	{ "b", Input::Change(IT_UNDEFINED) },
+	//	{ "x", Input::Change(IT_UNDEFINED) },
+	//	{ "y", Input::Change(IT_UNDEFINED) },
 
-	//	{ "r1", Input::Set(IT_UNDEFINED) },
-	//	{ "r2", Input::Set(IT_UNDEFINED) },
-	//	{ "r3", Input::Set(IT_UNDEFINED) },
-	//	{ "l1", Input::Set(IT_UNDEFINED) },
-	//	{ "l2", Input::Set(IT_UNDEFINED) },
-	//	{ "l3", Input::Set(IT_UNDEFINED) },
+	//	{ "r1", Input::Change(IT_UNDEFINED) },
+	//	{ "r2", Input::Change(IT_UNDEFINED) },
+	//	{ "r3", Input::Change(IT_UNDEFINED) },
+	//	{ "l1", Input::Change(IT_UNDEFINED) },
+	//	{ "l2", Input::Change(IT_UNDEFINED) },
+	//	{ "l3", Input::Change(IT_UNDEFINED) },
 
-	//	{ "select", Input::Set(IT_UNDEFINED) },
-	//	{ "start", Input::Set(IT_UNDEFINED) },
+	//	{ "select", Input::Change(IT_UNDEFINED) },
+	//	{ "start", Input::Change(IT_UNDEFINED) },
 
-	//	{ "laup", Input::Set(IT_UNDEFINED) },
-	//	{ "ladown", Input::Set(IT_UNDEFINED) },
-	//	{ "laleft", Input::Set(IT_UNDEFINED) },
-	//	{ "laright", Input::Set(IT_UNDEFINED) },
+	//	{ "laup", Input::Change(IT_UNDEFINED) },
+	//	{ "ladown", Input::Change(IT_UNDEFINED) },
+	//	{ "laleft", Input::Change(IT_UNDEFINED) },
+	//	{ "laright", Input::Change(IT_UNDEFINED) },
 
-	//	{ "raup", Input::Set(IT_UNDEFINED) },
-	//	{ "radown", Input::Set(IT_UNDEFINED) },
-	//	{ "raleft", Input::Set(IT_UNDEFINED) },
-	//	{ "raright", Input::Set(IT_UNDEFINED) },
+	//	{ "raup", Input::Change(IT_UNDEFINED) },
+	//	{ "radown", Input::Change(IT_UNDEFINED) },
+	//	{ "raleft", Input::Change(IT_UNDEFINED) },
+	//	{ "raright", Input::Change(IT_UNDEFINED) },
 
 
-	//	{ "dup", Input::Set(IT_UNDEFINED) },
-	//	{ "ddown", Input::Set(IT_UNDEFINED) },
-	//	{ "dleft", Input::Set(IT_UNDEFINED) },
-	//	{ "dright", Input::Set(IT_UNDEFINED) },
-	//	{ "UNDEFINED", Input::Set(IT_UNDEFINED) }
+	//	{ "dup", Input::Change(IT_UNDEFINED) },
+	//	{ "ddown", Input::Change(IT_UNDEFINED) },
+	//	{ "dleft", Input::Change(IT_UNDEFINED) },
+	//	{ "dright", Input::Change(IT_UNDEFINED) },
+	//	{ "UNDEFINED", Input::Change(IT_UNDEFINED) }
 	//};
 	Maps = Load_From_File(Mapping::Default_Path);
 }
@@ -71,7 +71,7 @@ std::string Map_To_String(const std::map<std::string, Input>& map)
 		str += " " + std::to_string(key.second.Key());
 		str += '\n';
 	}
-	if (!str.size()) str += "#No Keybinds Set\n";
+	if (!str.size()) str += "#No Keybinds Change\n";
 	return str;
 }
 
@@ -127,7 +127,7 @@ int Mapping::Read_Line(std::string& src_str, std::string* dst_str, Input* bindin
 		//if (src_str.find("-1") != std::string::npos) return false;
 		//src_str.erase(std::remove_if(src_str.begin(), src_str.end(), [](Uint8 c)->bool {return (c == ' ') ? true : false; }), src_str.end());
 		//std::string action = "";
-		//Input bdg = Input::Set(IT_UNDEFINED);
+		//Input bdg = Input::Change(IT_UNDEFINED);
 		//
 		//auto act_pos = src_str.find('=');
 		//if (act_pos == std::string::npos) return false;

@@ -25,7 +25,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static std::shared_ptr<Texture> Load(ent::Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0, int frame_width = 0, int frame_height = 0);
+	static std::shared_ptr<Texture> Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0, int frame_width = 0, int frame_height = 0);
 
 
 	//*** Width of a frame, greater than 0 and less than Width of the image
@@ -58,7 +58,7 @@ public:
 
 private:
 
-	//*** Set of all animations of this Texture; USE WITH ANIMATION CLASS
+	//*** Change of all animations of this Texture; USE WITH ANIMATION CLASS
 	std::vector<Animation> __Animations;
 
 	//*** Current animation that is being played on this Entity; USE WITH ANIMATION CLASS

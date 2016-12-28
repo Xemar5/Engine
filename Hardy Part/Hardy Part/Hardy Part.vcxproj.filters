@@ -46,6 +46,18 @@
     <Filter Include="Header Files\Users">
       <UniqueIdentifier>{395126ea-d5a0-4a93-b259-fb9ab25f054d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entities\Defined">
+      <UniqueIdentifier>{1d6c8c12-be85-472a-8937-33f4d6e026d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States\Defined">
+      <UniqueIdentifier>{4f4b9921-ce7d-498f-b0a9-f37d40373e77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\Defined">
+      <UniqueIdentifier>{ef577068-5c45-4e50-900b-f150043042bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Entities\Defined">
+      <UniqueIdentifier>{135e9f88-2253-4c6d-b4d4-2640cfe9105f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="__Source.cpp">
@@ -62,15 +74,6 @@
     </ClCompile>
     <ClCompile Include="Action.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sword.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="CobbleWall.cpp">
-      <Filter>Source Files\Entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Character.cpp">
-      <Filter>Source Files\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Screen.cpp">
       <Filter>Source Files\Texture Handler</Filter>
@@ -105,18 +108,6 @@
     <ClCompile Include="Textfield.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Controlls_State.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="GameMenu_State.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_State.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
-    <ClCompile Include="Menu_State.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
     <ClCompile Include="Collider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -135,6 +126,33 @@
     <ClCompile Include="RPC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Container.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Character.cpp">
+      <Filter>Source Files\Entities\Defined</Filter>
+    </ClCompile>
+    <ClCompile Include="CobbleWall.cpp">
+      <Filter>Source Files\Entities\Defined</Filter>
+    </ClCompile>
+    <ClCompile Include="Sword.cpp">
+      <Filter>Source Files\Entities\Defined</Filter>
+    </ClCompile>
+    <ClCompile Include="Controlls_State.cpp">
+      <Filter>Source Files\States\Defined</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMenu_State.cpp">
+      <Filter>Source Files\States\Defined</Filter>
+    </ClCompile>
+    <ClCompile Include="Main_State.cpp">
+      <Filter>Source Files\States\Defined</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu_State.cpp">
+      <Filter>Source Files\States\Defined</Filter>
+    </ClCompile>
+    <ClCompile Include="StateContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Movement.h">
@@ -148,15 +166,6 @@
     </ClInclude>
     <ClInclude Include="Action.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sword.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Character.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Wall.h">
-      <Filter>Header Files\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Screen.h">
       <Filter>Header Files\Texture Handler</Filter>
@@ -203,26 +212,47 @@
     <ClInclude Include="Generic.h">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Controlls_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="GameMenu_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Main_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Menu_State.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="Collider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MultiplayerState.h">
-      <Filter>Header Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="RPC.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Controlls_State.h">
+      <Filter>Header Files\States\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMenu_State.h">
+      <Filter>Header Files\States\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="Main_State.h">
+      <Filter>Header Files\States\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu_State.h">
+      <Filter>Header Files\States\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiplayerState.h">
+      <Filter>Header Files\States\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="Character.h">
+      <Filter>Header Files\Entities\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="Sword.h">
+      <Filter>Header Files\Entities\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Header Files\Entities\Defined</Filter>
+    </ClInclude>
+    <ClInclude Include="Container.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Layer.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Canvas.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="StateContainer.h">
+      <Filter>Header Files\States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

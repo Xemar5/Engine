@@ -9,48 +9,67 @@
 
 void GameMenu_State::Create()
 {
+	((Entity<>)layer(0))->scale = 3;
 	for (auto pl : Player::Get_Players())
 		if (auto ent = Player::Get_Entity(pl))
-			ent->texture->Scale = 1.5;
+			ent->scale = 1.5;
 
 	int xoffs = 40;
 	int yoffs = 40;
 
-	auto cs1 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
+	struct Tab : public EntityObject
 	{
-		e->layer = 1;
-		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
-		e->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
-		e->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
-		e->texture->Scale = 1.5;
-	});
+		Tab(int x, int y) : x(x), y(y) {}
 
-	auto cs2 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
-	{
-		e->layer = 1;
-		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
-		e->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
-		e->Y = Screen::Get_Screen_Size().second / 2 - 43 + yoffs;
-		e->texture->Scale = 1.5;
-	});
+		void Create() override
+		{
+			Texture::Load(this->shared_from_this(), "imgs/Character_Selection.png", 80, 48, 0, 0);
+			this->X = Screen::Window_Size().first / 6 + x + xoffs;
+			this->Y = Screen::Window_Size().second / 6 + y + yoffs;
+		}
+	private:
+		int x;
+		int y;
+		int xoffs = 40;
+		int yoffs = 40;
+	};
 
-	auto cs3 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
-	{
-		e->layer = 1;
-		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
-		e->X = Screen::Get_Screen_Size().first / 2 - 75 + xoffs;
-		e->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
-		e->texture->Scale = 1.5;
-	});
+	Entity<Tab>::Add(-75, -43);
+	Entity<Tab>::Add(75, -43);
+	Entity<Tab>::Add(-75, 43);
+	Entity<Tab>::Add(75, 43);
 
-	auto cs4 = ent::Add<EntityObject>([xoffs, yoffs](auto e)
-	{
-		e->layer = 1;
-		Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
-		e->X = Screen::Get_Screen_Size().first / 2 + 75 + xoffs;
-		e->Y = Screen::Get_Screen_Size().second / 2 + 43 + yoffs;
-		e->texture->Scale = 1.5;
-	});
+	//auto cs1 = Entity<EntityObject>::Add([xoffs, yoffs](auto e)
+	//{
+	//	Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+	//	e->X = Screen::Window_Size().first / 6 - 75 + xoffs;
+	//	e->Y = Screen::Window_Size().second / 6 - 43 + yoffs;
+	//	e->scale = 1;
+	//});
+
+	//auto cs2 = Entity<EntityObject>::Add([xoffs, yoffs](auto e)
+	//{
+	//	Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+	//	e->X = Screen::Window_Size().first / 6 + 75 + xoffs;
+	//	e->Y = Screen::Window_Size().second / 6 - 43 + yoffs;
+	//	e->scale = 1;
+	//});
+
+	//auto cs3 = Entity<EntityObject>::Add([xoffs, yoffs](auto e)
+	//{
+	//	Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+	//	e->X = Screen::Window_Size().first / 6 - 75 + xoffs;
+	//	e->Y = Screen::Window_Size().second / 6 + 43 + yoffs;
+	//	e->scale = 1;
+	//});
+
+	//auto cs4 = Entity<EntityObject>::Add([xoffs, yoffs](auto e)
+	//{
+	//	Texture::Load(e, "imgs/Character_Selection.png", 80, 48, 0, 0);
+	//	e->X = Screen::Window_Size().first / 6 + 75 + xoffs;
+	//	e->Y = Screen::Window_Size().second / 6 + 43 + yoffs;
+	//	e->scale = 1;
+	//});
 }
 
 void GameMenu_State::Update()
@@ -96,13 +115,13 @@ void GameMenu_State::Events()
 
 	if(Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_SPACE)].Up() && Player::Get_Players().size())
 	{
-		State::New<Main_Menu>(Player::Get_Controlled_Entities());
+		Change<Main_Menu>();
 	}
 	if (Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_ESCAPE)].Up())
 	{
 		for (auto pl : Player::Get_Players())
 			Player::Remove(pl);
-		State::New<Menu_Menu>();
+		Change<Menu_Menu>();
 	}
 }
 

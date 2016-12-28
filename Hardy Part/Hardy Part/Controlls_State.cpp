@@ -5,11 +5,11 @@
 #include "Textfield.h"
 
 
-ent::Entity<Textfield> selectedDevice = nullptr;
+Entity<Textfield> selectedDevice = nullptr;
 std::string actionName = "";
 SDL_Point lastMousePos;
 
-void selectDevice(ent::Entity<Textfield> tf)
+void selectDevice(Entity<Textfield> tf)
 {
 	if (selectedDevice) Textfield::SetText(selectedDevice, selectedDevice->Text(), "imgs/clacon.ttf", 32, Textfield::Color(0xffffff00));
 	selectedDevice = tf;
@@ -34,12 +34,16 @@ class Controlls_State_Popup : public State
 };
 void Controlls_State_Popup::Create()
 {
-	auto e = ent::Add<Textfield>([](auto e)
+	struct Ent : public Textfield
 	{
-		e->SetText("Select", "imgs/clacon.ttf", 32, Textfield::Color(0x24ef49ff));
-		e->Y = 20;
-		e->X = Screen::Get_Screen_Size().first / 2;
-	});
+		void Create() override
+		{
+			this->SetText("Select", "imgs/clacon.ttf", 32, Textfield::Color(0x24ef49ff));
+			this->Y = 20;
+			this->X = Screen::Window_Size().first / 2;
+		}
+	};
+	auto e = Entity<Ent>::Add();
 }
 void Controlls_State_Popup::Update()
 {
@@ -49,7 +53,7 @@ void Controlls_State_Popup::Update()
 void selectAndConfirm()
 {
 	SDL_WarpMouseInWindow(Screen::Window, lastMousePos.x, lastMousePos.y);
-	State::Exit_Layer();
+	State::Remove();
 	selectDevice(selectedDevice);
 }
 void Controlls_State_Popup::Events()
@@ -67,7 +71,7 @@ void Controlls_State_Popup::Events()
 	}
 	else if (&Device::GetCurrent() == &Device::Get(selectedDevice->Text()) && System::Events.type == SDL_MOUSEMOTION)
 	{
-		auto p = Screen::Get_Window_Size();
+		auto p = Screen::Window_Size();
 		if (abs((Sint32)p.first / 2 - System::Events.motion.x) > 100)
 		{
 			Device::Get(selectedDevice->Text()).Bindings << actionName + Input::Set(IT_MOUSE_AXIS, MA_X);
@@ -80,7 +84,7 @@ void Controlls_State_Popup::Events()
 		}
 	}
 	else if(&Device::GetCurrent() == &Device::Get(selectedDevice->Text()) && Device::GetCurrent()[Input::Set(~IT_MOUSE_AXIS, IK_ANY)].Up())
-		//if (Device::GetCurrent()[Input::Set(IT_ANY, IK_ANY)].Up())
+		//if (Device::GetCurrent()[Input::Change(IT_ANY, IK_ANY)].Up())
 	{
 		auto ci = Device::GetCurrent().CurrentInput();
 		if (!ci) return;
@@ -128,21 +132,24 @@ void Controlls_State::Create()
 	int ind = 0;
 	int yDelta = 13;
 	int yPos = 100;
-	int xPos = Screen::Get_Screen_Size().first / 2;
+	int xPos = Screen::Window_Size().first / 2;
 
-	auto save_btn = ent::Add<Textfield>([](auto e)
+	auto save_btn = Entity<Textfield>::Add();/*Delegate
 	{
 		e->SetText("Save", "imgs/clacon.ttf", 32);
 		e->X = e->TextWidth() / 2 + 20;
 		e->Y = e->TextHeight() / 2 + 20;
-	});
+	});*/
 	//Entity::Register(save_btn, "save_btn");
+	save_btn->SetText("Save", "imgs/clacon.ttf", 32);
+	save_btn->X = save_btn->TextWidth() / 2 + 20;
+	save_btn->Y = save_btn->TextHeight() / 2 + 20;
 
 
 	for (auto i : inputs)
 	{
-		auto action = ent::Add<Textfield>();
-		auto input = ent::Add<Textfield>();
+		auto action = Entity<Textfield>::Add();
+		auto input = Entity<Textfield>::Add();
 		//Entity::Register(action, "action" + std::to_string(ind));
 		//Entity::Register(input, i);
 		action->SetText(i, "imgs/clacon.ttf", 32);
@@ -158,7 +165,7 @@ void Controlls_State::Create()
 	yPos = 100;
 	for (auto d : Gamepad::All())
 	{
-		auto tf = ent::Add<Textfield>();
+		auto tf = Entity<Textfield>::Add();
 		//Entity::Register(tf, "device" + std::to_string(ind));
 		tf->SetText(d->Name(), "imgs/clacon.ttf", 32);
 		tf->X = 20 + tf->TextWidth() / 2;
@@ -175,7 +182,7 @@ void Controlls_State::Create()
 	////cs1->Get_Sprite()->Scale = 1.5;
 
 	//auto tf = State::Add_Entity<Textfield>(0);
-	//dynamic_cast<Textfield*>(tf.get())->Set("WHAT IS WRONG WITH ME, why is this text so long wtf", "imgs/slkscr.ttf", 32, Textfield::Color(0xffffffff), 300);
+	//dynamic_cast<Textfield*>(tf.get())->Change("WHAT IS WRONG WITH ME, why is this text so long wtf", "imgs/slkscr.ttf", 32, Textfield::Color(0xffffffff), 300);
 	//tf->X = 100;
 	//tf->Y = 100;
 
@@ -191,8 +198,8 @@ void Controlls_State::Update()
 
 void Controlls_State::Events()
 {
-	//if (System::Events.type == SDL_JOYDEVICEADDED || System::Events.type == SDL_JOYDEVICEREMOVED) State::New<Controlls_State>();
-	//else if (Mouse::Get[Input::Set(IT_MOUSE_BUTTON, SDL_BUTTON_LEFT)].Up())
+	//if (System::Events.type == SDL_JOYDEVICEADDED || System::Events.type == SDL_JOYDEVICEREMOVED) State::Change<Controlls_State>();
+	//else if (Mouse::Get[Input::Change(IT_MOUSE_BUTTON, SDL_BUTTON_LEFT)].Up())
 	//{
 	//	if (Mouse::Contains_Mouse(Entity::Get("save_btn")))
 	//	{
@@ -211,8 +218,8 @@ void Controlls_State::Events()
 	//				{
 	//					SDL_GetMouseState(&lastMousePos.x, &lastMousePos.y);
 	//					actionName = i->second->As<Textfield>()->Text();
-	//					State::New_Layer<Controlls_State_Popup>();
-	//					SDL_WarpMouseInWindow(Screen::Window, Screen::Get_Window_Size().first / 2, Screen::Get_Window_Size().second / 2);
+	//					State::Add<Controlls_State_Popup>();
+	//					SDL_WarpMouseInWindow(Screen::Window, Screen::Window_Size().first / 2, Screen::Window_Size().second / 2);
 	//				}
 	//		}
 	//		else
@@ -220,6 +227,6 @@ void Controlls_State::Events()
 	//				selectDevice(i->second->As<Textfield>());
 	//	}
 	//}
-	//else if (Keyboard::Get[Input::Set(IT_KEYBOARD_KEY, SDLK_ESCAPE)].Up()) State::New<Menu_Menu>();
-	//else if (Device::GetCurrent()["back"].Up()) State::New<Menu_Menu>();
+	//else if (Keyboard::Get[Input::Change(IT_KEYBOARD_KEY, SDLK_ESCAPE)].Up()) State::Change<Menu_Menu>();
+	//else if (Device::GetCurrent()["back"].Up()) State::Change<Menu_Menu>();
 }

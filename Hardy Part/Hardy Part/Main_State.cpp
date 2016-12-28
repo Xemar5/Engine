@@ -21,9 +21,9 @@ void Main_Menu::Create()
 {
 	for (auto pl : Player::Get_Players())
 		if (auto ent = Player::Get_Entity(pl))
-			ent->texture->Scale = 1;
+			ent->scale = 1;
 
-	auto tileset = ent::Add<>();
+	auto tileset = Entity<>::Add();
 	Generic::Load(
 		{
 			{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 },
@@ -41,16 +41,16 @@ void Main_Menu::Create()
 			{  6, 7, 7, 9,-1,-1,-1,-1,-1,-1,-1, 7, 8, 8, 6,-1,-1 },
 			{ -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1 }
 		},
-		tileset.get(), "imgs/orange-tile.png", 240, 24, 0, 0, 24, 24);
+		tileset, "imgs/orange-tile.png", 240, 24, 0, 0, 24, 24);
 
-	tileset->X = Screen::Get_Screen_Size().first / 2;
-	tileset->Y = Screen::Get_Screen_Size().second / 2;
+	tileset->X = Screen::Window_Size().first / 2;
+	tileset->Y = Screen::Window_Size().second / 2;
 	//Entity::Register(tileset.get(), "tileset");
 	//Output_Handler::Output << ttt->X << std::endl;
 	//Output_Handler::Output << ttt->Display()->Get_SDL_Starting_Point().x << std::endl;
 
-	int midx = Screen::Get_Screen_Size().first / 2 - 195;
-	int midy = Screen::Get_Screen_Size().second / 2 + 110;
+	int midx = Screen::Window_Size().first / 2 - 195;
+	int midy = Screen::Window_Size().second / 2 + 110;
 
 
 
@@ -65,57 +65,57 @@ void Main_Menu::Create()
 
 
 
-	//auto p1 = Player::Set(0);
+	//auto p1 = Player::Change(0);
 	//Player::Set_Entity(p1, m1);
 	//Player::Set_Keys(p1,
-	//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_w }),
-	//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_s }),
-	//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_a }),
-	//	Input_Handler::Set(&Keyboard_Handler::Key_Held, { SDLK_d }),
+	//	Input_Handler::Change(&Keyboard_Handler::Key_Held, { SDLK_w }),
+	//	Input_Handler::Change(&Keyboard_Handler::Key_Held, { SDLK_s }),
+	//	Input_Handler::Change(&Keyboard_Handler::Key_Held, { SDLK_a }),
+	//	Input_Handler::Change(&Keyboard_Handler::Key_Held, { SDLK_d }),
 
-	//	Input_Handler::Set(&Mouse_Handler::Get_Relative_Mouse_X_State, { 0,0 }),
-	//	Input_Handler::Set(&Mouse_Handler::Get_Relative_Mouse_Y_State, { 0,0 })
+	//	Input_Handler::Change(&Mouse_Handler::Get_Relative_Mouse_X_State, { 0,0 }),
+	//	Input_Handler::Change(&Mouse_Handler::Get_Relative_Mouse_Y_State, { 0,0 })
 	//	);
 
-	//auto p2 = Player::Set(1);
+	//auto p2 = Player::Change(1);
 	//Player::Set_Entity(p2, m2);
 	//Player::Set_Keys(p2,
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,0 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 1,0 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,0 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,0 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Negative, { 1,0 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Positive, { 1,0 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Negative, { 0,0 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Positive, { 0,0 }),
 
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 2,0 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 4,0 })
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State, { 2,0 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State, { 4,0 })
 	//	);
 
-	//auto p3 = Player::Set(2);
+	//auto p3 = Player::Change(2);
 	//Player::Set_Entity(p3, m3);
 	//Player::Set_Keys(p3,
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,1 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 1,1 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,1 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,1 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Negative, { 1,1 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Positive, { 1,1 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Negative, { 0,1 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Positive, { 0,1 }),
 
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 2,1 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 4,1 })
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State, { 2,1 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State, { 4,1 })
 	//	);
 
-	//auto p4 = Player::Set(3);
+	//auto p4 = Player::Change(3);
 	//Player::Set_Entity(p4, m4);
 	//Player::Set_Keys(p4,
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 1,2 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 1,2 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Negative, { 0,2 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State_Positive, { 0,2 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Negative, { 1,2 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Positive, { 1,2 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Negative, { 0,2 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State_Positive, { 0,2 }),
 
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 2,2 }),
-	//	Input_Handler::Set(&Gamepad_Handler::Get_Axis_State, { 4,2 })
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State, { 2,2 }),
+	//	Input_Handler::Change(&Gamepad_Handler::Get_Axis_State, { 4,2 })
 	//	);
 	if (Player::Get_Players().size())
 	{
-		auto s1 = ent::Add<Sword>([](auto e) { e->layer = 1; });
-		((ent::Entity<Sword>)s1)->Wealder = Player::Get_Players().front();
+		auto s1 = Entity<Sword>::Add();
+		((Entity<Sword>)s1)->Wealder = Player::Get_Players().front();
 	}
 	//srand((unsigned)time(0));
 	//if (this->Layers[0]->Entities.size())
@@ -157,8 +157,8 @@ void Main_Menu::Update()
 
 	Uint32 px = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
 	Uint32 py = (Uint32)Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
-	px = (Uint32)((double)px / (double)Screen::Get_Screen_Size().first * 255);
-	py = (Uint32)((double)py / (double)Screen::Get_Screen_Size().second * 255);
+	px = (Uint32)((double)px / (double)Screen::Window_Size().first * 255);
+	py = (Uint32)((double)py / (double)Screen::Window_Size().second * 255);
 	SDL_SetRenderDrawColor(Screen::Renderer, px, 255 - (px+py)/2, py, 255);
 
 
@@ -208,7 +208,7 @@ void Main_Menu::Events()
 		//	//Player::Remove(pl.get());
 		//	//Player::Set_Entity(pl.get(), nullptr);
 		//}
-		State::New<GameMenu_State>(Player::Get_Controlled_Entities());
+		Change<GameMenu_State>();
 	}
 }
 

@@ -19,11 +19,7 @@ public:
 
 	//*** Returns the size of the window
 	//*** Use Get_Screen_Size if in-game screen size needed
-	static std::pair<unsigned, unsigned> Get_Window_Size();
-	//*** Returns the size of the of the screen
-	//*** It scales with the Screen::__Scale
-	//*** Use Get_Window_Size if the actual window size needed
-	static std::pair<unsigned, unsigned> Get_Screen_Size();
+	static std::pair<unsigned, unsigned> Window_Size();
 
 	//*** Returns true if the screen is windowed
 	static bool Is_Windowed();
@@ -36,9 +32,6 @@ public:
 	//*** Changes the current state of the window to windowed
 	//*** Returns false if the screen is already windowed
 	static bool Set_Windowed();
-
-	//*** Returns the scale of the whole screen
-	static double Get_Scale();
 
 
 	//*** Initializes all the Screen compounds
@@ -69,16 +62,12 @@ private:
 	//*** Screen::Start should be called only once
 	static bool __Initialized;
 	
-	//*** The global scale ratio of all displayed textures
-	static double __Scale;
-
 	//*** If true, the state of the window is set to windowed
 	static bool __Windowed;
 
-	//*** Reorders all entities stored in Screen::__Entities
-	//*** The greater the Y value of an entity, the greater its index in __Entity
-	//*** The greater the index, the later it's printed to the screen
-	static bool __Reorder();
+	//*** Draws given Entity on the Renderer
+	//*** If the Entity is of type Container, iterates throught every child
+	static bool __Draw(Entity<> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation);
 
 	////*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
 	////*** It empties itself every frame update\

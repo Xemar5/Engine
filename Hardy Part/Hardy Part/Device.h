@@ -82,15 +82,15 @@ public:
 	//*** The global Keyboard/Mouse object
 	static Keyboard Get;
 	//*** Returns true if given entity contains mouse cursor
-	static bool Contains_Mouse(ent::Entity<> ent);
+	static bool Contains_Mouse(Entity<> ent);
 	//*** The time after which mouse is considered idle
 	static double MouseIdleTime;
 private:
 	Keyboard()
 	{
 		_Name = "Keyboard";
-		//_Inputs.push_back(Input::Set(IT_MOUSE_AXIS, MA_X, -1, -1, IS_MOVING));
-		//_Inputs.push_back(Input::Set(IT_MOUSE_AXIS, MA_Y, -1, -1, IS_MOVING));
+		//_Inputs.push_back(Input::Change(IT_MOUSE_AXIS, MA_X, -1, -1, IS_MOVING));
+		//_Inputs.push_back(Input::Change(IT_MOUSE_AXIS, MA_Y, -1, -1, IS_MOVING));
 	};
 
 };

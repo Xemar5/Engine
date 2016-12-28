@@ -124,7 +124,7 @@ void Keyboard::Update()
 
 
 
-bool Keyboard::Contains_Mouse(ent::Entity<> ent)
+bool Keyboard::Contains_Mouse(Entity<> ent)
 {
 	if (!ent)
 	{
@@ -136,18 +136,20 @@ bool Keyboard::Contains_Mouse(ent::Entity<> ent)
 		Output_Handler::Error << "ERR Entity::Contains_Mouse : Given entity has no texture supplied\n";
 		return false;
 	}
-	double px = (double)System::Events.motion.x / Screen::Get_Scale();
-	double py = (double)System::Events.motion.y / Screen::Get_Scale();
-	//double px = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_X)].Held();
-	//double py = Mouse::Get[Input::Set(IT_MOUSE_AXIS, MA_Y)].Held();
+	double px = (double)System::Events.motion.x;
+	double py = (double)System::Events.motion.y;
+	//double px = Mouse::Get[Input::Change(IT_MOUSE_AXIS, MA_X)].Held();
+	//double py = Mouse::Get[Input::Change(IT_MOUSE_AXIS, MA_Y)].Held();
 	auto sp = ent->texture;
-	double offx = sp->Starting_Point().x * sp->Scale;
-	double offy = sp->Starting_Point().y * sp->Scale;
+	auto scale = ent->RealScale();
+	auto pos = ent->RealPos();
+	double offx = sp->Starting_Point().x * scale;
+	double offy = sp->Starting_Point().y * scale;
 	return (
-		px >= ent->X - offx &&
-		px <= ent->X - offx + ent->hitbox().first &&
-		py >= ent->Y - offy &&
-		py <= ent->Y - offy + ent->hitbox().second
+		px >= pos[0] - offx &&
+		px <= pos[0] - offx + ent->hitbox().first &&
+		py >= pos[1] - offy &&
+		py <= pos[1] - offy + ent->hitbox().second
 		);
 }
 
@@ -267,15 +269,15 @@ void Gamepad::Events()
 	}
 
 	//if (System::Events.type == SDL_JOYDEVICEADDED)
-	//	Gamepad::Set(System::Events.jdevice.which);
+	//	Gamepad::Change(System::Events.jdevice.which);
 	//else if (System::Events.type == SDL_JOYDEVICEREMOVED)
 	//	Gamepad::Get(System::Events.jdevice.which).Remove();
 	//else if (System::Events.type == SDL_JOYBUTTONDOWN)
-	//	Gamepad::Get(System::Events.jbutton.which)._Inputs.push_back(Input::Set(IT_GAMEPAD_BUTTON | Input::Controller(System::Events.jbutton.which), System::Events.jbutton.button, IS_PUSHED));
+	//	Gamepad::Get(System::Events.jbutton.which)._Inputs.push_back(Input::Change(IT_GAMEPAD_BUTTON | Input::Controller(System::Events.jbutton.which), System::Events.jbutton.button, IS_PUSHED));
 	//else if (System::Events.type == SDL_JOYBUTTONUP)
 	//{
 	//	for (auto& it : Gamepad::Get(System::Events.jbutton.which)._Inputs)
-	//		if (it == Input::Set(IT_GAMEPAD_BUTTON | Input::Controller(System::Events.jbutton.which), System::Events.jbutton.button, IS_ANY)) it.State = IS_RELEASED;
+	//		if (it == Input::Change(IT_GAMEPAD_BUTTON | Input::Controller(System::Events.jbutton.which), System::Events.jbutton.button, IS_ANY)) it.State = IS_RELEASED;
 	//}
 	//else if (System::Events.type == SDL_JOYHATMOTION)
 	//{
@@ -294,25 +296,25 @@ void Gamepad::Events()
 	//	for (int i = 0; i < 4; ++i)
 	//		if (System::Events.jhat.value & ~flag & 1 << i) Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(jh[i]);
 	//	//if (System::Events.jhat.value & ~flag & 1 << 0)
-	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Set(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 0 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
+	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Change(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 0 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
 	//	//if (System::Events.jhat.value & ~flag & 1 << 1)
-	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Set(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 1 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
+	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Change(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 1 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
 	//	//if (System::Events.jhat.value & ~flag & 1 << 2)
-	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Set(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 2 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
+	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Change(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 2 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
 	//	//if (System::Events.jhat.value & ~flag & 1 << 3)
-	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Set(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 3 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
+	//	//	Gamepad::Get(System::Events.jhat.which)._Inputs.push_back(Input::Change(IT_GAMEPAD_HAT | Input::Controller(System::Events.jhat.which), 1 << 3 | Input::Hat(System::Events.jhat.hat), IS_PUSHED));
 	//}
 	//else if (System::Events.type == SDL_JOYAXISMOTION)
 	//{
 	//	auto exists = Gamepad::Get(System::Events.jaxis.which)._Inputs.end();
 	//	for (auto it = Gamepad::Get(System::Events.jaxis.which)._Inputs.begin(); it != Gamepad::Get(System::Events.jaxis.which)._Inputs.end(); ++it)
-	//		if (*it == Input::Set(IT_GAMEPAD_AXIS | Input::Controller(System::Events.jaxis.which), System::Events.jaxis.axis, IS_ANY))
+	//		if (*it == Input::Change(IT_GAMEPAD_AXIS | Input::Controller(System::Events.jaxis.which), System::Events.jaxis.axis, IS_ANY))
 	//		{
 	//			exists = it;
 	//			break;
 	//		}
 	//	if (exists == Gamepad::Get(System::Events.jaxis.which)._Inputs.end() && abs(System::Events.jaxis.value) > Deadzone)
-	//		Gamepad::Get(System::Events.jaxis.which)._Inputs.push_back(Input::Set(IT_GAMEPAD_AXIS | Input::Controller(System::Events.jaxis.which), System::Events.jaxis.axis, IS_PUSHED));
+	//		Gamepad::Get(System::Events.jaxis.which)._Inputs.push_back(Input::Change(IT_GAMEPAD_AXIS | Input::Controller(System::Events.jaxis.which), System::Events.jaxis.axis, IS_PUSHED));
 	//	else if (exists != Gamepad::Get(System::Events.jaxis.which)._Inputs.end() && abs(System::Events.jaxis.value) < Deadzone)
 	//		exists->State = IS_RELEASED;
 	//}

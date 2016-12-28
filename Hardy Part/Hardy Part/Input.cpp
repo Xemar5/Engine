@@ -108,7 +108,7 @@ double Input::Held(Sint32 time)
 	{
 		if (__Key == MA_X) SDL_GetMouseState(&Value, nullptr);
 		if (__Key == MA_Y) SDL_GetMouseState(nullptr, &Value);
-		return Value = (Sint32)((double)Value / Screen::Get_Scale());
+		return Value = (Sint32)((double)Value);
 	}
 	else if (State == IS_HELD)
 	{

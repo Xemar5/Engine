@@ -88,20 +88,32 @@
 //
 //
 
-namespace ent
+
+
+std::pair<double, double> EntityObject::hitbox()
 {
-	std::vector<Entity<>> All;
-	std::map<std::shared_ptr<State>, std::map<int, std::vector<Entity<>>>> Ordered;
-	std::map<std::string, Entity<>> Registered;
+	if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
+	if (!this->texture) { Output_Handler::Error << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
+	return std::make_pair(
+		(double)this->texture->Frame_Rect().w * this->scale,
+		(double)this->texture->Frame_Rect().h * this->scale
+	);
+}
 
+double EntityObject::RealScale()
+{
+	if (!texture) return 1;
+	Entity<> p = std::dynamic_pointer_cast<EntityObject>(parent);
+	return scale * (p ? p->RealScale() : 1);
+}
 
-	std::pair<double, double> EntityObject::hitbox()
-	{
-		if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
-		if (!this->texture) { Output_Handler::Error << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
-		return std::make_pair(
-			(double)this->texture->Frame_Rect().w * this->texture->Scale,
-			(double)this->texture->Frame_Rect().h * this->texture->Scale
-		);
-	}
+std::vector<double> EntityObject::RealPos()
+{
+	std::vector<double> v(3);
+	Entity<> p = std::dynamic_pointer_cast<EntityObject>(parent);
+	if (p) v = p->RealPos();
+	v[0] += X;
+	v[1] += Y;
+	v[2] += Z;
+	return v;
 }

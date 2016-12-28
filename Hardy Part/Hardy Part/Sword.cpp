@@ -11,7 +11,7 @@
 
 void Sword::Create()
 {
-	auto sp = Sprite::Load(this, "imgs/xord.png", 24, 24, 0, 1, 24, 24);
+	//auto sp = Sprite::Load(this, "imgs/xord.png", 24, 24, 0, 1, 24, 24);
 }
 void Sword::Update()
 {
@@ -48,7 +48,7 @@ void Sword::Update()
 		double x, y;
 		x = Player::Get_Entity(Wealder)->X;
 		y = Player::Get_Entity(Wealder)->Y - 8;
-		texture->Rotation = ang;
+		rotation = ang;
 		X = Player::Get_Entity(Wealder)->X - cos(ang * M_PI / 180 + M_PI / 2) * 20;
 		Y = Player::Get_Entity(Wealder)->Y - 8 - sin(ang * M_PI / 180 + M_PI / 2) * 20;
 		if (abs(ang - __Old_Angle) > 3  && abs(ang - __Old_Angle) < 180)

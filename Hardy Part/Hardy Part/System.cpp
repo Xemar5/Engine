@@ -52,11 +52,11 @@ void System::__Update()
 	//Network::Update();
 	Keyboard::Get.Update();
 	Collider::Update();
-	std::vector<State*> stt_to_update;
+	std::vector<std::shared_ptr<State>> stt_to_update;
 	for (unsigned i = 0; i < State::Built.size(); i++)
 	{
 		if (!State::Built[i]->Update_Underneath) stt_to_update.clear();
-		stt_to_update.push_back(State::Built[i].get());
+		stt_to_update.push_back(State::Built[i]);
 	}
 	for (unsigned i = 0; i < stt_to_update.size(); i++)
 	{
@@ -70,7 +70,7 @@ void System::__Events()
 {
 	unsigned size = State::Built.size();
 	Device::Events();
-	std::vector<State*> stt_to_events;
+	std::vector<std::shared_ptr<State>> stt_to_events;
 	for (unsigned i = 0; i < size; i++)
 	{
 		bool isDeleted = false;
@@ -78,7 +78,7 @@ void System::__Events()
 			if (d == i) { isDeleted = true; break; }
 		if (isDeleted) continue;
 		if (!State::Built[i]->Update_Underneath) stt_to_events.clear();
-		stt_to_events.push_back(State::Built[i].get());
+		stt_to_events.push_back(State::Built[i]);
 
 		//if (!Screen::Is_Windowed() && System::Events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED)
 		//	for (auto ent : State::Built[i]->Get_Entities())
@@ -94,7 +94,16 @@ void System::__Events()
 }
 
 
-
+void System::__ClearChildren(Entity<EntityObject> ent)
+{
+	if (auto cont = ((Entity<Container>)ent))
+	{
+		for (auto child : cont->children)
+			__ClearChildren(child);
+		cont->children.clear();
+	}
+	ent->parent = nullptr;
+}
 
 void System::__Delete()
 {
@@ -105,6 +114,8 @@ void System::__Delete()
 				//for (auto& ent : State::Built[i]->__Entities)
 				//	if (ent.use_count() == 2)
 				//		Entity::Destroy(ent.get());
+				for(auto child : State::Built[i]->children)
+					__ClearChildren(child);
 				if (State::Built[i] == nullptr) continue;
 				//State::Built[i]->__Entities.clear();
 				State::Built[i] = nullptr;

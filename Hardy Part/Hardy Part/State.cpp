@@ -8,37 +8,22 @@
 #include "Output_Handler.h"
 #include "Texture.h"
 
+
 std::vector<std::shared_ptr<State>> State::Built;
 std::vector<unsigned> State::Deleted;
 
 
+
 void State::Update()
 {
-	for (auto ent : ent::All)
-	{
-		auto sp = std::dynamic_pointer_cast<Sprite>(ent->texture);
-		if (sp)
-			if (sp->Current_Animation())
-				sp->Current_Animation()->Next_Frame();
-
-		ent->Update();
-
-		if (ent->movement && sp)
-		{
-			if (Movement::__Resolve_Movement(ent))
-				sp->operator[]("move").Play();
-			else if(sp->Current_Animation())
-				sp->Current_Animation()->Terminate();
-		}
-
-		if (sp && !sp->Current_Animation()) sp->operator[]("idle").Play();
-	}
+	for (auto ent : State::CurrentState()->children)
+		__Update(ent);
 	Screen::Draw();
 }
 void State::Events()
 {
-	for (auto ent : ent::All)
-		ent->Events();
+	for (auto ent : State::CurrentState()->children)
+		__Events(ent);
 }
 
 //bool State::Remove_Entity(Entity * ent)
@@ -65,16 +50,16 @@ void State::Events()
 //	return false;
 //}
 
-bool State::Change_Entity_Layer(ent::Entity<> entity, unsigned new_layer)
-{
-	if (!entity)
-	{
-		Output_Handler::Error << "ERR State::Set_Entity_Layer : No Entity supplied\n";
-		return false;
-	}
-	entity->layer = new_layer;
-	return true;
-}
+//bool State::Change_Entity_Layer(Entity<> entity, unsigned new_layer)
+//{
+//	if (!entity)
+//	{
+//		Output_Handler::Error << "ERR State::Set_Entity_Layer : No Entity supplied\n";
+//		return false;
+//	}
+//	entity->layer = new_layer;
+//	return true;
+//}
 
 //std::shared_ptr<Tileset> State::Add_Tileset(std::shared_ptr<Texture> texture, unsigned layer, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map)
 //{
@@ -88,8 +73,8 @@ bool State::Change_Entity_Layer(ent::Entity<> entity, unsigned new_layer)
 //		Output_Handler::Error << "ERR State::Add_Tileset : No texture supplied\n";
 //		return nullptr;
 //	}
-//	while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<Layer>());
-//	Layers[layer]->Tilesets.push_back(Tileset::Set(texture, pos, map));
+//	while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<StateContainer>());
+//	Layers[layer]->Tilesets.push_back(Tileset::Change(texture, pos, map));
 //	Screen::Add(Layers[layer]->Tilesets.back(), layer);
 //	return Layers[layer]->Tilesets.back();
 //}
@@ -104,18 +89,18 @@ bool State::Change_Entity_Layer(ent::Entity<> entity, unsigned new_layer)
 //}
 
 
-//std::vector<ent::Entity<>> State::Get_Entities()
+//std::vector<Entity<>> State::Get_Entities()
 //{
-//	return ent::All;
+//	return All;
 //}
 
-//ent::Entity<> State::Ent(unsigned ent)
+//Entity<> State::Ent(unsigned ent)
 //{
-//	if (ent >= ent::All.size()) return nullptr;
+//	if (ent >= All.size()) return nullptr;
 //	return __Entities[ent];
 //}
 
-//bool State::Remove_Entity(ent::Entity<> ent)
+//bool State::Remove_Entity(Entity<> ent)
 //{
 //	for (auto it = __Entities.begin(); it != __Entities.end(); ++it)
 //		if (*it == ent)
@@ -136,3 +121,44 @@ bool State::Change_Entity_Layer(ent::Entity<> entity, unsigned new_layer)
 //	return true;
 //}
 
+
+std::shared_ptr<State> State::CurrentState()
+{
+	return Built.back();
+}
+
+void State::__Update(Entity<> e)
+{
+	if (auto c = std::dynamic_pointer_cast<Container>(e.get_shared()))
+	{
+		for(auto child : c->children)
+			__Update(child);
+	}
+
+	auto sp = std::dynamic_pointer_cast<Sprite>(e->texture);
+	if (sp)
+		if (sp->Current_Animation())
+			sp->Current_Animation()->Next_Frame();
+
+	e->Update();
+
+	if (e->movement && sp)
+	{
+		if (Movement::__Resolve_Movement(e))
+			sp->operator[]("move").Play();
+		else if (sp->Current_Animation())
+			sp->Current_Animation()->Terminate();
+	}
+
+	if (sp && !sp->Current_Animation()) sp->operator[]("idle").Play();
+}
+
+void State::__Events(Entity<> e)
+{
+	if (auto c = std::dynamic_pointer_cast<Container>(e.get_shared()))
+	{
+		for(auto child : c->children)
+			__Events(child);
+	}
+	e->Events();
+}

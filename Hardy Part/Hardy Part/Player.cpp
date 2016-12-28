@@ -15,14 +15,14 @@ std::shared_ptr<Player> Player::Set(int index)
 	auto pl = Player::Get(index);
 	if (pl)
 	{
-		Output_Handler::Output << "MSG Player::Set : Payer with a given index already exists; returning existing player\n";
+		Output_Handler::Output << "MSG Player::Change : Payer with a given index already exists; returning existing player\n";
 		return pl;
 	}
 
 	if (index < 0) index = Player::Get_First_Unused_Index();
 	if (index >= (int)Player::Max_Players)
 	{
-		Output_Handler::Output << "MSG Player::Set : Exceding the max number of players (" << Player::Max_Players << ")\n";
+		Output_Handler::Output << "MSG Player::Change : Exceding the max number of players (" << Player::Max_Players << ")\n";
 		return nullptr;
 	}
 	Player::__Players.push_back(std::make_shared<Player>());
@@ -150,7 +150,7 @@ bool Player::Set_Controller(std::shared_ptr<Player> player, Sint32 controller)
 	return true;
 }
 
-bool Player::Set_Entity(std::shared_ptr<Player> player, ent::Entity<> ent)
+bool Player::Set_Entity(std::shared_ptr<Player> player, Entity<> ent)
 {
 	if (!player)
 	{
@@ -161,7 +161,7 @@ bool Player::Set_Entity(std::shared_ptr<Player> player, ent::Entity<> ent)
 	return true;
 }
 
-ent::Entity<> Player::Get_Entity(std::shared_ptr<Player> player)
+Entity<> Player::Get_Entity(std::shared_ptr<Player> player)
 {
 	if (!player)
 	{
@@ -181,9 +181,9 @@ std::vector<std::shared_ptr<Player>> Player::Get_Players()
 	return __Players;
 }
 
-std::vector<ent::Entity<>> Player::Get_Controlled_Entities()
+std::vector<Entity<>> Player::Get_Controlled_Entities()
 {
-	std::vector<ent::Entity<>> v(Player::Get_Players().size());
+	std::vector<Entity<>> v(Player::Get_Players().size());
 	for (unsigned i = 0; i < Player::Get_Players().size(); ++i)
 		v[i] = Player::Get_Entity(Player::Get_Players()[i]);
 	return v;

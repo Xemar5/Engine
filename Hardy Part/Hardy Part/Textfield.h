@@ -5,7 +5,7 @@
 
 
 
-class Textfield : public ent::EntityObject
+class Textfield : public EntityObject
 {
 public:
 	void Create() override {};
@@ -16,9 +16,9 @@ public:
 	static SDL_Color Color(unsigned int hex);
 
 	//*** Initializes or changes the text of the given textfield 
-	static ent::Entity<Textfield> SetText(ent::Entity<> ent, std::string text, std::string font, Uint32 size = 24, SDL_Color color = Color(0xffffffff), unsigned width = 0);
+	static Entity<Textfield> SetText(Entity<Textfield> ent, std::string text, std::string font, Uint32 size = 24, SDL_Color color = Color(0xffffffff), unsigned width = 0);
 	//*** Initializes or changes the text of this textfield 
-	ent::Entity<Textfield> SetText(std::string text, std::string font, Uint32 size = 24, SDL_Color color = Color(0xffffffff), unsigned width = 0);
+	Entity<Textfield> SetText(std::string text, std::string font, Uint32 size = 24, SDL_Color color = Color(0xffffffff), unsigned width = 0);
 
 	//*** Returns the text this Textfield contains
 	//*** To change text use SetText

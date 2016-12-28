@@ -13,25 +13,25 @@ SDL_Color Textfield::Color(unsigned int hex)
 	return c;
 }
 
-ent::Entity<Textfield> Textfield::SetText(ent::Entity<> ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
+Entity<Textfield> Textfield::SetText(Entity<Textfield> ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
 {
 	if (!ent) { Output_Handler::Error << "MSG Textfield::SetText : No Entity supplied\n"; return nullptr; }
-	if (!(ent::Entity<Textfield>)ent) { Output_Handler::Error << "MSG Textfield::SetText : Given entity is not a Textfield\n"; return nullptr; }
-	return ((ent::Entity<Textfield>)ent)->SetText(text, font, size, color, width);
+	if (!(Entity<Textfield>)ent) { Output_Handler::Error << "MSG Textfield::SetText : Given entity is not a Textfield\n"; return nullptr; }
+	return ((Entity<Textfield>)ent)->SetText(text, font, size, color, width);
 }
 
-ent::Entity<Textfield> Textfield::SetText(std::string text, std::string font_path, Uint32 size,  SDL_Color color, unsigned width)
+Entity<Textfield> Textfield::SetText(std::string text, std::string font_path, Uint32 size,  SDL_Color color, unsigned width)
 {
 	if (texture)
 	{
 		texture->Destroy();
-		//Output_Handler::Output << "MSG Textfield::Set : Textfield already set\n";
+		//Output_Handler::Output << "MSG Textfield::Change : Textfield already set\n";
 		//return this;
 	}
 	auto font = TTF_OpenFont(font_path.c_str(), size);
 	if (!font)
 	{
-		Output_Handler::Error << "ERR Textfield::Set : Cannot open " << font_path << " font\n";
+		Output_Handler::Error << "ERR Textfield::Change : Cannot open " << font_path << " font\n";
 		return nullptr;
 	}
 	SDL_Surface* srf = width > 0 ? 
@@ -39,15 +39,15 @@ ent::Entity<Textfield> Textfield::SetText(std::string text, std::string font_pat
 		TTF_RenderText_Blended(font, text.c_str(), color);
 	if (!srf)
 	{
-		Output_Handler::Error << "ERR Textfield::Set : Cannot render text\n";
+		Output_Handler::Error << "ERR Textfield::Change : Cannot render text\n";
 		return nullptr;
 	}
 	SDL_Texture* ttr = SDL_CreateTextureFromSurface(Screen::Renderer, srf);
-	Texture::Load(ent::Entity<Textfield>(this->shared_from_this()), ttr, srf->w, srf->h, 0, 0);
+	Texture::Load(Entity<Textfield>(this->shared_from_this()), ttr, srf->w, srf->h, 0, 0);
 	SDL_FreeSurface(srf);
 	TTF_CloseFont(font);
-	if(texture) texture->Scale = 1 / Screen::Get_Scale();
+	//if(texture) texture->Scale = 1 / Screen::Get_Scale();
 
 	_Text = text;
-	return ent::Entity<Textfield>(this->shared_from_this());
+	return Entity<Textfield>(this->shared_from_this());
 }

@@ -7,7 +7,9 @@
 #include "Audio.h"
 
 class Timer;
-
+class EntityObject;
+template <typename T>
+class Entity;
 
 
 class System final
@@ -32,6 +34,10 @@ protected:
 	//*** Main System loop, where all the states are updated
 	static void _System_Update();
 private:
+	//*** Iteratees through all children of the state and deletes them
+	//*** - sets child's parent to nullptr
+	//*** - if child is of Container type, iterates through its children
+	static void __ClearChildren(Entity<EntityObject> ent);
 
 	static void __Delete();
 	static void __Update();
@@ -61,7 +67,7 @@ void System::Start()
 	Screen::Init();
 	Audio::Init();
 	//Network::Init();
-	State::New<T>();
+	State::Change<T>();
 	//Audio::Play_Music(Audio::Load_Music("imgs/Baker Cat.mp3"));
 	//Screen::Change_Window_State();
 	_System_Update();

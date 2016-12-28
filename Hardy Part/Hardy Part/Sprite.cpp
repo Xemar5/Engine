@@ -3,7 +3,7 @@
 #include "Entity.h"
 #include "Animation.h"
 
-std::shared_ptr<Texture> Sprite::Load(ent::Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
+std::shared_ptr<Texture> Sprite::Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
 {
 	SDL_Texture* tr = nullptr;
 	if (Screen::ShowWindow)
@@ -65,10 +65,10 @@ SDL_Rect Sprite::Frame_Rect()
 SDL_Rect Sprite::Draw_Rect()
 {
 	SDL_Rect r;
-	r.x = -(int)((double)Starting_Point().x * Scale);
-	r.y = -(int)((double)Starting_Point().y * Scale);
-	r.w = (int)((double)Frame_Width * Scale);
-	r.h = (int)((double)Frame_Height * Scale);
+	r.x = -(int)((double)Starting_Point().x);
+	r.y = -(int)((double)Starting_Point().y);
+	r.w = (int)((double)Frame_Width);
+	r.h = (int)((double)Frame_Height);
 	return r;
 }
 

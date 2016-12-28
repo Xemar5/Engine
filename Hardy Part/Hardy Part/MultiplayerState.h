@@ -13,15 +13,15 @@ public:
 
 	void Update() override
 	{
-		//if (Mouse::Get[Input::Set(IT_MOUSE_BUTTON, SDL_BUTTON_LEFT)].Held())
+		//if (Mouse::Get[Input::Change(IT_MOUSE_BUTTON, SDL_BUTTON_LEFT)].Held())
 		//	Network::RPC("Lold", System::Events.motion.x, System::Events.motion.y);
 	}
 
 	void Events() override
 	{
-		//if (Mouse::Get[Input::Set(IT_MOUSE_BUTTON, SDL_BUTTON_LEFT)].Up())
+		//if (Mouse::Get[Input::Change(IT_MOUSE_BUTTON, SDL_BUTTON_LEFT)].Up())
 		//{
-		//	RPC::Set(
+		//	RPC::Change(
 		//		RPCr_All,
 		//		"Character::RPC_Add",
 		//		0,
@@ -32,9 +32,9 @@ public:
 		//		1.0);
 		//	//Network::RPC(RPCr_All, "f1", (int)(System::Events.motion.x / Screen::Get_Scale()), (int)(System::Events.motion.y / Screen::Get_Scale()));
 		//}
-		//if (Mouse::Get[Input::Set(IT_MOUSE_BUTTON, SDL_BUTTON_RIGHT)].Up())
+		//if (Mouse::Get[Input::Change(IT_MOUSE_BUTTON, SDL_BUTTON_RIGHT)].Up())
 		//{
-		//	RPC::Set(RPCr_All, "Character::RPC_Add", 0u, "Tar", (int)(System::Events.motion.x / Screen::Get_Scale()), (int)(System::Events.motion.y / Screen::Get_Scale()), 0u, 1.0);
+		//	RPC::Change(RPCr_All, "Character::RPC_Add", 0u, "Tar", (int)(System::Events.motion.x / Screen::Get_Scale()), (int)(System::Events.motion.y / Screen::Get_Scale()), 0u, 1.0);
 		//}
 		//	Network::RPC("Lold", System::Events.motion.x, System::Events.motion.y);
 	}

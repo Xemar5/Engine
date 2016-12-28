@@ -24,3 +24,7 @@ x = button 0
 y = button 3
 
 
+[XInput Controller #1]
+#No Keybinds Change
+
+

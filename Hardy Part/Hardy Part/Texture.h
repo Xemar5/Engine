@@ -26,7 +26,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static std::shared_ptr<Texture> Load(ent::Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> Load(Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
 	//*** Load new sprite from a path
 	//*** - texture - an existing SDL_Texture that is not being used yet
 	//*** - width - of loading texture
@@ -37,7 +37,7 @@ public:
 	//*** - starting_point_y - y of point where texture starts
 	//*** Adds a default "idle" animation
 	//*** Returns pointer to it if created or already existing
-	static std::shared_ptr<Texture> Load(ent::Entity<> ent, SDL_Texture* texture, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> Load(Entity<> ent, SDL_Texture* texture, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
 
 	//*** If true, SDL_Texture will be reloaded when exiting and re-entering the window
 	bool Needs_Reloading = false;
@@ -55,7 +55,7 @@ public:
 	//*** Returns the rectangle of the texture to draw
 	virtual SDL_Rect Frame_Rect() { return{ 0, 0, (int)__Width, (int)__Height }; }
 	//*** Returns the rectangle of the texture to draw
-	virtual SDL_Rect Draw_Rect() { return{ -(int)(Starting_Point().x * Scale), -(int)(Starting_Point().y * Scale), (int)(__Width * Scale), (int)(__Height * Scale) }; }
+	virtual SDL_Rect Draw_Rect() { return{ -(int)(Starting_Point().x), -(int)(Starting_Point().y), (int)(__Width), (int)(__Height) }; }
 	//*** Returns pair of x and y of Sprite starting position in SDL_Point format
 	virtual SDL_Point Starting_Point();
 	//*** Returns the SDL_Texture of sprite
@@ -66,11 +66,9 @@ public:
 
 	//*** Horizontal or vertical flip of this sprite
 	SDL_RendererFlip Flip = SDL_FLIP_NONE;
-	//*** The angle in radians of this texture to be drawn
-	//*** If set to 0, sprite will be displayed without rotation
-	double Rotation = 0;
-	//*** The individual scale of this texture
-	double Scale = 1;
+	////*** The angle in radians of this texture to be drawn
+	////*** If set to 0, sprite will be displayed without rotation
+	//double Rotation = 0;
 
 
 	//*** Returns all loaded Textures in this session
@@ -81,7 +79,7 @@ public:
 
 private:
 	//*** Initializes supplied texture with given parameters
-	static std::shared_ptr<Texture> __Load(ent::Entity<> ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
+	static std::shared_ptr<Texture> __Load(Entity<> ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
 
 	//*** Path to the image
 	std::string __Path = "";

@@ -11,7 +11,7 @@ int Animation::Current_Frame()
 
 int Animation::Next_Frame()
 {
-	if (__Iterator + 1 >= __Frame_Sequence.size())
+	if (__Iterator + 1 >= (int)__Frame_Sequence.size())
 	{
 		if (__User && __User->__Current_Animation == this)
 			__User->__Current_Animation = nullptr;

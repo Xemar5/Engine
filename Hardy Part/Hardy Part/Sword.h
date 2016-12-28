@@ -2,7 +2,7 @@
 #include "Entity.h"
 class Player;
 
-class Sword : public ent::EntityObject
+class Sword : public EntityObject
 {
 public:
 	std::shared_ptr<Player> Wealder = nullptr;
