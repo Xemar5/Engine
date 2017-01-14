@@ -4,14 +4,14 @@
 #include "Entity.h"
 
 template <typename T>
-class Entity;
+class Pointer;
 
 class Collider
 {
 public:
 	//*** Creates and adds a new collider to the given entity
 	//*** Stores the location of the collider in _Static_Colliders or _Colliders vector
-	static std::shared_ptr<Collider> Add(Entity<> ent);
+	static std::shared_ptr<Collider> Add(std::shared_ptr<Entity> ent);
 	
 	//*** Checks for all encountered collisions and resloves them
 	//*** Fired from main timeline - use only when necessary
@@ -31,6 +31,6 @@ protected:
 	static std::vector<std::shared_ptr<Collider>> _StaticColliders;
 
 	//*** The entity this collider is attached to
-	Entity<> _Parent = nullptr;
+	std::shared_ptr<Entity> _Parent = nullptr;
 
 };

@@ -39,7 +39,7 @@ public:
 	static bool Init();
 
 	////*** Adds the entity to screen renderer queue
-	//static bool Add(Entity<> ent);
+	//static bool Add(Pointer<> ent);
 
 	////*** Adds the Tileset to screen renderer queue
 	//static bool Add(std::shared_ptr<Tileset> tileset, unsigned layer);
@@ -65,14 +65,14 @@ private:
 	//*** If true, the state of the window is set to windowed
 	static bool __Windowed;
 
-	//*** Draws given Entity on the Renderer
-	//*** If the Entity is of type Container, iterates throught every child
-	static bool __Draw(Entity<> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation);
+	//*** Draws given Pointer on the Renderer
+	//*** If the Pointer is of type Container, iterates throught every child
+	static bool __Draw(std::shared_ptr<Body> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation);
 
 	////*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
 	////*** It empties itself every frame update\
 	////*** Each sub-vector represents a layer
-	//static std::vector<std::vector<Entity<>>> __Entities;
+	//static std::vector<std::vector<Pointer<>>> __Entities;
 
 	////*** A pointer to the Tileset which is to be drawn on the screen the next frame update
 	////*** It empties itself every frame update
@@ -80,5 +80,5 @@ private:
 
 	friend class State;
 	template<typename T>
-	friend class Entity;
+	friend class Pointer;
 };

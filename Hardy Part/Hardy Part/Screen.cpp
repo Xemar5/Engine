@@ -18,7 +18,7 @@ unsigned Screen::__Width = 800;
 unsigned Screen::__Height = 600;
 bool Screen::__Windowed = true;
 
-//std::vector<std::vector<Entity<>>> Screen::__Entities;
+//std::vector<std::vector<Pointer<>>> Screen::__Entities;
 //std::vector<std::vector<std::shared_ptr<Tileset>>> Screen::__Tilesets;
 
 //template <typename T>
@@ -92,12 +92,12 @@ bool Screen::Init()
 	return true;
 }
 
-//bool Screen::Add(Entity<> ent)
+//bool Screen::Add(Pointer<> ent)
 //{
 //	if (!ent) { Output_Handler::Error << "ERR Screen::Add : No entity supplied\n"; return false; }
 //	//if (!ent->Display()) { Output_Handler::Output << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
-//	if (!Entity<>::All.size()) return false;
-//	for (auto it = Entity<>::All.back().begin(); it != __Entities.back().end(); ++it)
+//	if (!Pointer<>::All.size()) return false;
+//	for (auto it = Pointer<>::All.back().begin(); it != __Entities.back().end(); ++it)
 //	{
 //		if (ent == *it) return false;
 //		if (it->get()->layer < ent->layer) continue;
@@ -144,19 +144,24 @@ void Screen::Exit()
 }
 
 
-bool Screen::__Draw(Entity<> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation)
+bool Screen::__Draw(std::shared_ptr<Body> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation)
 {
-	if (auto e = std::dynamic_pointer_cast<Container>(ent.get_shared()))
+	double x = ent->parent->Child_X(ent->X);
+	double y = ent->parent->Child_Y(ent->Y);
+
+	std::shared_ptr<Entity> en = std::dynamic_pointer_cast<Entity>(ent);
+
+	if (auto e = std::dynamic_pointer_cast<Container>(ent))
 	{
 		e->Reorder();
 		for (auto child : e->children)
 		{
-			__Draw(child, parent_x + e->Child_X(ent->X), parent_y + e->Child_Y(ent->Y), parent_scale * ent->scale, parent_rotation + ent->rotation);
+			__Draw(child, parent_x + x, parent_y + y, parent_scale * ent->scale, parent_rotation + ent->rotation);
 		}
-		if (!ent->texture || !ent->texture->Get_SDL_Texture()) return true;
+		if (!en || !en->texture || !en->texture->Get_SDL_Texture()) return true;
 	}
 
-	auto ttr = ent->texture;
+	auto ttr = en->texture;
 	if (!ttr || !ttr->Get_SDL_Texture())
 	{
 		Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
@@ -177,8 +182,8 @@ bool Screen::__Draw(Entity<> ent, double parent_x, double parent_y, double paren
 
 	frame_rect = ttr->Frame_Rect();
 	draw_rect = ttr->Draw_Rect();
-	draw_rect.x = (int)(((double)draw_rect.x * ent->scale + ent->X) * parent_scale + parent_x);
-	draw_rect.y = (int)(((double)draw_rect.y * ent->scale + ent->Y) * parent_scale + parent_y);
+	draw_rect.x = (int)(((double)draw_rect.x * ent->scale + x) * parent_scale + parent_x);
+	draw_rect.y = (int)(((double)draw_rect.y * ent->scale + y) * parent_scale + parent_y);
 	draw_rect.w = (int)((double)draw_rect.w * parent_scale * ent->scale);
 	draw_rect.h = (int)((double)draw_rect.h * parent_scale * ent->scale);
 

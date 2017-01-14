@@ -3,7 +3,7 @@
 #include "Screen.h"
 
 
-std::shared_ptr<Texture> Generic::Load(std::vector<std::vector<int>> map, Entity<> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
+std::shared_ptr<Texture> Generic::Load(std::vector<std::vector<int>> map, std::shared_ptr<Entity> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
 {
 	if (!path.size())
 	{
@@ -148,13 +148,13 @@ bool Generic::Reload()
 //	return __Tilemap[y][x];
 //}
 
-int Generic::Which_Tile(Entity<> ent, int x, int y)
+int Generic::Which_Tile(std::shared_ptr<Entity> ent, int x, int y)
 {
 	if (!ent) { Output_Handler::Error << "ERR Generic::Which_Tile : No Entity supplied\n"; return -1; }
 	if (!ent->texture) { Output_Handler::Error << "ERR Generic::Which_Tile : Supplied Entity has no Texture\n"; return -1; }
-	if (!std::dynamic_pointer_cast<Generic>(ent->texture)) { Output_Handler::Error << "ERR Generic::Which_Tile : Supplied Entity has no Generic type Texture\n"; return -1; }
-
 	auto gt = std::dynamic_pointer_cast<Generic>(ent->texture);
+	if (!gt) { Output_Handler::Error << "ERR Generic::Which_Tile : Supplied Entity has no Generic type Texture\n"; return -1; }
+
 	if (!gt->Frame_Width || !gt->Frame_Height) { Output_Handler::Error << "ERR Generic::Which_Tile : Frame size has width/height equal to 0\n"; return -1; }
 
 	x -= gt->Draw_Rect().x + (int)ent->X;

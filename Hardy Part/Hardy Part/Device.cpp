@@ -124,7 +124,7 @@ void Keyboard::Update()
 
 
 
-bool Keyboard::Contains_Mouse(Entity<> ent)
+bool Keyboard::Contains_Mouse(std::shared_ptr<Entity> ent)
 {
 	if (!ent)
 	{

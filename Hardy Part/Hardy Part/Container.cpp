@@ -1,6 +1,13 @@
 #include "Container.h"
+#include "State.h"
 
 Container::~Container() {}
+
+void Container::Add(std::shared_ptr<Body> ent)
+{
+	ent->parent = std::dynamic_pointer_cast<Container>(this->shared_from_this());
+	children.push_back(ent);
+}
 
 void Container::Reorder()
 {

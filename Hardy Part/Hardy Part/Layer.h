@@ -2,9 +2,8 @@
 
 #include "Entity.h"
 
-class Layer : public EntityObject, public Container
+class Layer : public Container
 {
 public:
-	Layer() { EntityObject::parent = State::CurrentState(); }
-	Layer(Entity<Container> parent) { EntityObject::parent = parent; }
+	Layer() { parent = State::CurrentState(); }
 };

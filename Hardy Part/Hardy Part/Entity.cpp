@@ -9,12 +9,12 @@
 //#include "State.h"
 //#include "Collider.h"
 //
-//std::map<std::string, Entity*> Entity::__Registered;
+//std::map<std::string, Pointer*> Pointer::__Registered;
 //
-//std::pair<double, double> Entity::Get_Hitbox() const
+//std::pair<double, double> Pointer::Get_Hitbox() const
 //{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
-//	if (!this->Display()) { Output_Handler::Error << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
+//	if (!this) { Output_Handler::Error << "ERR Pointer::Get_Hitbox : No this Pointer\n"; return std::pair<double, double>(); }
+//	if (!this->Display()) { Output_Handler::Error << "ERR Pointer::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
 //	return std::make_pair(
 //		(double)this->Display()->Frame_Rect().w * this->Display()->Scale,
 //		(double)this->Display()->Frame_Rect().h * this->Display()->Scale
@@ -22,45 +22,45 @@
 //}
 //
 //template<typename T>
-//T* Entity::Display() const
+//T* Pointer::Display() const
 //{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Display : No this Entity\n"; return nullptr; }
+//	if (!this) { Output_Handler::Error << "ERR Pointer::Display : No this Pointer\n"; return nullptr; }
 //	return dynamic_cast<T*>(__Texture.get());
 //}
 //
-//double Entity::Get_Scale() const
+//double Pointer::Get_Scale() const
 //{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Display : No this Entity\n"; return 1.0; }
-//	if (!Display()) { Output_Handler::Error << "ERR Entity::Display : This entity has no sprite supplied\n"; return 1.0; }
+//	if (!this) { Output_Handler::Error << "ERR Pointer::Display : No this Pointer\n"; return 1.0; }
+//	if (!Display()) { Output_Handler::Error << "ERR Pointer::Display : This entity has no sprite supplied\n"; return 1.0; }
 //	return Display()->Scale;
 //}
 //
-//Texture * Entity::Get_Texture() const
+//Texture * Pointer::Get_Texture() const
 //{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Get_Texture : No this Entity\n"; return nullptr; }
+//	if (!this) { Output_Handler::Error << "ERR Pointer::Get_Texture : No this Pointer\n"; return nullptr; }
 //	return __Texture.get();
 //}
-//Movement * Entity::Get_Movement() const
+//Movement * Pointer::Get_Movement() const
 //{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Get_Movement : No this Entity\n"; return nullptr; }
+//	if (!this) { Output_Handler::Error << "ERR Pointer::Get_Movement : No this Pointer\n"; return nullptr; }
 //	return __Movement.get();
 //}
-//Collider * Entity::Get_Collider(unsigned index) const
+//Collider * Pointer::Get_Collider(unsigned index) const
 //{
-//	if (!this) { Output_Handler::Error << "ERR Entity::Get_Collider : No this Entity\n"; return nullptr; }
-//	if (index >= __Colliders.size()) { Output_Handler::Error << "ERR Entity::Get_Collider : Given index is greater than the number of Colliders this Entity has\n"; return nullptr; }
+//	if (!this) { Output_Handler::Error << "ERR Pointer::Get_Collider : No this Pointer\n"; return nullptr; }
+//	if (index >= __Colliders.size()) { Output_Handler::Error << "ERR Pointer::Get_Collider : Given index is greater than the number of Colliders this Pointer has\n"; return nullptr; }
 //	return __Colliders[index].get();
 //}
 //
 //
 //
-//bool Entity::Register(Entity * ent, std::string name, bool forceRegister)
+//bool Pointer::Register(Pointer * ent, std::string name, bool forceRegister)
 //{
 //	auto name_exists = __Registered.find(name);
 //	if (name_exists != __Registered.end())
 //	{
-//		if (!forceRegister) Output_Handler::Output << "MSG Entity::Register : Name already registered; re-registering\n";
-//		else { Output_Handler::Error << "ERR Entity::Register : Name already registered\n"; return false; }
+//		if (!forceRegister) Output_Handler::Output << "MSG Pointer::Register : Name already registered; re-registering\n";
+//		else { Output_Handler::Error << "ERR Pointer::Register : Name already registered\n"; return false; }
 //	}
 //	auto ent_registered = __Registered.end();
 //	for (auto key = __Registered.begin(); key != __Registered.end(); ++key)
@@ -73,16 +73,16 @@
 //	return true;
 //}
 //
-//Entity * Entity::Get(std::string name)
+//Pointer * Pointer::Get(std::string name)
 //{
 //	auto ent = __Registered.find(name);
-//	if (ent == __Registered.end()) Output_Handler::Error << "ERR Entity::Get : No entity registered with given name; returning nullptr\n";
+//	if (ent == __Registered.end()) Output_Handler::Error << "ERR Pointer::Get : No entity registered with given name; returning nullptr\n";
 //	return ent == __Registered.end() ? nullptr : ent->second;
 //}
 //
-//std::vector<std::shared_ptr<Entity>> Entity::All()
+//std::vector<std::shared_ptr<Pointer>> Pointer::All()
 //{
-//	return State::Built.size() ? State::Built.back()->Get_Entities() : std::vector<std::shared_ptr<Entity>>();
+//	return State::Built.size() ? State::Built.back()->Get_Entities() : std::vector<std::shared_ptr<Pointer>>();
 //}
 //
 //
@@ -90,7 +90,7 @@
 
 
 
-std::pair<double, double> EntityObject::hitbox()
+std::pair<double, double> Entity::hitbox()
 {
 	if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
 	if (!this->texture) { Output_Handler::Error << "ERR Entity::Get_Hitbox : This entity has no sprite supplied\n"; return std::pair<double, double>(); }
@@ -100,20 +100,13 @@ std::pair<double, double> EntityObject::hitbox()
 	);
 }
 
-double EntityObject::RealScale()
+Entity::operator std::shared_ptr<Body>()
 {
-	if (!texture) return 1;
-	Entity<> p = std::dynamic_pointer_cast<EntityObject>(parent);
-	return scale * (p ? p->RealScale() : 1);
+	return this->shared_from_this();
 }
 
-std::vector<double> EntityObject::RealPos()
+Entity::operator std::shared_ptr<Entity>()
 {
-	std::vector<double> v(3);
-	Entity<> p = std::dynamic_pointer_cast<EntityObject>(parent);
-	if (p) v = p->RealPos();
-	v[0] += X;
-	v[1] += Y;
-	v[2] += Z;
-	return v;
+	return std::dynamic_pointer_cast<Entity>(this->shared_from_this());
 }
+

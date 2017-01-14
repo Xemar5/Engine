@@ -30,20 +30,20 @@ public:
 	//*** Sets the given entity for this player to controll
 	//*** - change_mouse_coordinates - if true, the relative x and y coordinates of mouse input will be set
 	//***							   to the x and y pos of supplied entity
-	static bool Set_Entity(std::shared_ptr<Player> player, Entity<> ent);
+	static bool Set_Entity(std::shared_ptr<Player> player, std::shared_ptr<Entity> ent);
 	//*** Returns the entity given player controlls
-	static Entity<> Get_Entity(std::shared_ptr<Player> player);
+	static std::shared_ptr<Entity> Get_Entity(std::shared_ptr<Player> player);
 	//*** Returns the container of all created Players
 	static std::vector<std::shared_ptr<Player>> Get_Players();
 	//*** Returns a vector of all entities that are being controlled by each player
-	static std::vector<Entity<>> Get_Controlled_Entities();
+	static std::vector<std::shared_ptr<Entity>> Get_Controlled_Entities();
 	//*** The maximum number of players
 	static unsigned Max_Players;
 private:
 	//*** The index of this player
 	int __Index = -1;
 	//*** The entity this Player controlls
-	Entity<> __Entity = nullptr;
+	std::shared_ptr<Entity> __Entity = nullptr;
 	//*** The name of the controller this player uses
 	std::string __ControllerName = "";
 

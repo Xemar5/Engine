@@ -7,10 +7,7 @@
 #include "Audio.h"
 
 class Timer;
-class EntityObject;
-template <typename T>
-class Entity;
-
+class Body;
 
 class System final
 {
@@ -37,7 +34,7 @@ private:
 	//*** Iteratees through all children of the state and deletes them
 	//*** - sets child's parent to nullptr
 	//*** - if child is of Container type, iterates through its children
-	static void __ClearChildren(Entity<EntityObject> ent);
+	static void __ClearChildren(std::shared_ptr<Body> ent);
 
 	static void __Delete();
 	static void __Update();

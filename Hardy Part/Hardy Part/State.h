@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Container.h"
 #include "StateContainer.h"
+#include "Network\Network.h"
 
 class Tileset;
 class Texture;
@@ -13,17 +14,26 @@ class State : public StateContainer
 public:
 
 	//***  Virtual Create function, should be overriden by derivering states
-	void Create() override = 0;
+	virtual void Create() = 0;
 	//***  Virtual Update function, should be overriden by derivering states
-	void Update() override;
+	virtual void Update();
 	//***  Virtual Events function, should be overriden by derivering states
-	void Events() override;
+	virtual void Events();
 
 	//*** If true, System will update all state layers aswell as the main state built before
 	//*** Else only this state layer will be updated
 	bool Update_Underneath = false;
 
+	enum class StatePhase
+	{
+		SystemReserved,
+		Create,
+		Update,
+		Events
+	};
 
+	//*** Returns the phase of this state
+	static StatePhase state_phase() { return _state_phase; }
 
 
 
@@ -57,9 +67,16 @@ public:
 
 	virtual ~State() = 0 {};
 private:
-	void __Update(Entity<> e);
-	void __Events(Entity<> e);
+	void __Update(std::shared_ptr<Body> e);
+	void __Events(std::shared_ptr<Body> e);
 
+	//*** Checks if given state is being deleted
+	static bool __isDeleted(std::shared_ptr<State> stt);
+
+	//*** Current phase of this state
+	static StatePhase _state_phase;
+
+	friend void network::impl::tcp::Init();
 	friend class System;
 	friend class Screen;
 };
@@ -76,12 +93,9 @@ private:
 #include "Output_Handler.h"
 #include "Entity.h"
 #include "Player.h"
+#include "Sprite.h"
 #include "Layer.h"
-
-#include "Menu_State.h"
-#include "Main_State.h"
-#include "GameMenu_State.h"
-#include "Controlls_State.h"
+#include "Generic.h"
 
 
 
@@ -92,14 +106,23 @@ private:
 template <typename T>
 std::shared_ptr<T> State::Change()
 {
-	std::cout << "\nChanged into new state\n";
+	if (__isDeleted(CurrentState())) return nullptr;
+
+	_state_phase = StatePhase::SystemReserved;
+
 	Device::ClearAllDeviceInput();
 
 	for (unsigned i = 0; i < Built.size(); i++)
 		Deleted.push_back(i);
+	network::message::messages[0].clear();
+	network::message::messages[2].clear();
 
 	Built.push_back(std::make_shared<T>());
+
+	_state_phase = StatePhase::Create;
 	Built.back()->Create();
+	_state_phase = StatePhase::SystemReserved;
+
 	return std::static_pointer_cast<T>(Built.back());
 }
 
@@ -111,11 +134,19 @@ std::shared_ptr<T> State::Change()
 template <typename T>
 std::shared_ptr<T> State::Add(bool update_underneath)
 {
+	if (__isDeleted(CurrentState())) return nullptr;
+
+	_state_phase = StatePhase::SystemReserved;
+
 	Device::ClearAllDeviceInput();
 	Built.emplace_back(std::make_shared<T>());
 	Built.back()->Update_Underneath = update_underneath;
-	Built.back()->State::Create();
+	//Built.back()->State::Create();
+	
+	_state_phase = StatePhase::Create;
 	Built.back()->Create();
+	_state_phase = StatePhase::SystemReserved;
+	
 	return std::static_pointer_cast<T>(Built.back());
 }
 
@@ -123,8 +154,11 @@ std::shared_ptr<T> State::Add(bool update_underneath)
 template <bool T>
 void State::Remove()
 {
-	Device::ClearAllDeviceInput();
-	Deleted.push_back(Built.size() - 1);
+	if (!__isDeleted(CurrentState()))
+	{
+		Device::ClearAllDeviceInput();
+		Deleted.push_back(Built.size() - 1);
+	}
 }
 
 
@@ -132,8 +166,11 @@ void State::Remove()
 template <bool T>
 void State::Exit_Game()
 {
-	Device::ClearAllDeviceInput();
-	for (unsigned i = 0; i < Built.size(); i++)
-		Deleted.push_back(i);
+	if (!__isDeleted(CurrentState()))
+	{
+		Device::ClearAllDeviceInput();
+		for (unsigned i = 0; i < Built.size(); i++)
+			Deleted.push_back(i);
+	}
 }
 

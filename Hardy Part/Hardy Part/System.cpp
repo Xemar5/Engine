@@ -5,6 +5,7 @@
 #include "Generic.h"
 #include "Entity.h"
 #include "Collider.h"
+#include "Network\Network.h"
 #include <iostream>
 
 SDL_Event System::Events;
@@ -27,14 +28,19 @@ void System::_System_Update()
 		{
 			FPS_Clock.Restart();
 			if (State::Deleted.size()) __Delete();
+
+			State::_state_phase = State::StatePhase::Update;
 			if (State::Built.size()) __Update();
 			else { Quit_System = true; break; }
 
+			State::_state_phase = State::StatePhase::Events;
 			while (SDL_PollEvent(&System::Events))
 			{
 				if (System::Events.type == SDL_QUIT) { State::Exit_Game(); break; }
 				__Events();
 			}
+			State::_state_phase = State::StatePhase::SystemReserved;
+
 		}
 		SDL_Delay(1);
 	}
@@ -49,7 +55,7 @@ void System::_System_Update()
 
 void System::__Update()
 {
-	//Network::Update();
+	network::Update();
 	Keyboard::Get.Update();
 	Collider::Update();
 	std::vector<std::shared_ptr<State>> stt_to_update;
@@ -94,9 +100,9 @@ void System::__Events()
 }
 
 
-void System::__ClearChildren(Entity<EntityObject> ent)
+void System::__ClearChildren(std::shared_ptr<Body> ent)
 {
-	if (auto cont = ((Entity<Container>)ent))
+	if (auto cont = std::dynamic_pointer_cast<Container>(ent))
 	{
 		for (auto child : cont->children)
 			__ClearChildren(child);
@@ -111,13 +117,9 @@ void System::__Delete()
 		for (unsigned i = 0; i < State::Built.size(); i++)
 			if (i == del)
 			{
-				//for (auto& ent : State::Built[i]->__Entities)
-				//	if (ent.use_count() == 2)
-				//		Entity::Destroy(ent.get());
 				for(auto child : State::Built[i]->children)
 					__ClearChildren(child);
 				if (State::Built[i] == nullptr) continue;
-				//State::Built[i]->__Entities.clear();
 				State::Built[i] = nullptr;
 				break;
 			}

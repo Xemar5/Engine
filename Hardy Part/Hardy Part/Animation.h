@@ -4,7 +4,7 @@
 #include <map>
 
 template <typename T>
-class Entity;
+class Pointer;
 class Texture;
 class Sprite;
 
