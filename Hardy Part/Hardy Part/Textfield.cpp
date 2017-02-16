@@ -13,7 +13,7 @@ SDL_Color Textfield::Color(unsigned int hex)
 	return c;
 }
 
-std::shared_ptr<Textfield> Textfield::SetText(std::shared_ptr<Textfield> ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
+std::shared_ptr<Textfield> Textfield::SetText(std::shared_ptr<Object> ent, std::string text, std::string font, Uint32 size, SDL_Color color, unsigned width)
 {
 	if (!ent) { Output_Handler::Error << "MSG Textfield::SetText : No Entity supplied\n"; return nullptr; }
 	auto t = std::dynamic_pointer_cast<Textfield>(ent);
@@ -43,9 +43,11 @@ std::shared_ptr<Textfield> Textfield::SetText(std::string text, std::string font
 		Output_Handler::Error << "ERR Textfield::Change : Cannot render text\n";
 		return nullptr;
 	}
+	double x_off = texture ? texture->Get_Starting_Pos().first : 0;
+	double y_off = texture ? texture->Get_Starting_Pos().second : 0;
 	SDL_Texture* ttr = SDL_CreateTextureFromSurface(Screen::Renderer, srf);
 	std::shared_ptr<Textfield> tf = std::dynamic_pointer_cast<Textfield>(this->shared_from_this());
-	Texture::Load(tf, ttr, srf->w, srf->h, 0, 0);
+	Texture::Load(tf, ttr, srf->w, srf->h, x_off, y_off);
 	SDL_FreeSurface(srf);
 	TTF_CloseFont(font);
 	//if(texture) texture->Scale = 1 / Screen::Get_Scale();

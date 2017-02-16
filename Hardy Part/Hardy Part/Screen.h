@@ -39,10 +39,10 @@ public:
 	static bool Init();
 
 	////*** Adds the entity to screen renderer queue
-	//static bool Add(Pointer<> ent);
+	//static bool AddChild(Pointer<> ent);
 
 	////*** Adds the Tileset to screen renderer queue
-	//static bool Add(std::shared_ptr<Tileset> tileset, unsigned layer);
+	//static bool AddChild(std::shared_ptr<Tileset> tileset, unsigned layer);
 
 	//*** Draws the screen renderer to the screen
 	//*** Use when all entities are added to the renderer
@@ -67,7 +67,7 @@ private:
 
 	//*** Draws given Pointer on the Renderer
 	//*** If the Pointer is of type Container, iterates throught every child
-	static bool __Draw(std::shared_ptr<Body> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation);
+	static bool __Draw(std::shared_ptr<Object> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation);
 
 	////*** Where all the entities with supplied sprites are queued to be drawn on the screen the next frame update
 	////*** It empties itself every frame update\

@@ -97,8 +97,8 @@ bool Sprite::Add_Animation(std::shared_ptr<Texture> texture, Animation& anim)
 	auto sp = std::dynamic_pointer_cast<Sprite>(texture);
 	if (!anim.Name().size()) return false;
 	if (!anim.Sequence().size()) return false;
-	for (auto& a : sp->__Animations)
-		if (a.Name() == anim.Name()) return false;
+	for (auto a = sp->__Animations.begin(); a != sp->__Animations.end(); ++ a)
+		if (a->Name() == anim.Name()) { sp->__Animations.erase(a); break; }
 	sp->__Animations.push_back(anim);
 	sp->__Animations.back().__User = sp;
 	return true;

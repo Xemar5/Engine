@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Texture.h"
 #include "Output_Handler.h"
+#include "Movement.h"
 
 //#include "Sprite.h"
 //#include "Animation.h"
@@ -90,6 +91,15 @@
 
 
 
+void Entity::Destroy()
+{
+	if (movement) movement->__this = nullptr;
+	movement = nullptr;
+	texture = nullptr;
+	colliders.clear();
+	Object::Destroy();
+}
+
 std::pair<double, double> Entity::hitbox()
 {
 	if (!this) { Output_Handler::Error << "ERR Entity::Get_Hitbox : No this Entity\n"; return std::pair<double, double>(); }
@@ -100,7 +110,7 @@ std::pair<double, double> Entity::hitbox()
 	);
 }
 
-Entity::operator std::shared_ptr<Body>()
+Entity::operator std::shared_ptr<Object>()
 {
 	return this->shared_from_this();
 }

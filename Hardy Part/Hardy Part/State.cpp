@@ -11,30 +11,31 @@
 
 std::vector<std::shared_ptr<State>> State::Built;
 std::vector<unsigned> State::Deleted;
-State::StatePhase State::_state_phase = State::StatePhase::SystemReserved;
+State::Phase State::_state_phase = State::Phase::SystemReserved;
+std::shared_ptr<State> State::_CurrentState = nullptr;
 
 
 
 void State::Update()
 {
-	for (auto ent : State::CurrentState()->children)
-		__Update(ent);
+	for (auto ent : _layer_vector)
+		__Update(ent.second);
 	Screen::Draw();
 }
 void State::Events()
 {
-	for (auto ent : State::CurrentState()->children)
-		__Events(ent);
+	for (auto ent : _layer_vector)
+		__Events(ent.second);
 }
 
 
 
 std::shared_ptr<State> State::CurrentState()
 {
-	return Built.size() ? Built.back() : nullptr;
+	return _CurrentState;
 }
 
-void State::__Update(std::shared_ptr<Body> e)
+void State::__Update(std::shared_ptr<Object> e)
 {
 	if (auto c = std::dynamic_pointer_cast<Container>(e))
 	{
@@ -64,7 +65,7 @@ void State::__Update(std::shared_ptr<Body> e)
 	}
 }
 
-void State::__Events(std::shared_ptr<Body> e)
+void State::__Events(std::shared_ptr<Object> e)
 {
 	if (auto c = std::dynamic_pointer_cast<Container>(e))
 	{
@@ -77,7 +78,8 @@ void State::__Events(std::shared_ptr<Body> e)
 bool State::__isDeleted(std::shared_ptr<State> stt)
 {
 	for (unsigned i = 0; i < Built.size(); i++)
-		for (unsigned j = 0; j < Deleted.size(); j++)
-			if (Deleted[j] == i) return true;
+		if(stt == Built[i])
+			for (unsigned j = 0; j < Deleted.size(); j++)
+				if (Deleted[j] == i) return true;
 	return false;
 }

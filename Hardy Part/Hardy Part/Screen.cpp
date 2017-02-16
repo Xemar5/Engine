@@ -6,6 +6,7 @@
 #include "Generic.h"
 #include "Textfield.h"
 #include "Output_Handler.h"
+#include "Camera.h"
 
 
 bool Screen::__Initialized = false;
@@ -92,10 +93,10 @@ bool Screen::Init()
 	return true;
 }
 
-//bool Screen::Add(Pointer<> ent)
+//bool Screen::AddChild(Pointer<> ent)
 //{
-//	if (!ent) { Output_Handler::Error << "ERR Screen::Add : No entity supplied\n"; return false; }
-//	//if (!ent->Display()) { Output_Handler::Output << "MSG Screen::Add : Given entity has no sprite supplied yet\n"; }
+//	if (!ent) { Output_Handler::Error << "ERR Screen::AddChild : No entity supplied\n"; return false; }
+//	//if (!ent->Display()) { Output_Handler::Output << "MSG Screen::AddChild : Given entity has no sprite supplied yet\n"; }
 //	if (!Pointer<>::All.size()) return false;
 //	for (auto it = Pointer<>::All.back().begin(); it != __Entities.back().end(); ++it)
 //	{
@@ -109,10 +110,10 @@ bool Screen::Init()
 //	return true;
 //}
 
-//bool Screen::Add(std::shared_ptr<Tileset> tileset, unsigned layer)
+//bool Screen::AddChild(std::shared_ptr<Tileset> tileset, unsigned layer)
 //{
-//	if (!tileset) { Output_Handler::Error << "ERR Screen::Add : No tileset supplied\n"; return false; }
-//	if (!tileset->Get_SDL_Texture()) { Output_Handler::Error << "ERR Screen::Add : Given tileset has no SDL_Texture supplied\n"; return false; }
+//	if (!tileset) { Output_Handler::Error << "ERR Screen::AddChild : No tileset supplied\n"; return false; }
+//	if (!tileset->Get_SDL_Texture()) { Output_Handler::Error << "ERR Screen::AddChild : Given tileset has no SDL_Texture supplied\n"; return false; }
 //
 //	if (layer >= Screen::__Tilesets.size())
 //		Screen::__Tilesets.resize(layer + 1);
@@ -127,13 +128,13 @@ void Screen::Draw()
 {
 	if (ShowWindow)
 	{
-		SDL_RenderClear(Screen::Renderer);
 		for (auto state : State::Built)
 		{
-			for(auto child : state->children)
-				__Draw(child, 0, 0, 1, 0);
+			for(auto child : state->_layer_vector)
+				__Draw(child.second, -Camera::Main->X, -Camera::Main->Y, Camera::Main->scale, Camera::Main->rotation);
 		}
 		SDL_RenderPresent(Screen::Renderer);
+		SDL_RenderClear(Screen::Renderer);
 	}
 }
 
@@ -144,61 +145,23 @@ void Screen::Exit()
 }
 
 
-bool Screen::__Draw(std::shared_ptr<Body> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation)
+bool Screen::__Draw(std::shared_ptr<Object> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation)
 {
-	double x = ent->parent->Child_X(ent->X);
-	double y = ent->parent->Child_Y(ent->Y);
-
-	std::shared_ptr<Entity> en = std::dynamic_pointer_cast<Entity>(ent);
-
 	if (auto e = std::dynamic_pointer_cast<Container>(ent))
 	{
+		double x = ent->parent->Child_X(ent->X);
+		double y = ent->parent->Child_Y(ent->Y);
+
 		e->Reorder();
 		for (auto child : e->children)
 		{
 			__Draw(child, parent_x + x, parent_y + y, parent_scale * ent->scale, parent_rotation + ent->rotation);
 		}
-		if (!en || !en->texture || !en->texture->Get_SDL_Texture()) return true;
 	}
-
-	auto ttr = en->texture;
-	if (!ttr || !ttr->Get_SDL_Texture())
+	if (auto e = std::dynamic_pointer_cast<Entity>(ent))
 	{
-		Output_Handler::Error << "ERR Screen::Draw : Given Entity has no texture supplied\n";
-		return false;
+		if (!e->texture) return false;
+		e->texture->Draw(e,  parent_x, parent_y, parent_scale, parent_rotation);
 	}
-	SDL_Texture* sdl_texture = ttr->Get_SDL_Texture();
-
-	double px = (double)ttr->Starting_Point().x * ent->scale * parent_scale;
-	double py = (double)ttr->Starting_Point().y * ent->scale * parent_scale;
-
-	SDL_Point p = { (int)px, (int)py };
-
-
-	SDL_Rect frame_rect;
-	SDL_Rect draw_rect;
-	SDL_RendererFlip flip;
-	double rotation;
-
-	frame_rect = ttr->Frame_Rect();
-	draw_rect = ttr->Draw_Rect();
-	draw_rect.x = (int)(((double)draw_rect.x * ent->scale + x) * parent_scale + parent_x);
-	draw_rect.y = (int)(((double)draw_rect.y * ent->scale + y) * parent_scale + parent_y);
-	draw_rect.w = (int)((double)draw_rect.w * parent_scale * ent->scale);
-	draw_rect.h = (int)((double)draw_rect.h * parent_scale * ent->scale);
-
-	flip = ttr->Flip;
-	rotation = ent->rotation + parent_rotation;
-
-
-	SDL_RenderCopyEx
-	(
-		Screen::Renderer,
-		sdl_texture,
-		&frame_rect, &draw_rect,
-		rotation,
-		&p,
-		flip
-	);
 	return true;
 }

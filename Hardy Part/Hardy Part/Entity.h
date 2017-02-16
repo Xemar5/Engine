@@ -5,18 +5,20 @@
 #include <string>
 #include <functional>
 #include <iostream>
-#include "Body.h"
+#include "Object.h"
 
 class Texture;
 class Movement;
 class Collider;
 
-class Entity : public virtual Body
+class Entity : public virtual Object
 {
 public:
 	virtual void Create() {};
 	virtual void Update() {};
 	virtual void Events() {};
+
+	void Destroy() override;
 
 	//*** The texture of this entity
 	//*** Takes care of visual part of the entity
@@ -39,7 +41,7 @@ public:
 	Entity& operator=(const Entity&) = delete;
 
 	operator std::shared_ptr<Entity>();
-	operator std::shared_ptr<Body>();
+	operator std::shared_ptr<Object>();
 };
 
 

@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "Screen.h"
 #include "Entity.h"
+#include "Container.h"
 
 std::vector<std::shared_ptr<Texture>> Texture::__Textures;
 
@@ -113,6 +114,45 @@ bool Texture::Destroy()
 	}
 	if (this_texture != __Textures.end())
 		__Textures.erase(this_texture);
+	return true;
+}
+
+bool Texture::Draw(std::shared_ptr<Entity> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation)
+{
+	double x = ent->parent->Child_X(ent->X);
+	double y = ent->parent->Child_Y(ent->Y);
+
+	double px = (double)Starting_Point().x * ent->scale * parent_scale;
+	double py = (double)Starting_Point().y * ent->scale * parent_scale;
+
+	SDL_Point p = { (int)px, (int)py };
+
+
+	SDL_Rect frame_rect;
+	SDL_Rect draw_rect;
+	SDL_RendererFlip flip;
+	double rotation;
+
+	frame_rect = Frame_Rect();
+	draw_rect = Draw_Rect();
+	draw_rect.x = (int)(((double)draw_rect.x * ent->scale + x) * parent_scale + parent_x);
+	draw_rect.y = (int)(((double)draw_rect.y * ent->scale + y) * parent_scale + parent_y);
+	draw_rect.w = (int)((double)draw_rect.w * parent_scale * ent->scale);
+	draw_rect.h = (int)((double)draw_rect.h * parent_scale * ent->scale);
+
+	flip = Flip;
+	rotation = ent->rotation + parent_rotation;
+
+
+	SDL_RenderCopyEx
+	(
+		Screen::Renderer,
+		Get_SDL_Texture(),
+		&frame_rect, &draw_rect,
+		rotation,
+		&p,
+		flip
+	);
 	return true;
 }
 

@@ -1,136 +1,220 @@
-#include <SDL.h>
 #include "Input.h"
-#include "Device.h"
-#include <iostream>
-#define PRNT(NAME) std::cout << #NAME << ":\t" << (NAME) << std::endl;
+#include "System.h"
+#include "State.h"
 
-double Input::ClickTime = 400;
+#include <SDL.h>
+#include <string>
 
-Input Input::Set(Sint32 type, Sint32 key, Sint32 controllerID, Sint32 variant, Input_State state)
+
+
+namespace controlls
 {
-	Input ip;
-	ip.__Type = (Input_Type)type;
-	ip.__Key = key;
-	ip.__Variant = variant;
-	ip.State = state;
-	if (type == IT_KEYBOARD_KEY || type == IT_MOUSE_AXIS || type == IT_MOUSE_BUTTON)
-		ip.__ControllerID = CI_KEYBOARD_MOUSE;
-	else
-		ip.__ControllerID = (Controller_Index) controllerID;
-	return ip;
-}
-
-
-std::string Input::KeyName() const
-{
-	std::string mbutton = "";
-	switch (__Type)
+	namespace impl
 	{
-	case IT_GAMEPAD_AXIS: return "Gamepad Axis " + (__Variant ? "(" + std::to_string(__Variant) + ") " : "") + std::to_string(__Key);
-	case IT_GAMEPAD_HAT: return "Gamepad Hat " + (__Variant ? "(" + std::to_string(__Variant) + ") " : "") + std::to_string(__Key);
-	case IT_GAMEPAD_BUTTON: return "Gamepad Button " + std::to_string(__Key);
-	case IT_KEYBOARD_KEY: return "Keyboard Key " + std::string(SDL_GetKeyName(__Key));
-	case IT_MOUSE_AXIS: return "Mouse " + (__Key == MA_X ? std::string("Horizontal") : std::string("Vertical"));
-	case IT_MOUSE_BUTTON:
-		if (__Key == SDL_BUTTON_LEFT) mbutton = "Left";
-		else if(__Key == SDL_BUTTON_RIGHT) mbutton = "Right";
-		else if (__Key == SDL_BUTTON_MIDDLE) mbutton = "Middle";
-		else mbutton = std::to_string(__Key);
-		return "Mouse Button " + mbutton;
-	default: break;
-	}
-	return "[Unknown Input]";
-}
+		std::unordered_map<unsigned, std::unordered_map<unsigned, std::unordered_map<unsigned, Signal>>> input_map;
 
-Device & Input::Controller() const
-{
-	return Device::Get((Sint32)__ControllerID);
-}
-//
-//double Input::__Handle_Mouse_Axis(Input* input)
-//{
-//	if (!input) { Output_Handler::Output << "MSG Input::_Handle_Mouse_Axis : No Input supplied\n"; return 0; }
-//	//Sint32 new_value = 0;
-//	if (input->Key() == MA_X) SDL_GetMouseState(&input->__Variant, nullptr);
-//	if (input->Key() == MA_Y) SDL_GetMouseState(nullptr, &input->__Variant);
-//	input->__Variant = (Sint32)((double)input->__Variant / Screen::Get_Scale());
-//	std::cout << input->__Variant << " " << input->Value << "; ";
-//	if (input->__Variant != input->Value)
-//	{
-//		//input->Value = (Sint32)((double)new_value / Screen::Get_Scale());
-//		//return input->Value;
-//		return 1;
-//	}
-//	return 0;
-//}
+		bool Signal::EventResolve()
+		{
+			if (State::state_phase() != State::Phase::ObjectEvents && State::state_phase() != State::Phase::StateEvents) return true;
+			if (_resolved) return false;
+			return _resolved = true;
+		}
 
-double Input::Down()
-{
-	if (!this) return 0.0;
-	else if (__Type == IT_UNDEFINED) return 0;
-	//else if (__Type == IT_MOUSE_AXIS) return __Handle_Mouse_Axis(this);
-	else if (this->State == IS_PUSHED) return 1;
-	return 0;
-}
+		void Signal::_SetInput(unsigned device, unsigned action, unsigned index, unsigned time, double value)
+		{
+			auto& it = input_map[device][action][index];
+			it.value = value;
+			it.push_time = time;
 
-double Input::Up()
-{
-	if (!this) return 0.0;
-	else if (__Type == IT_UNDEFINED) return 0;
-	//else if (__Type == IT_MOUSE_AXIS) return __Handle_Mouse_Axis(this);
-	else if (this->State == IS_RELEASED) return 1;
-	return 0;
-}
+			if (controlls::device.input->get_device() == device &&
+				controlls::device.input->get_action() == action &&
+				controlls::device.input->get_index() == index) return;
 
-double Input::Click()
-{
-	if (!this) return 0.0;
-	else if (__Type == IT_UNDEFINED) return 0;
-	//else if (__Type == IT_MOUSE_AXIS) return __Handle_Mouse_Axis(this);
-	else if (this->State == IS_RELEASED && SDL_GetTicks() - this->__Time < ClickTime) return 1;
-	return 0;
-}
+			controlls::device.input = controlls::GetInput<controlls::Input>(device, action, index);
+			switch (device)
+			{
+			case 0: break;
+			case 1: controlls::keyboard.input = controlls::device.input; break;
+			case 2: controlls::mouse.input = controlls::device.input; break;
+			default: controlls::gamepads[device - 3].input = controlls::device.input; break;
+			}
+		}
 
-double Input::Held(Sint32 time)
-{
-	if (!this) return 0.0;
-	else if (__Type == IT_UNDEFINED) return 0;
- 	else if (__Type == IT_GAMEPAD_AXIS)
-	{
-		Value = SDL_JoystickGetAxis(SDL_JoystickFromInstanceID(__ControllerID), __Key);
-		if (__Variant == IV_AXIS_INVERTED || __Variant == AT_AXIS_INVERTED_HALVED)
-			Value = -Value - 1;
-		if (Value == 32767) return 1;
-		if (abs(Value) < abs(Gamepad::Deadzone)) return 0.;
-		return (Value - (Gamepad::Deadzone * (Value < 0 ? -1 : 1))) / (32768.0 - abs(Gamepad::Deadzone));
-	}
-	else if (__Type == IT_MOUSE_AXIS)
-	{
-		if (__Key == MA_X) SDL_GetMouseState(&Value, nullptr);
-		if (__Key == MA_Y) SDL_GetMouseState(nullptr, &Value);
-		return Value = (Sint32)((double)Value);
-	}
-	else if (State == IS_HELD)
-	{
-		Uint32 now = SDL_GetTicks();
-		return (now - this->__Time >= (unsigned)time ? now - this->State : 0);
-	}
-	return 0;
-}
 
-bool Input::operator==(const Input & dst) const
-{
-	if (__Type == IT_UNDEFINED	|| dst.__Type == IT_UNDEFINED) return false;
-	if (__Key == IK_UNDEFINED	|| dst.__Key == IK_UNDEFINED) return false;
-	if (State == IS_UNDEFINED	|| dst.State == IS_UNDEFINED) return false;
-	if (__ControllerID == -3	|| dst.__ControllerID == -3) return false;
+		void Signal::Update()
+		{
+			for (auto& d : input_map)
+				for (auto& a : d.second)
+					for (auto& i : a.second)
+					{
+						i.second.last_value = i.second.value;
+						i.second._resolved = false;
+					}
+		}
 
-	if ((__Type & dst.__Type) == 0) return false;
-	if (__Key != IK_ANY				&& dst.__Key != IK_ANY			&& __Key != dst.__Key) return false;
-	if (State != IS_ANY				&& dst.State != IS_ANY			&& State != dst.State) return false;
-	if (__ControllerID != CI_ANY	&& dst.__ControllerID != CI_ANY && __ControllerID != dst.__ControllerID) return false;
-	if (__Variant != IV_ANY			&& dst.__Variant != IV_ANY		&& __Variant != dst.__Variant) return false;
-	return true;
-}
+		void Signal::Events()
+		{
+			switch (System::Events.type)
+			{
+			case SDL_KEYDOWN:		if (!input_map[1][1][System::Events.key.keysym.sym].push_time)
+				_SetInput(1, 1, System::Events.key.keysym.sym, System::Events.key.timestamp, 1); break;
+			case SDL_KEYUP:				_SetInput(1, 1, System::Events.key.keysym.sym, 0, 0); break;
 
+			case SDL_MOUSEBUTTONDOWN:	_SetInput(2, 1, System::Events.button.button, System::Events.button.timestamp, 1); break;
+			case SDL_MOUSEBUTTONUP:		_SetInput(2, 1, System::Events.button.button, 0, 0); break;
+			case SDL_MOUSEMOTION:	if (System::Events.motion.xrel)
+			{
+				_SetInput(2, 2, 0, System::Events.motion.timestamp, System::Events.motion.x);
+				input_map[2][2][2].push_time = System::Events.motion.timestamp;
+				input_map[2][2][2].value = (double)System::Events.motion.xrel;
+			}
+									if (System::Events.motion.yrel)
+									{
+										_SetInput(2, 2, 1, System::Events.motion.timestamp, System::Events.motion.y);
+										input_map[2][2][3].push_time = System::Events.motion.timestamp;
+										input_map[2][2][3].value = (double)System::Events.motion.xrel;
+									}
+									break;
+
+			case SDL_CONTROLLERBUTTONDOWN:		if (gamepads[System::Events.cbutton.which].is_gamecontroller())_SetInput(System::Events.cbutton.which + 3, 1, System::Events.cbutton.button, System::Events.cbutton.timestamp, 1); break;
+			case SDL_JOYBUTTONDOWN:				if (!gamepads[System::Events.jbutton.which].is_gamecontroller())_SetInput(System::Events.jbutton.which + 3, 1, System::Events.jbutton.button, System::Events.jbutton.timestamp, 1); break;
+			case SDL_CONTROLLERBUTTONUP:		if (gamepads[System::Events.cbutton.which].is_gamecontroller())_SetInput(System::Events.cbutton.which + 3, 1, System::Events.cbutton.button, 0, 0); break;
+			case SDL_JOYBUTTONUP:				if (!gamepads[System::Events.jbutton.which].is_gamecontroller())_SetInput(System::Events.jbutton.which + 3, 1, System::Events.jbutton.button, 0, 0); break;
+			case SDL_CONTROLLERAXISMOTION:		if (gamepads[System::Events.caxis.which].is_gamecontroller())_SetInput(System::Events.caxis.which + 3, 2, System::Events.caxis.axis, System::Events.caxis.value ? System::Events.caxis.timestamp : 0, System::Events.caxis.value); break;
+			case SDL_JOYAXISMOTION:				if (!gamepads[System::Events.jaxis.which].is_gamecontroller())_SetInput(System::Events.jaxis.which + 3, 2, System::Events.jaxis.axis, System::Events.jaxis.value ? System::Events.jaxis.timestamp : 0, System::Events.jaxis.value); break;
+			case SDL_JOYHATMOTION:				if (!gamepads[System::Events.jhat.which].is_gamecontroller())_SetInput(System::Events.jhat.which + 3, 3, System::Events.jhat.hat, System::Events.jhat.value ? System::Events.jhat.timestamp : 0, System::Events.jhat.value); break;
+			//case SDL_CONTROLLERDEVICEADDED:
+			case SDL_JOYDEVICEADDED:			Gamepad::_AddJoystick(System::Events.jdevice.which); break;
+			//case SDL_CONTROLLERDEVICEREMOVED:
+			case SDL_JOYDEVICEREMOVED:			Gamepad::_RemoveJoystick(System::Events.jdevice.which); break;
+			default: break;
+			}
+
+		}
+
+
+
+		bool Hat::pushed()
+		{
+			auto& it = input_map[_device][3][_index];
+			unsigned last = (unsigned)it.last_value;
+			unsigned val = (unsigned)it.value;
+			if (_modifier == (unsigned)Directions::None) return ~last & val ? it.EventResolve() : false;
+			else return _modifier == (~last & val) ? it.EventResolve() : false;
+		}
+
+		bool Hat::released()
+		{
+			auto& it = input_map[_device][3][_index];
+			unsigned last = (unsigned)it.last_value;
+			unsigned val = (unsigned)it.value;
+			if (_modifier == (unsigned)Directions::None) return last & ~val ? it.EventResolve() : false;
+			else return _modifier == (last & ~val) ? it.EventResolve() : false;
+		}
+
+		bool Mouse::ContainsMouse(std::shared_ptr<Entity> ent)
+		{
+			if (!ent)
+			{
+				Output_Handler::Error << "ERR Entity::Contains_Mouse : No entity supplied\n";
+				return false;
+			}
+			if (!ent->texture)
+			{
+				Output_Handler::Error << "ERR Entity::Contains_Mouse : Given entity has no texture supplied\n";
+				return false;
+			}
+		
+			SDL_Point p;
+			SDL_GetMouseState(&p.x, &p.y);
+			double px = (double)p.x + Camera::Main->X;
+			double py = (double)p.y + Camera::Main->Y;
+		
+			//double px = Mouse::Get[Input::Change(IT_MOUSE_AXIS, MA_X)].Held();
+			//double py = Mouse::Get[Input::Change(IT_MOUSE_AXIS, MA_Y)].Held();
+			auto sp = ent->texture;
+			auto scale = ent->RootScale();
+			auto pos = ent->RootPos();
+			double offx = sp->Starting_Point().x * scale / Camera::Main->scale;
+			double offy = sp->Starting_Point().y * scale / Camera::Main->scale;
+			return (
+				px >= pos[0] - offx &&
+				px <= pos[0] - offx + ent->hitbox().first &&
+				py >= pos[1] - offy &&
+				py <= pos[1] - offy + ent->hitbox().second
+				);
+		}
+
+		void Gamepad::_AddJoystick(unsigned id)
+		{
+			//auto it = gamepads.map.find(id);
+			//if (it != gamepads.map.end() && (it->second._joystick || it->second._controller)) return;
+
+			if (SDL_IsGameController(id))
+			{
+				auto controller = SDL_GameControllerOpen(id);
+				auto new_id = (unsigned)SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(controller));
+				auto& g = gamepads.map.insert({ new_id,{ new_id } }).first->second;
+				g._controller = controller;
+				g._name = SDL_GameControllerName(controller);
+				g._name.erase(std::remove_if(g._name.begin(), g._name.end(), [](int i)->bool { return i < 0 ? true : false; }), g._name.end());
+				gamepads.last_connected = new_id;
+			}
+			else
+			{
+				auto joystick = SDL_JoystickOpen(id);
+				auto new_id = (unsigned)SDL_JoystickInstanceID(joystick);
+				auto& g = gamepads.map.insert({ new_id,{ new_id } }).first->second;
+				g._joystick = joystick;
+				g._name = SDL_JoystickName(joystick);
+				g._name.erase(std::remove_if(g._name.begin(), g._name.end(), [](int i)->bool { return i < 0 ? true : false; }), g._name.end());
+				gamepads.last_connected = new_id;
+			}
+
+		}
+
+		void Gamepad::_RemoveJoystick(unsigned id)
+		{
+			auto it = gamepads.map.find(id);
+			if (it == gamepads.map.end() || (!it->second._joystick && !it->second._controller)) return;
+			auto& gp = it->second;
+			if (gp._joystick)
+			{
+				SDL_JoystickClose(gp._joystick);
+				gp._joystick = nullptr;
+			}
+			if (gp._controller)
+			{
+				SDL_GameControllerClose(gp._controller);
+				gp._controller = nullptr;
+			}
+		}
+
+
+		std::string Input::get_action_name()
+		{
+			switch (get_action())
+			{
+			case 1: return "Button";
+			case 2: return get_device() == 2 ? get_index() == 0 ? "Horizontal Axis" : "Vetrical Axis" : "Axis";
+			case 3: return "Hat";
+			default: return "Unknown";
+			}
+			return std::string();
+		}
+
+		bool MouseAxis::pushed()
+		{
+			int val = get_index() == 0 ? Screen::Window_Size().first : Screen::Window_Size().second;
+			return abs(raw_value() - val / 2) > val / 4;
+		}
+
+} //namespace impl
+
+	impl::Device device{ 0 };
+	impl::Keyboard keyboard;
+	impl::Mouse mouse;
+	impl::GamepadMap gamepads;
+
+} //namespace controlls
 

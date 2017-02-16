@@ -5,6 +5,10 @@
 #include <SDL.h>
 #include "Entity.h"
 
+namespace controlls
+{
+	class Gamepad;
+}
 
 typedef double(*Input_Function)(std::vector<Sint32>);
 
@@ -59,6 +63,6 @@ private:
 	static void __Events();
 
 	friend class System;
-	friend class Gamepad;
+	friend class controlls::Gamepad;
 };
 

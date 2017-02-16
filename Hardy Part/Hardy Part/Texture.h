@@ -51,6 +51,9 @@ public:
 	//*** Sets the starting point to the given one
 	//*** Choose numbers from -1 to 1
 	bool Set_Starting_Pos(float x, float y);
+	//*** Returns the offset of this texture
+	//*** Two numbers from -1 to 1
+	std::pair<float, float> Get_Starting_Pos() { return{ __X_Off, __Y_Off }; }
 
 	//*** Returns the rectangle of the texture to draw
 	virtual SDL_Rect Frame_Rect() { return{ 0, 0, (int)__Width, (int)__Height }; }
@@ -62,6 +65,8 @@ public:
 	virtual SDL_Texture* Get_SDL_Texture() { return __SDL_Texture; }
 
 
+	//*** Draws texture to teh screen
+	virtual bool Draw(std::shared_ptr<Entity> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation);
 
 
 	//*** Horizontal or vertical flip of this sprite
@@ -78,6 +83,7 @@ public:
 	virtual bool Destroy();
 
 private:
+
 	//*** Initializes supplied texture with given parameters
 	static std::shared_ptr<Texture> __Load(std::shared_ptr<Entity> ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0);
 

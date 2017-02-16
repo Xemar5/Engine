@@ -3,37 +3,44 @@
 #include <memory>
 #include "Entity.h"
 #include "Container.h"
-#include "StateContainer.h"
+#include "LayerContainer.h"
 #include "Network\Network.h"
+#include "Camera.h"
 
 class Tileset;
 class Texture;
 
-class State : public StateContainer
+class State : public LayerContainer
 {
 public:
 
-	//***  Virtual Create function, should be overriden by derivering states
+	//*** Virtual Create function, should be overriden by derivering states
 	virtual void Create() = 0;
-	//***  Virtual Update function, should be overriden by derivering states
+	//*** Virtual Update function, should be overriden by derivering states
 	virtual void Update();
-	//***  Virtual Events function, should be overriden by derivering states
+	//*** Virtual Events function, should be overriden by derivering states
 	virtual void Events();
+	//*** Fires when state is beind deleted
+	//*** Use to delete allocated data
+	virtual void Cleanup() {}
 
 	//*** If true, System will update all state layers aswell as the main state built before
 	//*** Else only this state layer will be updated
 	bool Update_Underneath = false;
 
-	enum class StatePhase
+	enum class Phase
 	{
 		SystemReserved,
-		Create,
-		Update,
-		Events
+		StateCreate,
+		StateUpdate,
+		StateEvents,
+		ObjectCreate,
+		ObjectUpdate,
+		ObjectEvents
 	};
 
 	//*** Returns the phase of this state
-	static StatePhase state_phase() { return _state_phase; }
+	static Phase state_phase() { return _state_phase; }
 
 
 
@@ -53,12 +60,12 @@ public:
 
 	//*** Builds and creates a new state of given type
 	//*** Deletes all previously built states and state layers
-	template <typename T> static std::shared_ptr<T> Change();
+	template <typename T, typename... Args> static std::shared_ptr<T> Change(Args&&... args);
 	//*** Builds and creates a new state layer of given type
 	//*** - update_underneath - if true, System will update all state layers
 	//***     aswell as the main state built before
 	//*** 	else only this state layer will be updated
-	template <typename T> static std::shared_ptr<T> Add(bool update_underneath = false);
+	template <typename T, bool update_underneath = false, typename... Args> static std::shared_ptr<T> Add(Args&&... args);
 	//*** Exits the current state layer and destroys it
 	//*** Works only if there is at least one state layer built, prints MSG otherwise
 	template <bool = true> static void Remove();
@@ -67,18 +74,22 @@ public:
 
 	virtual ~State() = 0 {};
 private:
-	void __Update(std::shared_ptr<Body> e);
-	void __Events(std::shared_ptr<Body> e);
+	void __Update(std::shared_ptr<Object> e);
+	void __Events(std::shared_ptr<Object> e);
 
 	//*** Checks if given state is being deleted
 	static bool __isDeleted(std::shared_ptr<State> stt);
 
 	//*** Current phase of this state
-	static StatePhase _state_phase;
+	static Phase _state_phase;
+
+	//*** Pointer to the current state
+	static std::shared_ptr<State> _CurrentState;
 
 	friend void network::impl::tcp::Init();
 	friend class System;
 	friend class Screen;
+	friend class Layer;
 };
 
 
@@ -96,32 +107,32 @@ private:
 #include "Sprite.h"
 #include "Layer.h"
 #include "Generic.h"
-
+#include "Shape.h"
 
 
 
 //*** Creates and initializes new State
 //*** Template parameter must be supplied with an State derative
 //*** Destroys all built State layers and creates new stack
-template <typename T>
-std::shared_ptr<T> State::Change()
+template <typename T, typename... Args>
+std::shared_ptr<T> State::Change(Args&&... args)
 {
 	if (__isDeleted(CurrentState())) return nullptr;
 
-	_state_phase = StatePhase::SystemReserved;
-
-	Device::ClearAllDeviceInput();
+	_state_phase = Phase::SystemReserved;
 
 	for (unsigned i = 0; i < Built.size(); i++)
 		Deleted.push_back(i);
 	network::message::messages[0].clear();
 	network::message::messages[2].clear();
+	
+	Built.push_back(std::make_shared<T>(std::forward<Args>(args)...));
 
-	Built.push_back(std::make_shared<T>());
-
-	_state_phase = StatePhase::Create;
+	_state_phase = Phase::StateCreate;
+	_CurrentState = Built.back();
 	Built.back()->Create();
-	_state_phase = StatePhase::SystemReserved;
+	_CurrentState = nullptr;
+	_state_phase = Phase::SystemReserved;
 
 	return std::static_pointer_cast<T>(Built.back());
 }
@@ -131,21 +142,22 @@ std::shared_ptr<T> State::Change()
 //*** Each layer is build on top of an existing one
 //*** Layers underneath are not destroyed
 //*** - update_underneath - if true, layers underneath will be updated every game tick
-template <typename T>
-std::shared_ptr<T> State::Add(bool update_underneath)
+template <typename T, bool update_underneath, typename... Args>
+std::shared_ptr<T> State::Add(Args&&... args)
 {
 	if (__isDeleted(CurrentState())) return nullptr;
 
-	_state_phase = StatePhase::SystemReserved;
+	_state_phase = Phase::SystemReserved;
 
-	Device::ClearAllDeviceInput();
-	Built.emplace_back(std::make_shared<T>());
+	Built.emplace_back(std::make_shared<T>(std::forward<Args>(args)...));
 	Built.back()->Update_Underneath = update_underneath;
 	//Built.back()->State::Create();
 	
-	_state_phase = StatePhase::Create;
+	_state_phase = Phase::StateCreate;
+	_CurrentState = Built.back();
 	Built.back()->Create();
-	_state_phase = StatePhase::SystemReserved;
+	_CurrentState = nullptr;
+	_state_phase = Phase::SystemReserved;
 	
 	return std::static_pointer_cast<T>(Built.back());
 }
@@ -156,7 +168,6 @@ void State::Remove()
 {
 	if (!__isDeleted(CurrentState()))
 	{
-		Device::ClearAllDeviceInput();
 		Deleted.push_back(Built.size() - 1);
 	}
 }
@@ -168,7 +179,6 @@ void State::Exit_Game()
 {
 	if (!__isDeleted(CurrentState()))
 	{
-		Device::ClearAllDeviceInput();
 		for (unsigned i = 0; i < Built.size(); i++)
 			Deleted.push_back(i);
 	}

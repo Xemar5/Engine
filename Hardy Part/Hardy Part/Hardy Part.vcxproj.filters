@@ -102,9 +102,6 @@
     <ClCompile Include="Player.cpp">
       <Filter>Source Files\Users</Filter>
     </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>Source Files\Input</Filter>
-    </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
@@ -132,12 +129,6 @@
     <ClCompile Include="Generic.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Body.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StateContainer.cpp">
-      <Filter>Source Files\Containers</Filter>
-    </ClCompile>
     <ClCompile Include="Container.cpp">
       <Filter>Source Files\Containers</Filter>
     </ClCompile>
@@ -164,6 +155,15 @@
     </ClCompile>
     <ClCompile Include="Network\Identifier.cpp">
       <Filter>Source Files\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="LayerContainer.cpp">
+      <Filter>Source Files\Containers</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +203,6 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files\Users</Filter>
     </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>Header Files\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
@@ -226,12 +223,6 @@
     </ClInclude>
     <ClInclude Include="Generic.h">
       <Filter>Header Files\Texture Handler</Filter>
-    </ClInclude>
-    <ClInclude Include="Body.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="StateContainer.h">
-      <Filter>Header Files\Containers</Filter>
     </ClInclude>
     <ClInclude Include="Canvas.h">
       <Filter>Header Files\Containers</Filter>
@@ -268,6 +259,21 @@
     </ClInclude>
     <ClInclude Include="Network\Event.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LayerContainer.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceConfig_State.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Header Files\Texture Handler</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

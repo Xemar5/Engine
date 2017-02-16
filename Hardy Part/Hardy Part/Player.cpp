@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "Device.h"
+#include "Input.h"
 #include "Movement.h"
 #include "Entity.h"
 #include "Sprite.h"
@@ -146,7 +146,7 @@ bool Player::Set_Controller(std::shared_ptr<Player> player, Sint32 controller)
 	//	return false;
 	//}
 	player->Controller = controller;
-	player->__ControllerName = Device::Get(controller).Name();
+	//player->__ControllerName = controlls::Device::Get(controller).Name();
 	return true;
 }
 
@@ -199,13 +199,12 @@ void Player::__Update()
 		if (auto ent = Get_Entity(p))
 		{
 
-			auto& ip = Device::Get(p->Controller);
+			//auto& ip = controlls::Device::Get(p->Controller);
 
 			auto sgn = [](double d) {return d ? d / abs(d) : 0; };
-
 			double vx = 0, vy = 0;
-			vy += sgn(ip["ladown"].Held()) - sgn(ip["laup"].Held());
-			vx += sgn(ip["laright"].Held()) - sgn(ip["laleft"].Held());
+			//vy += sgn(ip["ladown"].Held()) - sgn(ip["laup"].Held());
+			//vx += sgn(ip["laright"].Held()) - sgn(ip["laleft"].Held());
 
 
 			if (vx < 0) p->__Entity->texture->Flip = SDL_FLIP_HORIZONTAL;

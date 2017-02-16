@@ -16,7 +16,7 @@ public:
 	static SDL_Color Color(unsigned int hex);
 
 	//*** Initializes or changes the text of the given textfield 
-	static std::shared_ptr<Textfield> SetText(std::shared_ptr<Textfield> ent, std::string text, std::string font, Uint32 size = 24, SDL_Color color = Color(0xffffffff), unsigned width = 0);
+	static std::shared_ptr<Textfield> SetText(std::shared_ptr<Object> ent, std::string text, std::string font, Uint32 size = 24, SDL_Color color = Color(0xffffffff), unsigned width = 0);
 	//*** Initializes or changes the text of this textfield 
 	std::shared_ptr<Textfield> SetText(std::string text, std::string font, Uint32 size = 24, SDL_Color color = Color(0xffffffff), unsigned width = 0);
 

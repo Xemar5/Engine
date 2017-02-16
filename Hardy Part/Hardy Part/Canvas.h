@@ -6,7 +6,7 @@ class State;
 class Canvas : public Layer
 {
 public:
-	Canvas(unsigned w, unsigned h) : width(w), height(h), Layer() {};
+	Canvas(unsigned w, unsigned h) : width(w), height(h), Layer(false) {};
 
 	unsigned width;
 	unsigned height;

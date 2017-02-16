@@ -16,5 +16,6 @@ int main(int argc, char* argv[])
 		network::ip = argv[1];
 
 	System::Start<MainMenu_State>();
+
 	return 0;
 }

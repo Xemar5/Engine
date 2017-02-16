@@ -7,7 +7,7 @@
 #include "Audio.h"
 
 class Timer;
-class Body;
+class Object;
 
 class System final
 {
@@ -34,7 +34,7 @@ private:
 	//*** Iteratees through all children of the state and deletes them
 	//*** - sets child's parent to nullptr
 	//*** - if child is of Container type, iterates through its children
-	static void __ClearChildren(std::shared_ptr<Body> ent);
+	static void __ClearChildren(std::shared_ptr<Object> ent);
 
 	static void __Delete();
 	static void __Update();
@@ -45,7 +45,7 @@ private:
 #include <SDL_ttf.h>
 #include "Output_Handler.h"
 #include "Screen.h"
-#include "Device.h"
+#include "Mapping.h"
 //#include "Network.h"
 
 template <typename T>
@@ -59,8 +59,9 @@ void System::Start()
 	{
 		Output_Handler::Error << "\nUnable to initialize TTF:" << TTF_GetError() << "\n";
 	}
+	srand(time(nullptr));
 	SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
-	Gamepad::Init("keybinds.txt");
+	controlls::Mapping::Init("keybinds.txt");
 	Screen::Init();
 	Audio::Init();
 	//Network::Init();

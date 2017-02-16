@@ -96,6 +96,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0501;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -118,10 +119,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="Body.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Container.cpp" />
-    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Network\Client.cpp" />
@@ -132,7 +133,7 @@
     <ClCompile Include="Network\Server.cpp" />
     <ClCompile Include="Network\TCP.cpp" />
     <ClCompile Include="Network\UDP.cpp" />
-    <ClCompile Include="StateContainer.cpp" />
+    <ClCompile Include="LayerContainer.cpp" />
     <ClCompile Include="Mapping.cpp" />
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="Action.cpp" />
@@ -151,12 +152,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
-    <ClInclude Include="Body.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="DeviceConfig_State.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="Layer.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Container.h" />
-    <ClInclude Include="Device.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MainMenu_State.h" />
@@ -169,7 +171,7 @@
     <ClInclude Include="Network\Server.h" />
     <ClInclude Include="Network\TCP.h" />
     <ClInclude Include="Network\UDP.h" />
-    <ClInclude Include="StateContainer.h" />
+    <ClInclude Include="LayerContainer.h" />
     <ClInclude Include="Mapping.h" />
     <ClInclude Include="Movement.h" />
     <ClInclude Include="Action.h" />
@@ -177,6 +179,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="Shape.h" />
     <ClInclude Include="Textfield.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Sprite.h" />

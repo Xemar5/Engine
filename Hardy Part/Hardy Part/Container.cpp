@@ -3,10 +3,25 @@
 
 Container::~Container() {}
 
-void Container::Add(std::shared_ptr<Body> ent)
+void Container::Destroy()
+{
+	for (auto child : children)
+		child->Destroy();
+	children.clear();
+	Object::Destroy();
+}
+
+void Container::AddChild(std::shared_ptr<Object> ent)
 {
 	ent->parent = std::dynamic_pointer_cast<Container>(this->shared_from_this());
 	children.push_back(ent);
+}
+
+void Container::RemoveChild(std::shared_ptr<Object> obj)
+{
+	for (auto o = children.begin(); o != children.end(); ++o)
+		if (*o == obj) { children.erase(o); break; }
+	obj->parent = nullptr;
 }
 
 void Container::Reorder()
