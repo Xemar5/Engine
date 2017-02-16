@@ -1,86 +1,114 @@
 #include "Sprite.h"
-#include "Texture.h"
-#include "Animation.h"
+#include "Screen.h"
 #include "Entity.h"
+#include "Animation.h"
 
-std::vector<std::shared_ptr<Sprite>> Sprite::__Sprites;
-
-
-Sprite * Sprite::Create(Entity* ent, std::shared_ptr<Texture> texture)
+std::shared_ptr<Texture> Sprite::Load(std::shared_ptr<Entity> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y, int frame_width, int frame_height)
 {
-	if (!ent)
+	SDL_Texture* tr = nullptr;
+	if (Screen::ShowWindow)
 	{
-		std::cout << "MSG Sprite::Create : No entity supplied; returning pointer to this sprite\n";
+		if (!path.size())
+		{
+			Output_Handler::Error << "ERR Texture::Load : No path supplied\n";
+			return false;
+		}
+
+		for (auto& ttr : Texture::__Textures)
+			if (path == ttr->__Path)
+			{
+				tr = ttr->Get_SDL_Texture();
+			}
+		if (!tr) tr = IMG_LoadTexture(Screen::Renderer, path.c_str());
+
+		if (!tr)
+		{
+			Output_Handler::Error << "ERR Texture::Load : No valid texture file supplied\n";
+			return false;
+		}
 	}
-	if (!texture)
-	{
-		std::cerr << "ERR Sprite::Set : No Texture supplied\n";
-		return nullptr;
-	}
-	Sprite::__Sprites.emplace_back(std::make_shared<Sprite>());
-	Sprite::__Sprites.back()->__Texture = texture;
-	Sprite::__Sprites.back()->Flip = SDL_FLIP_NONE;
-	if (ent)
-	{
-		ent->__Sprite = Sprite::__Sprites.back();
-		Sprite::__Sprites.back()->__Current_Animation = Animation::Play(ent, "idle");
-	}
-	return Sprite::__Sprites.back().get();
+
+	Texture::__Textures.emplace_back(std::make_shared<Sprite>());
+	std::shared_ptr<Sprite> sp = std::dynamic_pointer_cast<Sprite>(__Textures.back());
+	sp->__Path = path;
+	sp->__SDL_Texture = tr;
+
+	if (frame_width == 0) sp->Frame_Width = width;
+	else if (frame_width < 0) sp->Frame_Width = width / -frame_width;
+	else sp->Frame_Width = frame_width;
+
+	if (frame_height == 0) sp->Frame_Height = height;
+	else if (frame_height < 0) sp->Frame_Height = height / -frame_height;
+	else sp->Frame_Height = frame_height;
+
+	Sprite::Add_Animation(sp, Animation("idle", "0", true));
+	return Texture::__Load(ent, Texture::__Textures.back(), width, height, starting_point_x, starting_point_y);
 }
 
 
-std::shared_ptr<Texture> Sprite::Get_Texture()
+SDL_Rect Sprite::Frame_Rect()
+{
+	SDL_Rect r;
+	auto cf = Current_Frame();
+	r.w = Frame_Width;
+	r.h = Frame_Height;
+	r.y = 0;
+	r.x = cf * (int)Frame_Width;
+	while (r.x >= (int)__Width)
+	{
+		r.x -= __Width;
+		r.y += Frame_Height;
+	}
+	return r;
+}
+
+SDL_Rect Sprite::Draw_Rect()
+{
+	SDL_Rect r;
+	r.x = -(int)((double)Starting_Point().x);
+	r.y = -(int)((double)Starting_Point().y);
+	r.w = (int)((double)Frame_Width);
+	r.h = (int)((double)Frame_Height);
+	return r;
+}
+
+SDL_Point Sprite::Starting_Point()
 {
 	if (!this)
 	{
-		std::cerr << "ERR Sprite::Get_Texture : This Sprite has no Texture\n";
-		return nullptr;
-	}
-	return __Texture;
-}
-
-
-SDL_Texture * Sprite::Get_SDL_Texture()
-{
-	if (__Texture)
-		return __Texture->Get_SDL_Texture();
-	return nullptr;
-}
-
-std::pair<unsigned, unsigned> Sprite::Get_Frame_Size()
-{
-	if (this && __Texture)
-		return __Texture->Get_Frame_Size();
-	std::cerr << "ERR Sprite::Get_Frame_Size : No Texture loaded\n";
-	return std::make_pair(0,0);
-}
-
-std::pair<unsigned, unsigned> Sprite::Get_Frame_Pos()
-{
-	if (!this)
-	{
-		std::cerr << "ERR Sprite::Get_Frame_Pos : No this Sprite\n";
+		Output_Handler::Error << "ERR Sprite::Starting_Point : No this Sprite\n";
 		return{ 0,0 };
 	}
-	return std::make_pair(__Frame_Pos_X, __Frame_Pos_Y);
+	return
+	{
+		(int)((1.0 + __X_Off) / 2.0 * Frame_Width),
+		(int)((1.0 + __Y_Off) / 2.0 * Frame_Height)
+	};
 }
 
-int Sprite::Get_Current_Frame()
+
+bool Sprite::Add_Animation(std::shared_ptr<Texture> texture, Animation& anim)
 {
-	if (!this || !__Current_Animation)
+	if (!texture || !std::dynamic_pointer_cast<Sprite>(texture))
 	{
-		std::cerr << "ERR Sprite::Get_Current_Frame : No Current Animation\n";
-		return -1;
+		Output_Handler::Output << "MSG Sprite::Add_Animation : No Sprite supplied\n";
+		return false;
 	}
-	return __Current_Animation->Get_Current_Frame(__Sequence_Iterator);
+	auto sp = std::dynamic_pointer_cast<Sprite>(texture);
+	if (!anim.Name().size()) return false;
+	if (!anim.Sequence().size()) return false;
+	for (auto a = sp->__Animations.begin(); a != sp->__Animations.end(); ++ a)
+		if (a->Name() == anim.Name()) { sp->__Animations.erase(a); break; }
+	sp->__Animations.push_back(anim);
+	sp->__Animations.back().__User = sp;
+	return true;
 }
 
-Animation * Sprite::Get_Current_Animation()
+Animation & Sprite::operator[](std::string name)
 {
-	if (!this)
-	{
-		std::cerr << "ERR Sprite::Get_Current_Animation : This Sprite has no current animation\n";
-		return nullptr;
-	}
-	return __Current_Animation;
+	if (!name.size()) return __Animations[0];
+	for (auto& a : __Animations)
+		if (a.Name() == name) return a;
+	return __Animations[0];
 }
+

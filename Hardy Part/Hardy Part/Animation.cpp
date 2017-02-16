@@ -1,179 +1,100 @@
 #include "Animation.h"
+#include "Output_Handler.h"
 #include "Sprite.h"
-#include "Texture.h"
-#include "Entity.h"
 
-Animation* Animation::Add(Texture* sprite, std::string name, std::string frame_sequence, bool repeat)
+int Animation::Current_Frame()
 {
-	if (!sprite)
+	if (__Iterator == -1)
+		return -1;
+	return __Frame_Sequence[__Iterator];
+}
+
+int Animation::Next_Frame()
+{
+	if (__Iterator + 1 >= (int)__Frame_Sequence.size())
 	{
-		std::cerr << "ERR Animation::Add : No Sprite to add the animation to is supplied\n";
-		return nullptr;
+		if (__User && __User->__Current_Animation == this)
+			__User->__Current_Animation = nullptr;
+		return __Iterator = -1;
 	}
-	if (!name.size())
+	return __Frame_Sequence[++__Iterator];
+}
+
+
+
+
+
+bool Animation::Play()
+{
+	if (!this)
 	{
-		std::cerr << "ERR Animation::Add : No name of the animation supplied\n";
-		return nullptr;
+		Output_Handler::Output << "MSG Animation::Play : No this Animation\n";
+		return false;
 	}
-	if (!frame_sequence.size())
+	if (!__User)
 	{
-		std::cerr << "ERR Animation::Add : No frames supplied\n";
-		return nullptr;
+		Output_Handler::Output << "MSG Animation::Play : This Animation has no User\n";
+		return false;
 	}
-	if (auto* anim = Animation::Exists(sprite, name))
+	if (__User->__Current_Animation == this) return false;
+	return Force_Play();
+}
+
+bool Animation::Soft_Play()
+{
+	if (!this)
 	{
-		//if(name != "idle") std::cout << "MSG Animation::Add : Animation " << name << " already exists, replacing\n";
-		anim->__Frame_Sequence = Animation::Decode(frame_sequence);
-		anim->__Name = name;
-		anim->__Repeat = repeat;
-		return anim;
+		Output_Handler::Output << "MSG Animation::Soft_Play : No this Animation\n";
+		return false;
 	}
-	sprite->__Animations.emplace_back(std::make_shared<Animation>());
-	sprite->__Animations.back()->__Frame_Sequence = Animation::Decode(frame_sequence);
-	sprite->__Animations.back()->__Name = name;
-	sprite->__Animations.back()->__Repeat = repeat;
-	return sprite->__Animations.back().get();
-}
-
-
-Animation * Animation::Add(Entity * ent, std::string name, std::string frame_sequence, bool repeat)
-{
-	if (!ent)
+	if (!__User)
 	{
-		std::cerr << "ERR Animation::Add : No entity supplied\n";
-		return nullptr;
+		Output_Handler::Output << "MSG Animation::Soft_Play : This Animation has no User\n";
+		return false;
 	}
-	return Animation::Add(ent->Get_Sprite()->Get_Texture().get(), name, frame_sequence, repeat);
+	if (__User->__Current_Animation) return false;
+	return Force_Play();
 }
 
-Animation * Animation::Exists(Texture* sprite, std::string name)
+bool Animation::Force_Play()
 {
-	for (auto anim : sprite->__Animations)
-		if (anim->__Name == name) return anim.get();
-	return nullptr;
-}
-
-std::vector<unsigned> Animation::Get_Sequence(Texture* sprite, std::string name)
-{
-	if (auto anim = Animation::Exists(sprite, name))
-		return anim->__Frame_Sequence;
-	std::cerr << "ERR Animation::Get_Sequence : Animation " << name << " doesnt exist in supplied sprite\n";
-	return{};
-}
-
-std::string Animation::Get_Name()
-{
-	return __Name;
-}
-
-unsigned Animation::Get_Current_Frame(unsigned sequence_iterator)
-{
-	if (sequence_iterator >= __Frame_Sequence.size()) { std::cerr << "ERR Animation::Get_Current_Frame : Given iterator is greater than the size of Frame Sequence\n"; return 0; }
-	return __Frame_Sequence[sequence_iterator];
-}
-
-bool Animation::Set_Frame(Entity* ent, unsigned frame)
-{
-	if (!ent) { std::cerr << "ERR Animation::Set_Frame : No Entity supplied\n"; return false; }
-	if (!ent->Get_Sprite()) { std::cerr << "ERR Animation::Set_Frame : Given Entity has no Sprite supplied\n"; return false; };
-	if (!ent->Get_Sprite()->Get_Texture()) { std::cerr << "ERR Animation::Set_Frame : Given Sprite has no Texture supplied\n"; return false; };
-	if (frame >= ent->Get_Sprite()->Get_Texture()->Get_Frames_Number()) { std::cerr << "ERR Animation::Set_Frame : Given frame number is greater than the max number of frames\n"; return false; }
-
-	auto pos = ent->Get_Sprite()->Get_Texture()->Get_Frame_Pos(frame);
-	ent->Get_Sprite()->__Frame_Pos_X = pos.first;
-	ent->Get_Sprite()->__Frame_Pos_Y = pos.second;
+	if (!this)
+	{
+		Output_Handler::Output << "MSG Animation::Force_Play : No this Animation\n";
+		return false;
+	}
+	if (!__User)
+	{
+		Output_Handler::Output << "MSG Animation::Force_Play : This Animation has no User\n";
+		return false;
+	}
+	if (__User->__Current_Animation) __User->__Current_Animation->Terminate();
+	__User->__Current_Animation = this;
+	__User->__Current_Animation->__Iterator = 0;
 	return true;
 }
 
-unsigned Animation::Next_Frame(Entity* ent)
+bool Animation::Terminate()
 {
-	if (!ent) { std::cerr << "ERR Animation::Next_Frame : No Entity supplied\n"; return 0; }
-	if (!ent->Get_Sprite()) { std::cerr << "ERR Animation::Next_Frame : Given Entity has no Sprite supplied\n"; return 0; };
-	if (!ent->Get_Sprite()->Get_Texture()) { std::cerr << "ERR Animation::Next_Frame : Given Sprite has no Texture supplied\n"; return 0; };
-	if (!ent->Get_Sprite()->__Current_Animation){ std::cerr << "ERR Animation::Next_Frame : Given Sprite plays no Animation\n"; return 0; }
-
-	ent->Get_Sprite()->__Sequence_Iterator++;
-	if (ent->Get_Sprite()->__Sequence_Iterator >= (int)Animation::Get_Sequence(ent->Get_Sprite()->Get_Texture().get(), ent->Get_Sprite()->__Current_Animation->__Name).size())
+	if (!this)
 	{
-		ent->Get_Sprite()->__Sequence_Iterator = -1;
-		if (!ent->Get_Sprite()->__Current_Animation->__Repeat) ent->Get_Sprite()->__Current_Animation = nullptr;
+		Output_Handler::Output << "MSG Animation::Terminate : No this Animation\n";
+		return false;
 	}
-	return ent->Get_Sprite()->__Sequence_Iterator;
-}
-
-Animation* Animation::Play(Entity* ent, std::string name)
-{
-	if (!ent) { std::cerr << "ERR Animation::Play : No Entity supplied\n"; return nullptr; }
-	return Animation::Play(ent->Get_Sprite().get(), name);
-}
-
-Animation* Animation::Play(Sprite* sprite, std::string name)
-{
-	if (!sprite) { std::cerr << "ERR Animation::Play : Given Entity has no Sprite supplied\n"; return nullptr; };
-	if (!sprite->Get_Texture()) { std::cerr << "ERR Animation::Play : Given Sprite has no Texture supplied\n"; return nullptr; }
-	if (!name.size()) { std::cerr << "ERR Animation::Play : No name of the animation supplied\n"; }
-
-	if (sprite->__Current_Animation && sprite->__Current_Animation->Get_Name() == name) return sprite->__Current_Animation;
-	return Animation::Force_Play(sprite, name);
-}
-
-Animation * Animation::Soft_Play(Entity * ent, std::string name)
-{
-	if (!ent) { std::cerr << "ERR Animation::Soft_Play : No Entity supplied\n"; return nullptr; }
-	return Animation::Soft_Play(ent->Get_Sprite().get(), name);
-}
-
-Animation * Animation::Soft_Play(Sprite * sprite, std::string name)
-{
-	if (!sprite) { std::cerr << "ERR Animation::Soft_Play : Given Entity has no Sprite supplied\n"; return nullptr; };
-	if (!sprite->Get_Texture()) { std::cerr << "ERR Animation::Soft_Play : Given Sprite has no Texture supplied\n"; return nullptr; }
-	if (!name.size()) { std::cerr << "ERR Animation::Soft_Play : No name of the animation supplied\n"; }
-
-	if (sprite->__Current_Animation) return sprite->__Current_Animation;
-	return Animation::Force_Play(sprite, name);
-}
-
-Animation * Animation::Force_Play(Entity * ent, std::string name)
-{
-	if (!ent) { std::cerr << "ERR Animation::Force_Play : No Entity supplied\n"; return nullptr; }
-	return Animation::Force_Play(ent->Get_Sprite().get(), name);
-}
-
-
-Animation * Animation::Force_Play(Sprite * sprite, std::string name)
-{
-	if (!sprite) { std::cerr << "ERR Animation::Force_Play : Given Entity has no Sprite supplied\n"; return nullptr; };
-	if (!sprite->Get_Texture()) { std::cerr << "ERR Animation::Force_Play : Given Sprite has no Texture supplied\n"; return nullptr; }
-	if (!name.size()) { std::cerr << "ERR Animation::Force_Play : No name of the animation supplied\n"; }
-	if (!(sprite->__Current_Animation = Animation::Exists(sprite->Get_Texture().get(), name)))
+	if (!__User)
 	{
-		std::cout << "MSG Animation::Play : Animation \"" << name << "\" doesn't exists in supplied sprite; setting to \"idle\"\n";
-		sprite->__Current_Animation = Animation::Exists(sprite->Get_Texture().get(), "idle");
+		Output_Handler::Output << "MSG Animation::Terminate : This Animation has no User\n";
+		return false;
 	}
-	sprite->__Sequence_Iterator = -1;
-	return sprite->__Current_Animation;
+	if (!__User->__Current_Animation) return false;
+	__User->__Current_Animation->__Iterator = -1;
+	__User->__Current_Animation = nullptr;
+	return true;
 }
 
-bool Animation::Terminate(Entity* ent, std::string name)
-{
-	if (!ent) { std::cerr << "ERR Animation::Terminate : No Entity supplied\n"; return false; }
-	return Terminate(ent->Get_Sprite().get(), name);
-}
 
-bool Animation::Terminate(Sprite * sprite, std::string name)
-{
-	if (!sprite) { std::cerr << "ERR Animation::Terminate : Given Entity has no Sprite supplied\n"; return false; };
-	if (!sprite->Get_Texture()) { std::cerr << "ERR Animation::Terminate : Given Sprite has no Texture supplied\n"; return false; }
 
-	if (!sprite->Get_Current_Animation()) return false;
-	if (!name.size() || sprite->Get_Current_Animation()->Get_Name() == name)
-	{
-		sprite->__Sequence_Iterator = -1;
-		sprite->__Current_Animation = nullptr;
-		return true;
-	}
-	return false;
-}
+
 
 std::vector<unsigned> Animation::Decode(std::string code)
 {
@@ -188,7 +109,7 @@ std::vector<unsigned> Animation::Decode(std::string code)
 			code[i] != 'x' &&
 			code[i] != ' ')
 		{
-			std::cout << "MSG Animation::Decode : Unsupported character '"<< code[i] <<"'; use only numbers, '-', 'x' and '(space)'\n";
+			Output_Handler::Output << "MSG Animation::Decode : Unsupported character '" << code[i] << "'; use only numbers, '-', 'x' and '(space)'\n";
 			continue;
 		}
 
@@ -197,7 +118,7 @@ std::vector<unsigned> Animation::Decode(std::string code)
 			code[i] == 'x' ||
 			code[i] == ' '))
 			continue;
-		
+
 		if (segment.size() && (
 			segment.back() == '-' ||
 			segment.back() == 'x'))

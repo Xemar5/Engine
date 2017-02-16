@@ -1,0 +1,8 @@
+[Keyboard]
+#No Keybinds Change
+
+
+[XInput Controller #1]
+#No Keybinds Change
+
+

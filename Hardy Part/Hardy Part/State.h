@@ -1,40 +1,51 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include "Entity.h"
+#include "Container.h"
+#include "LayerContainer.h"
+#include "Network\Network.h"
+#include "Camera.h"
 
 class Tileset;
-class Entity;
 class Texture;
 
-class Layer
+class State : public LayerContainer
 {
 public:
-	double X = 0;
-	double Y = 0;
-	//*** If true, all entities of this layer will be updated every update tick
-	bool Update_Entities = true;
-	//*** If true, all entities of this layer will be updated every event
-	bool Events_Entities = true;
-	//*** Stores all entities of this layer
-	std::vector<std::shared_ptr<Entity>> Entities;
-};
 
-
-class State
-{
-public:
-	//***  Virtual Create function, should be overriden by derivering states
+	//*** Virtual Create function, should be overriden by derivering states
 	virtual void Create() = 0;
-	//***  Virtual Update function, should be overriden by derivering states
+	//*** Virtual Update function, should be overriden by derivering states
 	virtual void Update();
-	//***  Virtual Events function, should be overriden by derivering states
+	//*** Virtual Events function, should be overriden by derivering states
 	virtual void Events();
+	//*** Fires when state is beind deleted
+	//*** Use to delete allocated data
+	virtual void Cleanup() {}
+
+	//*** If true, System will update all state layers aswell as the main state built before
+	//*** Else only this state layer will be updated
+	bool Update_Underneath = false;
+
+	enum class Phase
+	{
+		SystemReserved,
+		StateCreate,
+		StateUpdate,
+		StateEvents,
+		ObjectCreate,
+		ObjectUpdate,
+		ObjectEvents
+	};
+
+	//*** Returns the phase of this state
+	static Phase state_phase() { return _state_phase; }
 
 
-	//*** Stores all layers of this State
-	//*** That's where all entities are stored
-	std::vector<std::shared_ptr<Layer>> Layers;
 
+	//*** Returns the top-most built state
+	static std::shared_ptr<State> CurrentState();
 	//*** All Built States
 	//*** Atleast one of them will get Update'd and Evente'd
 	//*** (most of the time the the top State or all of them)
@@ -45,83 +56,131 @@ public:
 	static std::vector<unsigned> Deleted;
 
 
-	//*** Creates an entity of supplied type to this state and creates it
-	//*** Supplied entity has to deriver from Entity class
-	//*** - layer - adds the entity to given layer
-	//*** 			if the layer doesn't exist yet, this function will create all layers between
-	template<typename T = Entity> T * Add_Entity(unsigned layer = unsigned(0));
-
 
 
 	//*** Builds and creates a new state of given type
 	//*** Deletes all previously built states and state layers
-	template <typename T> static T* New();
+	template <typename T, typename... Args> static std::shared_ptr<T> Change(Args&&... args);
 	//*** Builds and creates a new state layer of given type
 	//*** - update_underneath - if true, System will update all state layers
 	//***     aswell as the main state built before
 	//*** 	else only this state layer will be updated
-	template <typename T> static T* New_Layer(bool update_underneath = false);
+	template <typename T, bool update_underneath = false, typename... Args> static std::shared_ptr<T> Add(Args&&... args);
 	//*** Exits the current state layer and destroys it
 	//*** Works only if there is at least one state layer built, prints MSG otherwise
-	template <bool = true> static void Exit_Layer();
+	template <bool = true> static void Remove();
 	//*** Exits the game, destroy all states and state layers
 	template <bool = true> static void Exit_Game();
 
-	//*** If true, System will update all state layers aswell as the main state built before
-	//*** Else only this state layer will be updated
-	bool Update_Underneath = false;
-
-	//*** Creates a Tileset with supplied mapping and adds it to this State's Tilesets container
-	//*** - texture - the Texture class containing image file of all tiles
-	//*** - pos - the position of this tileset in this State
-	//*** - map - the mapping of all tiles
-	bool Add_Tileset(std::shared_ptr<Texture> texture, std::pair<int, int> pos, std::vector<std::vector<unsigned>> map);
-	//*** Returns the container of all Tilesets in this State
-	std::vector<std::shared_ptr<Tileset>> Get_Tilesets();
+	virtual ~State() = 0 {};
 private:
-	//*** The container of all Tilesets of this State
-	std::vector<std::shared_ptr<Tileset>> __Tilesets;
+	void __Update(std::shared_ptr<Object> e);
+	void __Events(std::shared_ptr<Object> e);
+
+	//*** Checks if given state is being deleted
+	static bool __isDeleted(std::shared_ptr<State> stt);
+
+	//*** Current phase of this state
+	static Phase _state_phase;
+
+	//*** Pointer to the current state
+	static std::shared_ptr<State> _CurrentState;
+
+	friend void network::impl::tcp::Init();
+	friend class System;
+	friend class Screen;
+	friend class Layer;
 };
 
+
+
+
+
+
+
+
+
 #include "Screen.h"
+#include "Output_Handler.h"
+#include "Entity.h"
+#include "Player.h"
+#include "Sprite.h"
+#include "Layer.h"
+#include "Generic.h"
+#include "Shape.h"
 
-template <typename T>
-T* State::Add_Entity(unsigned layer)
+
+
+//*** Creates and initializes new State
+//*** Template parameter must be supplied with an State derative
+//*** Destroys all built State layers and creates new stack
+template <typename T, typename... Args>
+std::shared_ptr<T> State::Change(Args&&... args)
 {
-	while (Layers.size() <= layer) Layers.emplace_back(std::make_shared<Layer>());
-	Layers[layer]->Entities.emplace_back(std::make_shared<T>());
-	Layers[layer]->Entities.back()->Create();
-	Layers[layer]->Entities.back()->__Layer = layer;
-	Screen::Add(Layers[layer]->Entities.back());
-	return dynamic_cast<T*>(Layers[layer]->Entities.back().get());
+	if (__isDeleted(CurrentState())) return nullptr;
+
+	_state_phase = Phase::SystemReserved;
+
+	for (unsigned i = 0; i < Built.size(); i++)
+		Deleted.push_back(i);
+	network::message::messages[0].clear();
+	network::message::messages[2].clear();
+	
+	Built.push_back(std::make_shared<T>(std::forward<Args>(args)...));
+
+	_state_phase = Phase::StateCreate;
+	_CurrentState = Built.back();
+	Built.back()->Create();
+	_CurrentState = nullptr;
+	_state_phase = Phase::SystemReserved;
+
+	return std::static_pointer_cast<T>(Built.back());
 }
 
 
-template <typename T>
-T* State::New()
+//*** Creates new State layer
+//*** Each layer is build on top of an existing one
+//*** Layers underneath are not destroyed
+//*** - update_underneath - if true, layers underneath will be updated every game tick
+template <typename T, bool update_underneath, typename... Args>
+std::shared_ptr<T> State::Add(Args&&... args)
 {
-	for (unsigned i = 0; i < State::Built.size(); i++)
-		State::Deleted.push_back(i);
-	State::Built.emplace_back(std::make_shared<T>());
-	State::Built.back().get()->Create();
-	return dynamic_cast<T*>(State::Built.back().get());
+	if (__isDeleted(CurrentState())) return nullptr;
+
+	_state_phase = Phase::SystemReserved;
+
+	Built.emplace_back(std::make_shared<T>(std::forward<Args>(args)...));
+	Built.back()->Update_Underneath = update_underneath;
+	//Built.back()->State::Create();
+	
+	_state_phase = Phase::StateCreate;
+	_CurrentState = Built.back();
+	Built.back()->Create();
+	_CurrentState = nullptr;
+	_state_phase = Phase::SystemReserved;
+	
+	return std::static_pointer_cast<T>(Built.back());
 }
-template <typename T>
-T* State::New_Layer(bool update_underneath)
-{
-	State::Built.emplace_back(std::make_shared<T>());
-	State::Built.back().get()->Update_Underneath = update_underneath;
-	State::Built.back().get()->Create();
-	return dynamic_cast<T*>(State::Built.back().get());
-}
+
+//*** Exits the top State layer and destroys it
 template <bool T>
-void State::Exit_Layer()
+void State::Remove()
 {
-	State::Deleted.push_back(State::Built.size() - 1);
+	if (!__isDeleted(CurrentState()))
+	{
+		Deleted.push_back(Built.size() - 1);
+	}
 }
+
+
+//*** Exits the game 
 template <bool T>
 void State::Exit_Game()
 {
-	for (unsigned i = 0; i < State::Built.size(); i++)
-		State::Deleted.push_back(i);
+	if (!__isDeleted(CurrentState()))
+	{
+		for (unsigned i = 0; i < Built.size(); i++)
+			Deleted.push_back(i);
+	}
 }
+

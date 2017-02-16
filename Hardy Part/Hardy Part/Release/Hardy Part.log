@@ -1,0 +1,16 @@
+﻿  __Source.cpp
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(102): note: see previous definition of 'INADDR_ANY'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+C:\Program Files (x86)\Windows Kits\8.1\Include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  C:\Program Files (x86)\Microsoft Visual Studio 14.0\SDL\SDL2-2.0.4\include\SDL_net.h(105): note: see previous definition of 'INADDR_NONE'
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\System.h(62): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  __Source.cpp(18): note: see reference to function template instantiation 'void System::Start<MainMenu_State>(void)' being compiled
+  Generating code
+  4 of 9814 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    8 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  Hardy Part.vcxproj -> C:\Users\Pabu4\Documents\Visual Studio 2015\Projects\Hardy-Part\Hardy Part\Release\Hardy Part.exe
+  Hardy Part.vcxproj -> C:\Users\Pabu4\Documents\Visual Studio 2015\Projects\Hardy-Part\Hardy Part\Release\Hardy Part.pdb (Full PDB)

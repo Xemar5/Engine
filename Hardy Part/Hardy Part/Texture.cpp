@@ -1,175 +1,167 @@
 #include "Texture.h"
-#include "Animation.h"
-#include "System.h"
 #include "Screen.h"
+#include "Entity.h"
+#include "Container.h"
 
-std::vector<std::shared_ptr<Texture>> Texture::__Loaded;
+std::vector<std::shared_ptr<Texture>> Texture::__Textures;
 
-
-std::shared_ptr<Texture> Texture::Load(std::string path, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
+std::shared_ptr<Texture> Texture::Load(std::shared_ptr<Entity> ent, std::string path, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
 {
 	if (!path.size())
 	{
-		std::cerr << "ERR Texture::Load : No path supplied\n";
+		Output_Handler::Error << "ERR Texture::Load : No path supplied\n";
 		return nullptr;
 	}
-	for (auto sprite : Texture::__Loaded) if (path == sprite->__Path)
+
+
+	SDL_Texture* texture = nullptr;
+	for (auto& ttr : Texture::__Textures) if (path == ttr->__Path)
 	{
-		//std::cerr << "MSG Texture::Load : Texture already loaded, returning loaded version\n";
-		return sprite;
+		texture = ttr->Get_SDL_Texture();
+		break;
 	}
-	SDL_Texture* tr = IMG_LoadTexture(Screen::Renderer, path.c_str());
-	if (!tr)
+	if (!texture) texture = IMG_LoadTexture(Screen::Renderer, path.c_str());
+	if (!texture)
 	{
-		std::cerr << "ERR Texture::Load : No valid texture file supplied\n";
+		Output_Handler::Error << "ERR Texture::Load : No valid texture file supplied\n";
 		return nullptr;
 	}
-	std::shared_ptr<Texture> texture = Texture::Load(tr, width, height, frame_width, frame_height, starting_point_x, starting_point_y);
-	texture->__Path = path;
-	return texture;
+
+
+	Texture::__Textures.emplace_back(std::make_shared<Texture>());
+	Texture::__Textures.back()->__Path = path;
+	Texture::__Textures.back()->__SDL_Texture = texture;
+	return __Load(ent, Texture::__Textures.back(), width, height, starting_point_x, starting_point_y);
 }
 
-std::shared_ptr<Texture> Texture::Load(SDL_Texture * texture, unsigned width, unsigned height, int frame_width, int frame_height, float starting_point_x, float starting_point_y)
+
+std::shared_ptr<Texture> Texture::Load(std::shared_ptr<Entity> ent, SDL_Texture * texture, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
 {
 	if (!texture)
 	{
-		std::cerr << "ERR Texture::Load : No SDL_Texture supplied\n";
+		Output_Handler::Error << "ERR Texture::Load : No SDL_Texture supplied\n";
 		return nullptr;
 	}
-	Texture::__Loaded.emplace_back(std::make_shared<Texture>());
-	Texture::__Loaded.back()->__Texture = texture;
-	Texture::__Loaded.back()->__Width = width;
-	Texture::__Loaded.back()->__Height = height;
-	Texture::__Loaded.back()->Set_Starting_Point(starting_point_x, starting_point_y);
-	Texture::__Loaded.back()->Set_Frame_Size(frame_width, frame_height);
-	Animation::Add(Texture::__Loaded.back().get(), "idle", { 0 });
-	return Texture::__Loaded.back();
+	for (auto& t : __Textures)
+		if (t->__SDL_Texture == texture)
+			return t;
+	Texture::__Textures.emplace_back(std::make_shared<Texture>());
+	Texture::__Textures.back()->__Path = "";
+	Texture::__Textures.back()->__SDL_Texture = texture;
+	return __Load(ent, Texture::__Textures.back(), width, height, starting_point_x, starting_point_y);
 }
 
-inline std::vector<std::shared_ptr<Texture>> Texture::Get_Loaded()
+bool Texture::Reload()
 {
-	return Texture::__Loaded;
+	if (!__Path.size()) return false;
+
+	SDL_Texture* ttr = IMG_LoadTexture(Screen::Renderer, __Path.c_str());
+	if (!ttr) return false;
+	SDL_DestroyTexture(__SDL_Texture);
+	__SDL_Texture = ttr;
+
+	return true;
 }
 
-bool Texture::Destroy(Texture* sprite)
-{
-	if (!sprite)
-	{
-		std::cerr << "ERR Texture::Destroy_Sprite : No pointer to Texture supplied\n";
-		return false;
-	}
-	if (int pos = Texture::Already_Loaded(sprite->__Path))
-	{
-		Texture::__Loaded.erase(Texture::__Loaded.begin() + pos);
-		return true;
-	}
-	return false;
-}
-
-int Texture::Already_Loaded(std::string path)
-{
-	if (!path.size())
-	{
-		std::cerr << "ERR Texture::__Check_If_Sprite_Already_Loaded : No sprite path supplied\n";
-		return -1;
-	}
-	for (unsigned i = 0; i < Texture::__Loaded.size(); i++)
-		if (path == Texture::__Loaded[i]->__Path)
-		{
-			return i;
-		}
-	return -1;
-}
-
-unsigned Texture::Get_Frames_Number()
-{
-	unsigned x, y;
-	x = (unsigned)floor(__Width / __Frame_Width);
-	y = (unsigned)floor(__Height / __Frame_Height);
-	return x*y;
-}
-
-std::pair<unsigned, unsigned> Texture::Get_Frame_Pos(unsigned frame)
-{
-	if (frame >= Get_Frames_Number())
-	{
-		std::cerr << "ERR Texture::Get_Frame_Pos : Given frame is greater than the max number of frames\n";
-		return std::make_pair<unsigned, unsigned>(0, 0);
-	}
-	unsigned x, y = 0;
-	x = frame * __Frame_Width;
-	while (x >= __Width)
-	{
-		x -= __Width;
-		y += __Frame_Height;
-	}
-	return std::make_pair(x,y);
-}
-
-
-
-
-std::pair<unsigned, unsigned> Texture::Get_Size()
-{
-	return std::make_pair(__Width, __Height);
-}
-
-
-
-std::pair<unsigned, unsigned> Texture::Get_Frame_Size()
-{
-	return std::make_pair(__Frame_Width, __Frame_Height);
-}
-std::pair<unsigned, unsigned> Texture::Set_Frame_Size(int w, int h)
-{
-
-	if (w < 0) w = __Width / -w;
-	else if ((unsigned)w > __Width) { std::cout << "MSG Texture::Set_Frame_Size : Given Frame width is invalid; Setting to Texture Width\n"; w = __Width; }
-	else if (w == 0)w = __Width;
-
-	if (h < 0) h = __Height / -h;
-	else if ((unsigned)h > __Height) { std::cout << "MSG Texture::Set_Frame_Size : Given Frame height is invalid; Setting to Texture Height\n"; h = __Height; }
-	else if (h == 0)h = __Height;
-	__Frame_Width = w;
-	__Frame_Height = h;
-	return std::make_pair(w, h);
-}
-
-unsigned Texture::Max_Frames()
-{
-	return (__Width / __Frame_Width) * (__Height / __Frame_Height);
-}
-
-
-
-std::pair<float, float> Texture::Get_Starting_Point()
-{
-	return std::make_pair(__Starting_Point_X, __Starting_Point_Y);
-}
-SDL_Point Texture::Get_SDL_Starting_Point()
+bool Texture::Set_Starting_Pos(float x, float y)
 {
 	if (!this)
 	{
-		std::cerr << "ERR Texure::Get_SDL_Starting_Point : No this Texture\n";
-		return { 0,0 };
+		Output_Handler::Error << "ERR Texure::Set_Starting_Pos : No this object\n";
+		return false;
 	}
-	return 
+	if (x < -1) x = -1;
+	if (x > 1) x = 1;
+	if (y < -1) y = -1;
+	if (y > 1) y = 1;
+	__X_Off = x;
+	__Y_Off = y;
+	return true;
+}
+
+SDL_Point Texture::Starting_Point()
+{
+	if (!this)
 	{
-		(int)((1.0 + __Starting_Point_X) / 2 * __Frame_Width),
-		(int)((1.0 + __Starting_Point_Y) / 2 * __Frame_Height)
+		Output_Handler::Error << "ERR Texure::Starting_Point : No this Texture\n";
+		return{ 0,0 };
+	}
+	return
+	{
+		(int)((1.0 + __X_Off) / 2.0 * __Width),
+		(int)((1.0 + __Y_Off) / 2.0 * __Height)
 	};
 }
-SDL_Texture * Texture::Get_SDL_Texture()
+
+
+
+bool Texture::Destroy()
 {
-	return this->__Texture;
+	unsigned count = 0;
+	auto this_texture = __Textures.end();
+	if (!__SDL_Texture) return false;
+	for (auto it = __Textures.begin(); it != __Textures.end(); ++it)
+	{
+		if (it->get()->__SDL_Texture == __SDL_Texture)
+			++count;
+		if (it->get() == this)
+			this_texture = it;
+	}
+	if (count == 1)
+	{
+		SDL_DestroyTexture(__SDL_Texture);
+		__SDL_Texture = nullptr;
+	}
+	if (this_texture != __Textures.end())
+		__Textures.erase(this_texture);
+	return true;
 }
-std::pair<float, float> Texture::Set_Starting_Point(float x, float y)
+
+bool Texture::Draw(std::shared_ptr<Entity> ent, double parent_x, double parent_y, double parent_scale, double parent_rotation)
 {
-	if (x > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1;\n"; }
-	if (x < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point x only in range from -1 to 1;\n"; }
-	if (y > 1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1;\n"; }
-	if (y < -1.0) { std::cout << "MSG Texture::Set_Starting_Point : Starting point y only in range from -1 to 1;\n"; }
-	__Starting_Point_X = x;
-	__Starting_Point_Y = y;
-	return std::make_pair(x, y);
+	double x = ent->parent->Child_X(ent->X);
+	double y = ent->parent->Child_Y(ent->Y);
+
+	double px = (double)Starting_Point().x * ent->scale * parent_scale;
+	double py = (double)Starting_Point().y * ent->scale * parent_scale;
+
+	SDL_Point p = { (int)px, (int)py };
+
+
+	SDL_Rect frame_rect;
+	SDL_Rect draw_rect;
+	SDL_RendererFlip flip;
+	double rotation;
+
+	frame_rect = Frame_Rect();
+	draw_rect = Draw_Rect();
+	draw_rect.x = (int)(((double)draw_rect.x * ent->scale + x) * parent_scale + parent_x);
+	draw_rect.y = (int)(((double)draw_rect.y * ent->scale + y) * parent_scale + parent_y);
+	draw_rect.w = (int)((double)draw_rect.w * parent_scale * ent->scale);
+	draw_rect.h = (int)((double)draw_rect.h * parent_scale * ent->scale);
+
+	flip = Flip;
+	rotation = ent->rotation + parent_rotation;
+
+
+	SDL_RenderCopyEx
+	(
+		Screen::Renderer,
+		Get_SDL_Texture(),
+		&frame_rect, &draw_rect,
+		rotation,
+		&p,
+		flip
+	);
+	return true;
+}
+
+std::shared_ptr<Texture> Texture::__Load(std::shared_ptr<Entity> ent, std::shared_ptr<Texture> t, unsigned width, unsigned height, float starting_point_x, float starting_point_y)
+{
+	t->__Width = width;
+	t->__Height = height;
+	t->__X_Off = starting_point_x;
+	t->__Y_Off = starting_point_y;
+	if (ent) ent->texture = t;
+	return t;
 }

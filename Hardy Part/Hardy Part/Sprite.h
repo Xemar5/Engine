@@ -4,50 +4,69 @@
 #include <vector>
 #include <memory>
 #include <SDL.h>
+#include "Texture.h"
+#include "Entity.h"
 
 class Animation;
-class Texture;
-class Entity;
+class Sprite;
 
 
-class Sprite
+class Sprite : public Texture
 {
 public:
-	//*** Creates new Sprite Handler and sets its Sprite
-	//*** - ent - the entity this sprite will be given to; leave nullptr if no entity wanted
-	//*** - texture - a pointer to an existing texture class; can't be nullptr
-	static Sprite* Create(Entity* ent, std::shared_ptr<Texture> texture);
-	//*** Returns the sprite of this Sprite Handler
-	std::shared_ptr<Texture> Get_Texture();
-	//*** Returns SDL_Texture stored in Texture of this Sprite
-	SDL_Texture* Get_SDL_Texture();
-	//*** Returns the size of a frame in the sprite stored in this Sprite Handler
-	std::pair<unsigned, unsigned> Get_Frame_Size();
-	//*** Returns the position of current frame in the sprite stored in this Sprite Handler
-	std::pair<unsigned, unsigned> Get_Frame_Pos();
-	//*** Returns the current frame
-	int Get_Current_Frame();
-	//*** Returns the current animation
-	Animation* Get_Current_Animation();
-	//*** Horizontal or vertical flip of this sprite
-	SDL_RendererFlip Flip;
-	//*** The angle in radians of this entity to be drawn
-	//*** If set to 0, sprite will be displayed without rotation
-	double Rotation = 0;
-private:
-	//*** Loaded Texture of this entity
-	std::shared_ptr<Texture> __Texture = nullptr;
-	//*** The X coordinate of this entity frame position
-	unsigned __Frame_Pos_X = 0;
-	//*** The Y coordinate of this entity frame position
-	unsigned __Frame_Pos_Y = 0;
-	//*** Current animation that is being played on this Entity; USE WITH ANIMATION CLASS
-	Animation* __Current_Animation = nullptr;
-	//*** Current frame number in the animation's sequence; Equal to -1 when animation ended
-	int __Sequence_Iterator = -1;
+	//*** Load new sprite from a path
+	//*** - ent - the entity this sprite is supplied to; leave null if unused
+	//*** - path - the path to the texture file
+	//*** - width - of loading texture
+	//*** - height - of loading texture
+	//*** - frame_width - of loading texture; leave 0 to set to max; set to negative to devide texture into n segments
+	//*** - frame_height - of loading texture; leave 0 to set to max; set to negative to devide texture into n segments
+	//*** - starting_point_x - x of point where texture starts
+	//*** - starting_point_y - y of point where texture starts
+	//*** Adds a default "idle" animation
+	//*** Returns pointer to it if created or already existing
+	static std::shared_ptr<Texture> Load(std::shared_ptr<Entity> ent, std::string path, unsigned width, unsigned height, float starting_point_x = 0, float starting_point_y = 0, int frame_width = 0, int frame_height = 0);
 
-	//*** Set of sprite handlers of all entities
-	static std::vector<std::shared_ptr<Sprite>> __Sprites;
+
+	//*** Width of a frame, greater than 0 and less than Width of the image
+	unsigned Frame_Width;
+	//*** Height of a frame, greater than 0 and less than Height of the image
+	unsigned Frame_Height;
+	//*** Returns the max nuber of frames
+	unsigned Max_Frames() { return (__Width / Frame_Width) * (__Height / Frame_Height); }
+
+	//*** Returns the rectangle of the texture to draw
+	SDL_Rect Frame_Rect() override;
+	//*** Returns the rectangle of the texture to draw
+	SDL_Rect Draw_Rect() override;
+	//*** Returns pair of x and y of Sprite starting position in SDL_Point format
+	SDL_Point Starting_Point() override;
+
+	
+	
+	//*** Adds given animation to this Sprite
+	//*** Does nothing if the name is already taken or sequence is empty
+	static bool Add_Animation(std::shared_ptr<Texture> texture, Animation& anim);
+	//*** Returns the animation with given name
+	//*** If no name supplied or animation not found, returns "idle"
+	Animation& operator[](std::string name);
+
+	//*** Returns the current frame
+	int Current_Frame() { return __Current_Animation ? __Current_Animation->Current_Frame() : -1; }
+	//*** Returns the current animation
+	Animation* Current_Animation() { return __Current_Animation; }
+
+private:
+
+	//*** Change of all animations of this Texture; USE WITH ANIMATION CLASS
+	std::vector<Animation> __Animations;
+
+	//*** Current animation that is being played on this Pointer; USE WITH ANIMATION CLASS
+	Animation* __Current_Animation = nullptr;
 
 	friend class Animation;
+	friend class State;
 };
+
+
+

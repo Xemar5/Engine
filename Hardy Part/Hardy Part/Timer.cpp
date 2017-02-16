@@ -1,11 +1,11 @@
 #include "Timer.h"
-#include <iostream>
+#include "Output_Handler.h"
 
 Uint32 Timer::Start()
 {
 	if (__Started)
 	{
-		std::cout << "MSG Timer::Start : Timer already started\n";
+		Output_Handler::Output << "MSG Timer::Start : Timer already started\n";
 		return 0;
 	}
 	__Paused = false;
@@ -18,7 +18,7 @@ Uint32 Timer::Stop()
 {
 	if (!__Started)
 	{
-		std::cout << "MSG Timer::Stop : Timer not started, can't stop\n";
+		Output_Handler::Output << "MSG Timer::Stop : Timer not started, can't stop\n";
 		return 0;
 	}
 	__Paused = false;
@@ -34,7 +34,7 @@ Uint32 Timer::Restart()
 {
 	if (!__Started)
 	{
-		std::cout << "MSG Timer::Restart : Timer not started\n";
+		Output_Handler::Output << "MSG Timer::Restart : Timer not started\n";
 		return 0;
 	}
 	Stop();
@@ -45,12 +45,12 @@ Uint32 Timer::Pause()
 {
 	if (!__Started)
 	{
-		std::cout << "MSG Timer::Pause : Timer not started, can't pause\n";
+		Output_Handler::Output << "MSG Timer::Pause : Timer not started, can't pause\n";
 		return 0;
 	}
 	if (__Paused)
 	{
-		std::cout << "MSG Timer::Pause : Timer already paused\n";
+		Output_Handler::Output << "MSG Timer::Pause : Timer already paused\n";
 		return __Time_Paused = SDL_GetTicks() - __Time_Before_Start - __Time;
 	}
 	__Paused = true;
@@ -62,12 +62,12 @@ Uint32 Timer::Unpause()
 {
 	if (!__Started)
 	{
-		std::cout << "MSG Timer::Unpause : Timer not started, can't unpause\n";
+		Output_Handler::Output << "MSG Timer::Unpause : Timer not started, can't unpause\n";
 		return 0;
 	}
 	if (!__Paused)
 	{
-		std::cout << "MSG Timer::Unpause : Timer not paused\n";
+		Output_Handler::Output << "MSG Timer::Unpause : Timer not paused\n";
 		return __Time = SDL_GetTicks() - __Time_Before_Start - __Time_Paused;
 	}
 	__Paused = false;
@@ -79,7 +79,7 @@ Uint32 Timer::Get()
 {
 	if (!__Started)
 	{
-		std::cout << "MSG Timer::Get : Timer not started, can't get the time\n";
+		Output_Handler::Output << "MSG Timer::Get : Timer not started, can't get the time\n";
 		return 0;
 	}
 	if (!__Paused)
