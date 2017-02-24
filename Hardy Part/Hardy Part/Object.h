@@ -41,6 +41,10 @@ public:
 	//*** Returns the real position of this entity
 	std::vector<double> RootPos();
 
+
+	//*** points to the lastly created Object
+	static std::shared_ptr<Object> last_object;
+
 private:
 	//*** if true, the object is 
 	bool is_destroyed = false;
@@ -55,6 +59,7 @@ inline std::shared_ptr<T> Object::Make(Args ...args)
 		return nullptr;
 	}
 	std::shared_ptr<T> p = std::make_shared<T>(std::forward<Args>(args)...);
+	last_object = std::dynamic_pointer_cast<Object>(p);
 	if (std::shared_ptr<Entity> e = std::dynamic_pointer_cast<Entity>(p)) e->Create();
 	if (!p->parent) State::CurrentState()->AddChild(0, p);
 	return p;

@@ -7,6 +7,8 @@
 #include "Screen.h"
 
 
+std::shared_ptr<Object> Object::last_object = nullptr;
+
 void Object::Destroy()
 {
 	if (is_destroyed) return;
@@ -27,8 +29,8 @@ std::vector<double> Object::RootPos()
 	std::vector<double> v(3);
 	std::shared_ptr<Object> p = std::dynamic_pointer_cast<Object>(parent);
 	if (p) v = p->RootPos();
-	v[0] += parent ? parent->Child_X(X) : Camera::Main->X;
-	v[1] += parent ? parent->Child_Y(Y) : Camera::Main->Y;
+	v[0] += parent ? parent->Child_X(X) : 0;
+	v[1] += parent ? parent->Child_Y(Y) : 0;
 	v[2] += Z;
 	return v;
 }

@@ -1,2 +1,50 @@
-﻿  Hardy Part.vcxproj -> C:\Users\Pabu4\Documents\Visual Studio 2015\Projects\Hardy-Part\Hardy Part\Debug\Hardy Part.exe
+﻿  System.cpp
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(102): note: see previous definition of 'INADDR_ANY'
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(105): note: see previous definition of 'INADDR_NONE'
+  UDP.cpp
+  TCP.cpp
+  Server.cpp
+  Peer.cpp
+  Network.cpp
+  Message.cpp
+  Identifier.cpp
+  Client.cpp
+  Generating Code...
+  Compiling...
+  __Source.cpp
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(102): note: see previous definition of 'INADDR_ANY'
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(105): note: see previous definition of 'INADDR_NONE'
+  Texture.cpp
+  Textfield.cpp
+c:\users\pabu4\documents\visual studio 2015\projects\hardy-part\hardy part\hardy part\textfield.cpp(50): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  State.cpp
+  Sprite.cpp
+  Screen.cpp
+  Object.cpp
+  Movement.cpp
+  LayerContainer.cpp
+  Input.cpp
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(579): warning C4005: 'INADDR_ANY': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(102): note: see previous definition of 'INADDR_ANY'
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(581): warning C4005: 'INADDR_BROADCAST': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(111): note: see previous definition of 'INADDR_BROADCAST'
+c:\program files (x86)\windows kits\8.1\include\shared\ws2def.h(582): warning C4005: 'INADDR_NONE': macro redefinition
+  c:\program files (x86)\microsoft visual studio 14.0\sdl\sdl2-2.0.4\include\sdl_net.h(105): note: see previous definition of 'INADDR_NONE'
+  Generic.cpp
+  Entity.cpp
+  Container.cpp
+  Collider.cpp
+  Camera.cpp
+  Animation.cpp
+  Action.cpp
+  Generating Code...
+  Hardy Part.vcxproj -> C:\Users\Pabu4\Documents\Visual Studio 2015\Projects\Hardy-Part\Hardy Part\Debug\Hardy Part.exe
   Hardy Part.vcxproj -> C:\Users\Pabu4\Documents\Visual Studio 2015\Projects\Hardy-Part\Hardy Part\Debug\Hardy Part.pdb (Partial PDB)

@@ -7,6 +7,7 @@
 #include <memory>
 #include <boost\asio.hpp>
 #include <boost\bind.hpp>
+#include <boost/algorithm/string.hpp>
 
 
 typedef boost::asio::ip::tcp boost_tcp;
@@ -28,12 +29,12 @@ namespace network
 						<< error << " [" << error.message() << "]\n";
 					else
 					{
-						server_socket = std::make_shared<Peer>(std::make_shared<boost::asio::ip::tcp::socket>(*network::service), nullptr, 0);
-						boost::asio::async_connect(*server_socket->socket, it, boost::bind(&AsyncConnectionRequest, boost::asio::placeholders::error, boost::asio::placeholders::iterator));
+						std::shared_ptr<boost::asio::ip::tcp::socket> srv_soc = std::make_shared<boost::asio::ip::tcp::socket>(*network::service);
+						boost::asio::async_connect(*srv_soc, it, boost::bind(&AsyncConnectionRequest, srv_soc, boost::asio::placeholders::error, boost::asio::placeholders::iterator));
 					}
 				}
 
-				void AsyncConnectionRequest(const boost::system::error_code& error, boost::asio::ip::tcp::resolver::iterator ep)
+				void AsyncConnectionRequest(std::shared_ptr<boost::asio::ip::tcp::socket> server_socket, const boost::system::error_code& error, boost::asio::ip::tcp::resolver::iterator ep)
 				{
 					if (error)
 					{
@@ -43,6 +44,7 @@ namespace network
 					else
 					{
 						impl::_connection_status = ConnectionStatus::Connecting;
+						network::server_socket = std::make_shared<Peer>(server_socket, nullptr, 0);
 						my_socket->socket = std::make_shared<boost::asio::ip::tcp::socket>(*service);
 						Output_Handler::Output << "MSG network::impl::tcp::AsyncConnectionRequest : Connection reached; awaiting allowance...\n";
 					}
@@ -112,6 +114,9 @@ namespace network
 					else
 					{
 						std::string rcvd = std::string(buf->data(), len);
+						std::string str = rcvd;
+						str.erase(std::remove(str.begin(), str.end(), '\0'), str.end());
+						std::cout << "MSG network::impl::tcp::client::AsyncRecv : message received:\n [" << str << "]\n";
 						HandleReceivedMessage(rcvd, sender);
 					}
 					sender->reading = false;
@@ -138,10 +143,10 @@ namespace network
 							std::shared_ptr<Peer> peer = std::make_shared<Peer>(peedingClient, nullptr, Server::_connections_counter++);
 							auto ep = peedingClient->remote_endpoint();
 							Output_Handler::Output << "Client (" << ep.address() << ":" << ep.port() << ") Connected [ID:" << peer->ID() << "]\n";
-							message::Send({ peer }, "ConnectionAccepted", peer->ID());
-							message::Send(connections, "AddClient", peer);
+							message::Send({ peer }, nullptr, "ConnectionAccepted", peer->ID());
+							message::Send(connections, nullptr, "AddClient", peer);
 							for(auto c : connections)
-								message::Send({ peer }, "AddClient", c);
+								message::Send({ peer }, nullptr, "AddClient", c);
 							connections.push_back(peer);
 
 							events::OnClientConnected(peer);
@@ -219,6 +224,9 @@ namespace network
 					else
 					{
 						std::string rcvd = std::string(buf->data(), len);
+						std::string str = rcvd;
+						str.erase(std::remove(str.begin(), str.end(), '\0'), str.end());
+						std::cout << "MSG network::impl::tcp::server::AsyncRecv : message received:\n [" << str << "]\n";
 						HandleReceivedMessage(rcvd, sender);
 					}
 					sender->reading = false;
@@ -244,8 +252,8 @@ namespace network
 						_connection_status = ConnectionStatus::Connected;
 						_connection_type = ConnectionType::Client;
 
-						for (auto id : object::Identifier::objects)
-							network::impl::tcp::peeding_messages.push_back({ std::to_string(server_socket->ID()) + " MakeRequest " + id->on_client_connect, server_socket });
+						//for (auto id : object::Identifier::objects)
+						//	network::impl::tcp::peeding_messages.push_back({ std::to_string(server_socket->ID()) + " MakeRequest " + std::to_string(id->owner->ID()) + " " + std::to_string(id->ID) + " " + id->on_client_connect, server_socket });
 
 						events::OnConnection();
 					}
@@ -273,7 +281,6 @@ namespace network
 
 			std::vector<std::pair<std::string, std::shared_ptr<Peer>>> peeding_messages;
 			std::vector<std::pair<message::Type, std::shared_ptr<std::istream>>> received_function_calls;
-
 
 			void Init()
 			{
@@ -305,7 +312,7 @@ namespace network
 				}
 				ReceiveMessage();
 				for (auto f : received_function_calls)
-					if(f.first)
+					if (f.first)
 						f.first(*f.second);
 				received_function_calls.clear();
 			}
@@ -375,25 +382,48 @@ namespace network
 					int receiver = -1;
 
 					sender->message >> receiver;
-					std::string foo_name;
-					sender->message >> foo_name;
-					std::string msg;
-					std::getline(sender->message, msg);
 
-					if (_connection_type == ConnectionType::Server && receiver != my_socket->ID())
+					sender->message.ignore(1);
+					std::string state_name;
+					std::getline(sender->message, state_name, '|');
+					sender->message.ignore(1);
+
+					std::vector<std::pair<message::Type, std::shared_ptr<std::istream>>>* received_function_calls_container = nullptr;
+					if (state_name.empty())
+						received_function_calls_container = &received_function_calls;
+					else
+						for (auto state : State::Built)
+							if (typeid(*state).raw_name() == state_name)
+								received_function_calls_container = &state->received_function_calls;
+
+					if (receiver != my_socket->ID() || received_function_calls_container)
 					{
-						std::shared_ptr<Peer> r;
-						for (unsigned i = 0; i < connections.size(); ++i)
-							if (connections[i]->ID() == receiver) r = connections[i];
-						message::impl::_Send({ r }, foo_name, msg);
+						std::string foo_name;
+						sender->message >> foo_name;
+						std::string msg;
+						std::getline(sender->message, msg);
+
+
+						if (_connection_type == ConnectionType::Server && receiver != my_socket->ID())
+						{
+							std::shared_ptr<Peer> r;
+							boost::trim_right_if(msg, [](char c) { return c == '\0' || c == ' '; });
+							for (unsigned i = 0; i < connections.size(); ++i)
+								if (connections[i]->ID() == receiver) r = connections[i];
+							message::impl::_Send({ r }, state_name + '|', foo_name, msg);
+						}
+						else if (receiver == my_socket->ID() || !my_socket->synchronised())
+						{
+							auto f = message::impl::_Get(foo_name, 0);
+							if (!f) f = message::impl::_Get(foo_name, 1);
+
+							received_function_calls_container->push_back({ f,std::make_shared<std::stringstream>(msg) });
+
+						}
 					}
-					else if (receiver == my_socket->ID() || !my_socket->synchronised())
+					else
 					{
-						auto f = message::Get(foo_name);
-						if (!f) f = message::impl::system::SystemGet(foo_name);
-
-						tcp::received_function_calls.push_back({ f,std::make_shared<std::stringstream>(msg) });
-
+						Output_Handler::Output << "MSG network::impl::tcp::HandleReceivedMessage : State not found\n [" << state_name << "]\n";
 					}
 					sender->message.str(std::string());
 					sender->message.clear();

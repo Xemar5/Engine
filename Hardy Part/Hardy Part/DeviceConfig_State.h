@@ -7,9 +7,9 @@ class DeviceConfig_State : public State
 	{
 		void Create()
 		{
-			Sprite::Load(*this, "Resources/DeviceAdded_Resources/Background.png", 1, 1, -1, -1, 1, 1);
+			Sprite::Load(*this, "Resources/Sprites/DeviceAdded_State/Background.png", 1, 1, -1, -1, 1, 1);
 			scale = 2000;
-			State::AddChild(1, *this);
+			State::AddChild(State::CurrentState(), 1, *this);
 		}
 	};
 
@@ -17,7 +17,7 @@ class DeviceConfig_State : public State
 	{
 		void Create()
 		{
-			State::AddChild(2, *this);
+			State::AddChild(State::CurrentState(), 2, *this);
 			Shape::Load(*this, [](std::shared_ptr<Entity> ent, std::shared_ptr<Shape> texture, double parent_x, double parent_y, double parent_scale, double parent_rotation)->bool
 			{
 				int w = (int)(boost::any_cast<double>(texture->values[0]) * 300.);
@@ -39,15 +39,15 @@ class DeviceConfig_State : public State
 	{
 		void Create()
 		{
-			Textfield::SetText(*this, " ", "imgs/slkscr.ttf", 48);
-			State::AddChild(2, *this);
+			Textfield::SetText(*this, " ", "Resources/Fonts/slkscr.ttf", 48);
+			State::AddChild(State::CurrentState(), 2, *this);
 			X = Screen::Window_Size().first - 20;
 			Y = Screen::Window_Size().second / 4;
 			this->texture->Set_Starting_Pos(1, -1);
 		}
 		void ChangeText(std::string action_name)
 		{
-			Textfield::SetText(*this, action_name, "imgs/slkscr.ttf", (Uint32)82);
+			Textfield::SetText(*this, action_name, "Resources/Fonts/slkscr.ttf", (Uint32)82);
 		}
 	};
 	std::shared_ptr<ActionName> action_name;
@@ -58,8 +58,8 @@ class DeviceConfig_State : public State
 		std::string name;
 		void Create()
 		{
-			Textfield::SetText(*this, name, "imgs/slkscr.ttf", 18);
-			State::AddChild(2, *this);
+			Textfield::SetText(*this, name, "Resources/Fonts/slkscr.ttf", 18);
+			State::AddChild(State::CurrentState(), 2, *this);
 			X = 20;
 			Y = 20;
 			this->texture->Set_Starting_Pos(-1, -1);
@@ -73,7 +73,7 @@ class DeviceConfig_State : public State
 		void Create()
 		{
 			Textfield::SetText(*this, "[0 / " + std::to_string(size) + "]", "imgs/slkscr.ttf", 18);
-			State::AddChild(2, *this);
+			State::AddChild(State::CurrentState(), 2, *this);
 			X = Screen::Window_Size().first - 20;
 			Y = 20;
 			this->texture->Set_Starting_Pos(1, -1);
@@ -85,7 +85,8 @@ class DeviceConfig_State : public State
 	};
 	std::shared_ptr<StateNumbers> state_numbers;
 
-
+	//*** If true, given device will be configured even if a configuration already exists
+	bool force;
 	//*** The time input needs to be pushed to be set
 	int state_progress_timer = 20;
 	//*** Index of the action that is being processed
@@ -103,20 +104,20 @@ class DeviceConfig_State : public State
 	//*** Contains names and descriptions of all device actions
 	std::vector<std::pair<std::string, std::string>> actions =
 	{
-		{ "Move Up", "la_up" },
 		{ "Move Down", "la_down" },
-		{ "Move Left", "la_left" },
+		{ "Move Up", "la_up" },
 		{ "Move Right", "la_right" },
-		{ "Aim Up", "ra_up" },
+		{ "Move Left", "la_left" },
 		{ "Aim Down", "ra_down" },
-		{ "Aim Left", "ra_left" },
+		{ "Aim Up", "ra_up" },
 		{ "Aim Right", "ra_right" },
+		{ "Aim Left", "ra_left" },
 		{ "Action", "action" },
 		{ "Utility", "utility" },
 		{ "Start", "start" }
 	};
 	//*** Iterates through supplied map in search of all actions from vector above
-	bool _CheckActions(std::map<std::string, std::tuple<unsigned, unsigned, unsigned>> map)
+	bool _CheckActions(std::unordered_map<std::string, std::tuple<unsigned, unsigned>>& map)
 	{
 		bool found;
 		for (auto action = actions.begin(); action != actions.end(); ++action)
@@ -136,24 +137,26 @@ class DeviceConfig_State : public State
 	}
 
 public:
-	DeviceConfig_State(unsigned device) : device(device) {}
+	DeviceConfig_State(unsigned device, bool force) : device(device), force(force) {}
 
 	void Create()
 	{
+		if (device == 2) device = 1;
 		device_name = device < 3 ? "Keyboard" : controlls::gamepads[device - 3].name();
 
-		for (auto map = controlls::Mapping::Maps.begin(); map != controlls::Mapping::Maps.end(); ++map)
-		{
-			if (map->first == device_name)
+		if(!force)
+			for (auto map = controlls::Mapping::Maps.begin(); map != controlls::Mapping::Maps.end(); ++map)
 			{
-				if (_CheckActions(map->second))
+				if (map->first == device_name)
 				{
-					State::Remove();
-					return;
+					if (_CheckActions(map->second))
+					{
+						State::Remove();
+						return;
+					}
 				}
 			}
-		}
-		if (!mapping) mapping = std::make_shared<controlls::Mapping>();
+		mapping = std::make_shared<controlls::Mapping>();
 
 		State::GetLayer(2)->scale = 0.5;
 		State::GetLayer(2)->X = Camera::Main->X;
@@ -177,16 +180,31 @@ public:
 			if (state_progress == state_progress_timer)
 			{
 				//std::cout << "[SET]";
-				(*mapping).operator<<({ actions[state_index].second, {selected_input->get_action(), selected_input->get_index(), selected_input->get_modifier()} });
+				(*mapping).operator<<({ actions[state_index].second, {selected_input->get_action(), selected_input->get_index()} });
 
 				++state_index;
 				//*** Keyboard Offset
-				while (device < 3 && state_index >= 4 && state_index <= 7)
+				while ((device < 3 && state_index >= 4 && state_index <= 7) || state_index == 10)
 				{
-					if (state_index == 4 || state_index == 5)
-						(*mapping).operator<<({ actions[state_index].second,{ 2, 1, 0 } });
-					if (state_index == 6 || state_index == 7)
-						(*mapping).operator<<({ actions[state_index].second,{ 2, 0, 0 } });
+					switch (state_index)
+					{
+					case 4: (*mapping).operator<<({ actions[state_index].second,{ 0, 0 } }); break;
+					case 5: (*mapping).operator<<({ actions[state_index].second,{ 2, 1 } }); break;
+					case 6: (*mapping).operator<<({ actions[state_index].second,{ 0, 0 } }); break;
+					case 7: (*mapping).operator<<({ actions[state_index].second,{ 2, 0 } }); break;
+					case 10: (*mapping).operator<<({ actions[state_index].second,{ 1, SDLK_ESCAPE } }); break;
+					default:
+						break;
+					}
+
+					++state_index;
+				}
+
+				if (device >= 3 &&
+					(state_index == 1 || state_index == 3 || state_index == 5 || state_index == 7) &&
+					std::get<0>(mapping->operator[](actions[state_index - 1].second)) == 2)
+				{
+					(*mapping).operator<<({ actions[state_index].second,{ 0, 0 } });
 					++state_index;
 				}
 

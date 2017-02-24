@@ -15,12 +15,12 @@ namespace network
 			{
 				void Join(std::string ip)
 				{
-					resolver = std::make_shared<boost::asio::ip::udp::resolver>(*service);
+					std::shared_ptr<boost::asio::ip::udp::resolver> resolver = std::make_shared<boost::asio::ip::udp::resolver>(*service);
 					boost::asio::ip::udp::resolver::query query{ boost::asio::ip::udp::v4(), ip, "daytime" };
-					resolver->async_resolve(query, std::bind(AsyncClientResolve, std::placeholders::_1, std::placeholders::_2));
+					resolver->async_resolve(query, std::bind(AsyncClientResolve, resolver, std::placeholders::_1, std::placeholders::_2));
 				}
 
-				void AsyncClientResolve(const boost::system::error_code & err, boost::asio::ip::udp::resolver::iterator it)
+				void AsyncClientResolve(std::shared_ptr<boost::asio::ip::udp::resolver> resolver, const boost::system::error_code & err, boost::asio::ip::udp::resolver::iterator it)
 				{
 					if (err)
 					{
@@ -56,7 +56,6 @@ namespace network
 			} //namespace server
 
 
-			std::shared_ptr<boost::asio::ip::udp::resolver> resolver = nullptr;
 			std::shared_ptr<boost::asio::ip::udp::socket> socket = nullptr;
 			bool reading = false;
 
@@ -123,7 +122,7 @@ namespace network
 			{
 				if (error)
 				{
-					std::cout << "ERROR: " << error.message() << error << std::endl;
+					std::cout << "MSG network::impl::udp::RecvHandler : Connection restarted" << std::endl;
 				}
 				else if (!bytes_transferred);// std::cout << "No UDP data received\n";
 				else if (bytes_transferred == 4)
@@ -152,7 +151,7 @@ namespace network
 							for (auto o : object::Identifier::objects)
 								if (o->ID == id)
 								{
-									//std::cout << "recvd datat from " << id << std::endl;
+									std::cout << "recvd datat from " << id << std::endl;
 									if (connection_type() == ConnectionType::Client && o->owner == my_socket)
 										std::cout << "   THEY MESS MY DATA " << id << "\n";
 									else
@@ -168,6 +167,8 @@ namespace network
 
 			void Init()
 			{
+
+				//*** Maybe add something here, not sure
 			}
 
 			unsigned update_interval = 10;

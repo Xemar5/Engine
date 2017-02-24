@@ -33,6 +33,13 @@ public:
 	virtual double Child_X(double x) { return x; };
 	//*** Calculates the y pos form given coordinates
 	virtual double Child_Y(double y) { return y; };
+
+private:
+	//*** The container of all entities this container holds sorted by their Y axis
+	std::vector<std::shared_ptr<Object>> sorted_children;
+
+	friend class Screen;
+	friend class System;
 };
 
 

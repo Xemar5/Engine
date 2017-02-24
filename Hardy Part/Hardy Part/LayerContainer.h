@@ -13,7 +13,7 @@ public:
 	virtual ~LayerContainer() = default;
 
 	//*** Adds child to the layer in this state
-	static void AddChild(unsigned layer, std::shared_ptr<Object> obj);
+	void AddChild(unsigned layer, std::shared_ptr<Object> obj);
 	//*** Adds child to the layer in specific state
 	static void AddChild(std::shared_ptr<State> state, unsigned layer, std::shared_ptr<Object> obj);
 

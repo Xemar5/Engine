@@ -13,11 +13,6 @@ LayerContainer::LayerContainer()
 
 void LayerContainer::AddChild(unsigned layer, std::shared_ptr<Object> obj)
 {
-	AddChild(State::CurrentState(), layer, obj);
-}
-
-void LayerContainer::AddChild(std::shared_ptr<State> state, unsigned layer, std::shared_ptr<Object> obj)
-{
 	if (obj->parent)
 	{
 		for (auto it = obj->parent->children.begin(); it != obj->parent->children.end(); ++it)
@@ -29,8 +24,13 @@ void LayerContainer::AddChild(std::shared_ptr<State> state, unsigned layer, std:
 			}
 	}
 
-	std::shared_ptr<Layer> l = state->_GetOrCreateLayer(layer);
+	std::shared_ptr<Layer> l = _GetOrCreateLayer(layer);
 	l->AddChild(obj);
+}
+
+void LayerContainer::AddChild(std::shared_ptr<State> state, unsigned layer, std::shared_ptr<Object> obj)
+{
+	State::CurrentState()->AddChild(layer, obj);
 }
 
 std::shared_ptr<Layer> LayerContainer::_GetOrCreateLayer(unsigned id)

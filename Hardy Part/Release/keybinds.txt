@@ -1,12 +1,28 @@
 [Keyboard]
-#No Keybinds Change
+action = button 32
+la_down = button 115
+la_right = button 100
+la_up = button 119
+la_left = button 97
+ra_down = null 0
+ra_right = null 0
+ra_up = axis 1
+ra_left = axis 0
+start = button 27
+utility = button 1073742049
 
 
-[PS2700 Rumble Pad]
-#No Keybinds Change
-
-
-[XInput Controller #1]
-#No Keybinds Change
+[XInput Controller]
+la_right = axis 0
+la_down = axis 1
+la_up = null 0
+la_left = null 0
+ra_right = axis 2
+ra_down = axis 3
+ra_left = null 0
+ra_up = null 0
+action = button 0
+start = button 6
+utility = button 1
 
 

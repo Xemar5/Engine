@@ -153,7 +153,7 @@ bool Screen::__Draw(std::shared_ptr<Object> ent, double parent_x, double parent_
 		double y = ent->parent->Child_Y(ent->Y);
 
 		e->Reorder();
-		for (auto child : e->children)
+		for (auto child : e->sorted_children)
 		{
 			__Draw(child, parent_x + x, parent_y + y, parent_scale * ent->scale, parent_rotation + ent->rotation);
 		}

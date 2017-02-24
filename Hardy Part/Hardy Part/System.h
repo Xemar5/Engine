@@ -37,6 +37,7 @@ private:
 	static void __ClearChildren(std::shared_ptr<Object> ent);
 
 	static void __Delete();
+	static void __Create();
 	static void __Update();
 	static void __Events();
 	
@@ -59,12 +60,12 @@ void System::Start()
 	{
 		Output_Handler::Error << "\nUnable to initialize TTF:" << TTF_GetError() << "\n";
 	}
-	srand(time(nullptr));
+	srand((unsigned)time(nullptr));
 	SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt");
 	controlls::Mapping::Init("keybinds.txt");
 	Screen::Init();
 	Audio::Init();
-	//Network::Init();
+	network::impl::Init();
 	State::Change<T>();
 	//Audio::Play_Music(Audio::Load_Music("imgs/Baker Cat.mp3"));
 	//Screen::Change_Window_State();

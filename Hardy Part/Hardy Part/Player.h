@@ -1,68 +1,45 @@
 #pragma once
-#include <initializer_list>
-#include <vector>
-#include <memory>
-#include <SDL.h>
-#include "Entity.h"
+#include "Input.h"
+#include "Mapping.h"
 
-namespace controlls
-{
-	class Gamepad;
-}
 
-typedef double(*Input_Function)(std::vector<Sint32>);
 
 class Player
 {
 public:
-	//*** Initializes a new player and sets it's index to the given one
-	//*** If the index is already taken, returns the existing player
-	static std::shared_ptr<Player> Set(int index = -1);
-	////*** Sets the inp*ut handlers to a given player
-	//*** Returns an existing player with a given index if it exists
-	static std::shared_ptr<Player> Get(int index);
-	//*** Removes the player from the game
-	static bool Remove(std::shared_ptr<Player> player);
-	//*** Removes all players from the game
-	static bool RemoveAll();
-	//*** Returns an existing player with a given index if it exists
-	static int Get_First_Unused_Index();
-	//*** Sets the controller of a player based on the given device index
-	static bool Set_Controller(std::shared_ptr<Player> player, Sint32 controller);
-	//*** The index of this Player
-	Sint32 Controller = -2;
-	//*** Sets the given entity for this player to controll
-	//*** - change_mouse_coordinates - if true, the relative x and y coordinates of mouse input will be set
-	//***							   to the x and y pos of supplied entity
-	static bool Set_Entity(std::shared_ptr<Player> player, std::shared_ptr<Entity> ent);
-	//*** Returns the entity given player controlls
-	static std::shared_ptr<Entity> Get_Entity(std::shared_ptr<Player> player);
-	//*** Returns the container of all created Players
-	static std::vector<std::shared_ptr<Player>> Get_Players();
-	//*** Returns a vector of all entities that are being controlled by each player
-	static std::vector<std::shared_ptr<Entity>> Get_Controlled_Entities();
-	//*** The maximum number of players
-	static unsigned Max_Players;
-private:
-	//*** The index of this player
-	int __Index = -1;
-	//*** The entity this Player controlls
-	std::shared_ptr<Entity> __Entity = nullptr;
-	//*** The name of the controller this player uses
-	std::string __ControllerName = "";
+	//*** Adds a new player
+	//*** - device - if set to unsigned max (-1), player is not local
+	//***			 otherwise users will be asked for defining this
+	//***			 player's device mapping if not already defined
+	static std::shared_ptr<Player> Add(unsigned device);
 
-	//*** Vecotr of all used input presets from a file
-	//*** An used input preset can't be used again
-	static std::vector<std::string> __Used_Presets;
+	//*** Returns an input mapped to supplied name if exists
+	controlls::Input& GetInput(std::string input_name);
 
+	//*** Returns the index of a device this player uses
+	//*** Can be changed with SetDevice  function
+	unsigned device() const { return _device; }
 
-	//*** The container of all the Player objectss
-	static std::vector<std::shared_ptr<Player>> __Players;
+	//*** Changes the device this player uses
+	//*** This function also updates mapping stored in this player
+	//*** If the new device mapping is not defined, user will be asked to do it
+	void SetDevice(unsigned device);
 
-	static void __Update();
-	static void __Events();
+	//*** Vector containing all created players
+	static std::vector<std::shared_ptr<Player>> players;
+	//*** Player class of user of this machine
+	static std::shared_ptr<Player> me;
 
-	friend class System;
-	friend class controlls::Gamepad;
+	Player() = default;
+protected:
+
+	//*** The index of a device this player uses
+	//*** Can be changed with SetDevice  function
+	unsigned _device = -1;
+
+	//*** All stored inputs andtheir names
+	controlls::Mapping::MapInputs _mapping;
+
+	friend class controlls::Mapping;
 };
 

@@ -30,7 +30,7 @@ namespace controlls
 				controlls::device.input->get_action() == action &&
 				controlls::device.input->get_index() == index) return;
 
-			controlls::device.input = controlls::GetInput<controlls::Input>(device, action, index);
+			controlls::device.input = controlls::StoreInput<controlls::Input>(device, action, index);
 			switch (device)
 			{
 			case 0: break;
@@ -63,11 +63,11 @@ namespace controlls
 			case SDL_MOUSEBUTTONDOWN:	_SetInput(2, 1, System::Events.button.button, System::Events.button.timestamp, 1); break;
 			case SDL_MOUSEBUTTONUP:		_SetInput(2, 1, System::Events.button.button, 0, 0); break;
 			case SDL_MOUSEMOTION:	if (System::Events.motion.xrel)
-			{
-				_SetInput(2, 2, 0, System::Events.motion.timestamp, System::Events.motion.x);
-				input_map[2][2][2].push_time = System::Events.motion.timestamp;
-				input_map[2][2][2].value = (double)System::Events.motion.xrel;
-			}
+									{
+										_SetInput(2, 2, 0, System::Events.motion.timestamp, System::Events.motion.x);
+										input_map[2][2][2].push_time = System::Events.motion.timestamp;
+										input_map[2][2][2].value = (double)System::Events.motion.xrel;
+									}
 									if (System::Events.motion.yrel)
 									{
 										_SetInput(2, 2, 1, System::Events.motion.timestamp, System::Events.motion.y);
@@ -82,7 +82,25 @@ namespace controlls
 			case SDL_JOYBUTTONUP:				if (!gamepads[System::Events.jbutton.which].is_gamecontroller())_SetInput(System::Events.jbutton.which + 3, 1, System::Events.jbutton.button, 0, 0); break;
 			case SDL_CONTROLLERAXISMOTION:		if (gamepads[System::Events.caxis.which].is_gamecontroller())_SetInput(System::Events.caxis.which + 3, 2, System::Events.caxis.axis, System::Events.caxis.value ? System::Events.caxis.timestamp : 0, System::Events.caxis.value); break;
 			case SDL_JOYAXISMOTION:				if (!gamepads[System::Events.jaxis.which].is_gamecontroller())_SetInput(System::Events.jaxis.which + 3, 2, System::Events.jaxis.axis, System::Events.jaxis.value ? System::Events.jaxis.timestamp : 0, System::Events.jaxis.value); break;
-			case SDL_JOYHATMOTION:				if (!gamepads[System::Events.jhat.which].is_gamecontroller())_SetInput(System::Events.jhat.which + 3, 3, System::Events.jhat.hat, System::Events.jhat.value ? System::Events.jhat.timestamp : 0, System::Events.jhat.value); break;
+			case SDL_JOYHATMOTION:				if (!gamepads[System::Events.jhat.which].is_gamecontroller())
+												{
+													for (unsigned i = 1; i != (1 << 4); i = (i << 1))
+													{
+														auto& input = input_map[System::Events.jhat.which + 3][3][i + (System::Events.jhat.hat << 4)];
+														if (input.value != (i & System::Events.jhat.value))
+														{
+															SDL_Event hat_event = System::Events;
+															hat_event.type = 1543 + (unsigned)input.value;
+															hat_event.jhat.value = i;
+															SDL_PushEvent(&hat_event);
+														}
+													}
+													break;
+												}
+			//SDL_HATBUTTONDOWN
+			case 1543:							_SetInput(System::Events.jhat.which + 3, 3, System::Events.jhat.value + (System::Events.jhat.hat << 4), System::Events.jhat.timestamp, 1); break;
+			//SDL_HATBUTTONUP
+			case 1544:							_SetInput(System::Events.jhat.which + 3, 3, System::Events.jhat.value + (System::Events.jhat.hat << 4), 0, 0); break;
 			//case SDL_CONTROLLERDEVICEADDED:
 			case SDL_JOYDEVICEADDED:			Gamepad::_AddJoystick(System::Events.jdevice.which); break;
 			//case SDL_CONTROLLERDEVICEREMOVED:
@@ -94,22 +112,22 @@ namespace controlls
 
 
 
-		bool Hat::pushed()
+		bool Hat::pushed() const
 		{
 			auto& it = input_map[_device][3][_index];
 			unsigned last = (unsigned)it.last_value;
 			unsigned val = (unsigned)it.value;
-			if (_modifier == (unsigned)Directions::None) return ~last & val ? it.EventResolve() : false;
-			else return _modifier == (~last & val) ? it.EventResolve() : false;
+			if (get_modifier() == (unsigned)Directions::None) return ~last & val ? it.EventResolve() : false;
+			else return get_modifier() == (~last & val) ? it.EventResolve() : false;
 		}
 
-		bool Hat::released()
+		bool Hat::released() const
 		{
 			auto& it = input_map[_device][3][_index];
 			unsigned last = (unsigned)it.last_value;
 			unsigned val = (unsigned)it.value;
-			if (_modifier == (unsigned)Directions::None) return last & ~val ? it.EventResolve() : false;
-			else return _modifier == (last & ~val) ? it.EventResolve() : false;
+			if (get_modifier() == (unsigned)Directions::None) return last & ~val ? it.EventResolve() : false;
+			else return get_modifier() == (last & ~val) ? it.EventResolve() : false;
 		}
 
 		bool Mouse::ContainsMouse(std::shared_ptr<Entity> ent)
@@ -127,8 +145,8 @@ namespace controlls
 		
 			SDL_Point p;
 			SDL_GetMouseState(&p.x, &p.y);
-			double px = (double)p.x + Camera::Main->X;
-			double py = (double)p.y + Camera::Main->Y;
+			double px = ((double)p.x + Camera::Main->X) / Camera::Main->scale;
+			double py = ((double)p.y + Camera::Main->Y) / Camera::Main->scale;
 		
 			//double px = Mouse::Get[Input::Change(IT_MOUSE_AXIS, MA_X)].Held();
 			//double py = Mouse::Get[Input::Change(IT_MOUSE_AXIS, MA_Y)].Held();
@@ -137,6 +155,7 @@ namespace controlls
 			auto pos = ent->RootPos();
 			double offx = sp->Starting_Point().x * scale / Camera::Main->scale;
 			double offy = sp->Starting_Point().y * scale / Camera::Main->scale;
+
 			return (
 				px >= pos[0] - offx &&
 				px <= pos[0] - offx + ent->hitbox().first &&
@@ -191,7 +210,7 @@ namespace controlls
 		}
 
 
-		std::string Input::get_action_name()
+		std::string Input::get_action_name() const
 		{
 			switch (get_action())
 			{
@@ -203,18 +222,30 @@ namespace controlls
 			return std::string();
 		}
 
-		bool MouseAxis::pushed()
+		bool MouseAxis::pushed()const
 		{
 			int val = get_index() == 0 ? Screen::Window_Size().first : Screen::Window_Size().second;
 			return abs(raw_value() - val / 2) > val / 4;
 		}
 
+
 } //namespace impl
+
+	std::shared_ptr<impl::Input> undefined = StoreInput(0, 0, 0);
 
 	impl::Device device{ 0 };
 	impl::Keyboard keyboard;
 	impl::Mouse mouse;
 	impl::GamepadMap gamepads;
+
+	unsigned DeviceByName(std::string name)
+	{
+		if (name == "Keyboard") return 1;
+		else if (name == "Mouse") return 2;
+		else for (auto g = gamepads.map.begin(); g != gamepads.map.end(); ++g)
+			if (g->second.name() == name) return g->first + 3;
+		return -1;
+	}
 
 } //namespace controlls
 

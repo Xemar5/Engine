@@ -4,6 +4,7 @@
 
 namespace network
 {
+	void Disconnect();
 	namespace impl { namespace tcp { namespace stored_messages { namespace client { void ConnectionAccepted(unsigned id); } } } }
 	
 
@@ -32,17 +33,18 @@ namespace network
 		int ID() { return _ID; }
 		bool synchronised() { return _ID >= 0; }
 		bool reading = false;
+		bool is_host();
 		std::stringstream message;
 
 		virtual ~Peer();
 
 	private:
 		int _ID = 0;
-		static int _ID_counter;
 
 
 		friend class Server;
 		friend void impl::tcp::stored_messages::client::ConnectionAccepted(unsigned id);
+		friend void network::Disconnect();
 	};
 
 } //namespace network

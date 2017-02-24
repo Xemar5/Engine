@@ -154,6 +154,7 @@
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DeviceConfig_State.h" />
+    <ClInclude Include="Maps\HumanFootball_State.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Canvas.h" />
     <ClInclude Include="Layer.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Action.h" />
     <ClInclude Include="Output_Handler.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PressButton_State.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Shape.h" />

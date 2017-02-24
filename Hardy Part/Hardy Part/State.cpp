@@ -11,6 +11,7 @@
 
 std::vector<std::shared_ptr<State>> State::Built;
 std::vector<unsigned> State::Deleted;
+std::vector<unsigned> State::Created;
 State::Phase State::_state_phase = State::Phase::SystemReserved;
 std::shared_ptr<State> State::_CurrentState = nullptr;
 

@@ -15,15 +15,11 @@ namespace network
 		if (connection_status() == ConnectionStatus::Disconnected)
 		{
 			impl::_connection_status = ConnectionStatus::Connecting;
-			if (!impl::Init())
-			{
-				Disconnect();
-				return;
-			}
 
 			my_socket->socket = std::make_shared<boost::asio::ip::tcp::socket>(*service);
 			my_socket->_ID = 0;
-			object::Identifier::SyncData::ID_count = -object::Identifier::SyncData::ID_count;
+			_connections_counter = 1;
+			object::Identifier::SyncData::ID_count = abs(object::Identifier::SyncData::ID_count);
 
 			server_socket = my_socket;
 

@@ -11,8 +11,6 @@ namespace network
 	{
 		if (connection_status() == ConnectionStatus::Disconnected)
 		{
-			if (!impl::Init()) Disconnect();
-
 			std::shared_ptr<boost::asio::ip::tcp::resolver> resolver = std::make_shared<boost::asio::ip::tcp::resolver>(*network::service);
 			impl::tcp::client::server_ip = ip;
 			boost::asio::ip::tcp::resolver::query query{ ip, std::to_string(port) };

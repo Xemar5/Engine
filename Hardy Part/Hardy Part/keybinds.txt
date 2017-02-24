@@ -1,42 +1,14 @@
 [Keyboard]
 action = button 32
-la_down = button 115
-la_left = button 97
 la_right = button 100
+la_down = button 115
 la_up = button 119
-ra_down = axis 1
+la_left = button 97
+ra_right = null 0
+ra_down = null 0
 ra_left = axis 0
-ra_right = axis 0
 ra_up = axis 1
 start = button 27
 utility = button 1073742049
-
-
-[PS2700 Rumble Pad]
-action = button 1
-la_down = axis 1
-la_left = axis 0
-la_right = axis 0
-la_up = axis 1
-ra_down = axis 4
-ra_left = axis 2
-ra_right = axis 2
-ra_up = axis 4
-start = button 9
-utility = button 2
-
-
-[XInput Controller]
-action = button 0
-la_down = axis 1
-la_left = axis 0
-la_right = axis 0
-la_up = axis 1
-ra_down = axis 3
-ra_left = axis 2
-ra_right = axis 2
-ra_up = axis 3
-start = button 6
-utility = button 1
 
 

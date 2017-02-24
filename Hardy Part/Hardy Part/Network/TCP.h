@@ -22,7 +22,8 @@ namespace network
 			//*** if a packet is too big, it will be cut into smaller ones
 			constexpr size_t packet_size = 256;
 
-
+			//*** The state received message is send to
+			extern std::shared_ptr<State> received_message_state;
 
 
 			namespace client
@@ -39,6 +40,7 @@ namespace network
 				//*** Tries to connect to given ip
 				void AsyncConnectionRequest
 				(
+					std::shared_ptr<boost::asio::ip::tcp::socket> server_socket,
 					const boost::system::error_code& error,
 					boost::asio::ip::tcp::resolver::iterator ep
 				);

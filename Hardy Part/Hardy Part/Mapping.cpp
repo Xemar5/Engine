@@ -1,5 +1,6 @@
 #include "Mapping.h"
 #include "Input.h"
+#include "Player.h"
 #include <fstream>
 #include <algorithm>
 #include <tuple>
@@ -7,6 +8,7 @@
 namespace controlls
 {
 
+	std::tuple<unsigned, unsigned> Mapping::undefined{ 0, 0 };
 	std::map<std::string, Mapping::MapType> Mapping::Maps = {};
 	std::string Mapping::Default_Path = "";
 	std::map<std::string, Input> Mapping::Default_Bindings;
@@ -27,12 +29,12 @@ namespace controlls
 			str += key.first + " = ";
 			switch (std::get<0>(key.second))
 			{
+			case 0: str += "null"; break;
 			case 1: str += "button"; break;
 			case 2: str += "axis"; break;
 			case 3: str += "hat"; break;
 			default: break;
 			}
-			if (std::get<2>(key.second) > 0) str += "(" + std::to_string(std::get<2>(key.second)) + ")";
 			str += " " + std::to_string(std::get<1>(key.second));
 			str += '\n';
 		}
@@ -60,7 +62,7 @@ namespace controlls
 		return true;
 	}
 
-	int Mapping::Read_Line(std::string& src_str, std::string* dst_str, unsigned* action, unsigned* index, unsigned* modifier)
+	int Mapping::Read_Line(std::string& src_str, std::string* dst_str, unsigned* action, unsigned* index)
 	{
 		if (!src_str.size() || !dst_str) return -1;
 		auto m = std::cmatch{};
@@ -68,13 +70,14 @@ namespace controlls
 
 		if (m[1].matched)
 		{
-			unsigned a, i, mod;
+			unsigned a, i;// , mod;
 			std::string input_name = m[1].str();
 			std::string input_type = m[2].str();
-			int input_parameter = m[4].matched ? std::atoi(m[4].str().c_str()) : 0;
+			//int input_parameter = m[4].matched ? std::atoi(m[4].str().c_str()) : 0;
 			int input_value = std::atoi(m[5].str().c_str());
 
-			if (input_type == "axis") a = 2;
+			if (input_type == "null") a = 0;
+			else if (input_type == "axis") a = 2;
 			else if (input_type == "button") a = 1;
 			else if (input_type == "hat") a = 3;
 			else if (input_type == "mousev") a = 2;
@@ -82,12 +85,11 @@ namespace controlls
 			else return -1;
 
 			i = input_value;
-			mod = input_parameter;
+			//mod = input_parameter;
 
 			*dst_str = input_name;
 			*action = a;
 			*index = i;
-			*modifier = mod;
 			return 0;
 
 		}
@@ -120,7 +122,7 @@ namespace controlls
 			unsigned action = 0;
 			unsigned index = 0;
 			unsigned modifier = 0;
-			auto result = Read_Line(str, &name, &action, &index, &modifier);
+			auto result = Read_Line(str, &name, &action, &index);
 
 			if (result == 1)
 			{
@@ -129,7 +131,7 @@ namespace controlls
 			}
 			if (result == 0 && v.find(device_name) != v.end())
 			{
-				v[device_name].insert({ name, {action, index, modifier} });
+				v[device_name].insert({ name, {action, index } });
 			}
 			//if (str[0] == '[' && Read_Line(str, &device_name))
 			//	if (v.find(device_name) == v.end()) v.insert({ device_name, {} });
@@ -146,12 +148,19 @@ namespace controlls
 
 	bool Mapping::Save(std::string name)
 	{
-		for (auto it = __Map.begin(); it != __Map.end(); ++it)
-		{
-			if (it->first == "UNDEFINED") { __Map.erase(it); break; }
-		}
+		//for (auto it = __Map.begin(); it != __Map.end(); ++it)
+		//{
+		//	if (it->first == "UNDEFINED") { __Map.erase(it); break; }
+		//}
 		Mapping::Maps[name] = __Map;
 		Mapping::__Save_To_File(Mapping::Default_Path, Mapping::Maps);
+
+		unsigned d = controlls::DeviceByName(name);
+		for (auto p : Player::players)
+		{
+			if (p->device() == d || (p->device() == 2 && d == 1)) p->_mapping = Mapping::CreateInputs(d);
+		}
+
 		return true;
 	}
 
@@ -161,7 +170,8 @@ namespace controlls
 		std::string device_name;
 		switch (device)
 		{
-		case 0: return{}; break;
+		case -1:
+		case 0: return MapInputs{}; break;
 		case 1:
 		case 2: device_name = "Keyboard"; device = 1; break;
 		default: device_name = gamepads[device - 3].name(); break;
@@ -173,8 +183,7 @@ namespace controlls
 			{
 				for (auto& i : map->second)
 				{
-					input_map.insert({ i.first, controlls::GetInput(device, std::get<0>(i.second), std::get<1>(i.second)) });
-					if (std::get<2>(i.second)) input_map.at(i.first)->modifier(std::get<2>(i.second));
+					input_map.insert({ i.first, controlls::StoreInput(device, std::get<0>(i.second), std::get<1>(i.second)) });
 				}
 				break;
 			}
@@ -182,28 +191,25 @@ namespace controlls
 		return input_map;
 	}
 
-	Mapping::Mapping(MapType map)
+	Mapping::Mapping(const MapType map)
 	{
 		__Map = map;
-		if (__Map.find("UNDEFINED") == __Map.end()) __Map.insert({ "UNDEFINED",{ 0, 0, 0 } });
 	}
 	Mapping::Mapping(std::initializer_list<MapTypePair> list)
 	{
 		__Map = list;
-		if (__Map.find("UNDEFINED") == __Map.end()) __Map.insert({ "UNDEFINED", { 0, 0, 0 } });
 	}
 
-	std::tuple<unsigned, unsigned, unsigned> Mapping::operator[](std::string name) const
+	std::tuple<unsigned, unsigned> Mapping::operator[](std::string name) const
 	{
 		auto it = __Map.find(name);
 		if (it != __Map.end()) return it->second;
-		return __Map.at("UNDEFINED");
+		return undefined;
 	}
 
-	Mapping& Mapping::operator=(MapType map)
+	Mapping& Mapping::operator=(const MapType map)
 	{
 		__Map = map;
-		if (__Map.find("UNDEFINED") == __Map.end()) __Map.insert({ "UNDEFINED",{ 0, 0, 0 } });
 		return *this;
 	}
 
@@ -216,7 +222,6 @@ namespace controlls
 			return *this;
 		}
 		__Map.insert(binding);
-		if (__Map.find("UNDEFINED") == __Map.end()) __Map.insert({ "UNDEFINED",{ 0, 0, 0 } });
 		return *this;
 	}
 

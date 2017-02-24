@@ -24,8 +24,16 @@ namespace network
 
 	namespace impl
 	{
+		//*** If true, udp systems has been initialized
+		extern bool initialized;
+		//*** If true, service has stopped working
+		extern bool stopped;
+		//*** If true, service is requested to stop
+		extern bool stop_requested;
 		//*** initializes all main resources of the network system
-		bool Init();
+		void Init();
+		//*** Exits network system
+		void Exit();
 		//*** Current status of the connection
 		extern ConnectionStatus _connection_status;
 		//*** Current status of the connection

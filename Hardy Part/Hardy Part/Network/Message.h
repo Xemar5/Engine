@@ -5,17 +5,20 @@
 #include <functional>
 #include <sstream>
 
+class State;
+
 namespace network
 {
 	namespace message
 	{
 		using StorageIter = unsigned;
+		using InnerStorageIter = std::string;
 		using Type = std::function<void(std::istream&)>;
 
 		template <typename Ret, typename... Args>
 		Ret Call(Type f, Args&&... args);
 
-		extern std::map<StorageIter, std::map<std::string, Type>> messages;
+		extern std::map<StorageIter, std::map<InnerStorageIter, Type>> messages;
 
 
 
@@ -48,6 +51,7 @@ namespace network
 					bool good = true;
 					auto val = get<Head>(is, good);
 					if (good) return call(is, f, types<Tail...>{}, std::forward<Vs>(vs)..., val);
+
 					return R();
 				}
 				//*** Recursive function peeling received istream from values
@@ -63,7 +67,7 @@ namespace network
 					if (!(args >> t))
 					{
 						args.clear();
-						std::cout << "ERR message::impl::Message<>::get : Supplied argument type doesn't match the function's arguments\n";
+						std::cout << "ERR network::message::impl::Message<>::get : Supplied argument type doesn't match the function's arguments\n";
 						good = false;
 					}
 					args.get();
@@ -82,10 +86,11 @@ namespace network
 					if (!(args >> id))
 					{
 						args.clear();
-						std::cout << "ERR message::impl::Message<>::get : Supplied argument type is not of Peer ID\n";
+						std::cout << "ERR network::message::impl::Message<>::get : Supplied argument type is not of Peer ID\n";
 						good = false;
 					}
 
+					if (id == -1) return nullptr;
 					if (my_socket && my_socket->ID() == id) return my_socket;
 					if (server_socket && server_socket->ID() == id) return server_socket;
 					for (auto c : connections)
@@ -128,7 +133,7 @@ namespace network
 			template <typename ...T			   > std::string get_arg(std::string& s, double& val, T&&... args) { s += " " + std::to_string(val); return get_arg(s, args...); }
 			template <typename ...T			   > std::string get_arg(std::string& s, float& val, T&&... args) { s += " " + std::to_string(val); return get_arg(s, args...); }
 			template <typename ...T			   > std::string get_arg(std::string& s, unsigned& val, T&&... args) { s += " " + std::to_string(val); return get_arg(s, args...); }
-			template <typename ...T			   > std::string get_arg(std::string& s, std::shared_ptr<Peer> val, T&&... args) { s += " " + std::to_string(val->ID()); return get_arg(s, args...); }
+			template <typename ...T			   > std::string get_arg(std::string& s, std::shared_ptr<Peer> val, T&&... args) { s += " " + std::to_string(val ? val->ID() : -1); return get_arg(s, args...); }
 			template <typename K, typename ...T> std::string get_arg(std::string& s, K&& val, T&&... args)
 			{
 				Output_Handler::Error << "ERR network::message::impl::get_arg : unsupported value\n";
@@ -138,9 +143,9 @@ namespace network
 
 			//*** Searches network::message::messages vector for a functor with given name
 			//*** returns nullptr if no functor was found
-			template <typename T = Type> Type _Get(std::string name, StorageIter iter)
+			template <typename T = Type> Type _Get(InnerStorageIter name, StorageIter iter)
 			{
-				for (auto m : messages[iter])
+				for (auto& m : messages[iter])
 					if (m.first == name)
 						return m.second;
 				return nullptr;
@@ -148,7 +153,7 @@ namespace network
 			//*** Pairs a function with a name and stores them in network::message::messages
 			//***   iter - used for differentiation system and non-system functors
 			//***		   non-system functors will be erased after state change
-			template <typename R, typename... A> Type _Store(std::function<R(A...)> f, std::string name, StorageIter iter)
+			template <typename R, typename... A> Type _Store(std::function<R(A...)> f, InnerStorageIter name, StorageIter iter)
 			{
 				if (State::state_phase() != State::Phase::StateCreate)
 				{
@@ -167,17 +172,8 @@ namespace network
 				return msg;
 			}
 
-			template <typename = void> void _Send(std::vector<std::shared_ptr<Peer>> receivers, std::string message_name, std::string args)
-			{
-				if (message_name.size() && receivers.size())
-				{
-					std::string s = message_name + " " + args;
-					for (auto r : receivers)
-					{
-						network::impl::tcp::peeding_messages.push_back({ std::to_string(r->ID()) + " " + s, r });
-					}
-				}
-			}
+			void _Send(std::vector<std::shared_ptr<Peer>> receivers, std::shared_ptr<State> state, InnerStorageIter message_name, std::string args);
+			void _Send(std::vector<std::shared_ptr<Peer>> receivers, std::string state_name, InnerStorageIter message_name, std::string args);
 
 			namespace system
 			{
@@ -229,23 +225,38 @@ namespace network
 			OtherClientsAndServer
 		};
 
-		template <typename... A> void Send(std::vector<std::shared_ptr<Peer>> receivers, std::string message_name, A... args)
+		template <typename... A> void Send(std::vector<std::shared_ptr<Peer>> receivers, std::shared_ptr<State> state, std::string message_name,  A... args)
 		{
-			impl::_Send(receivers, message_name, Serialise(args...));
+			impl::_Send(receivers, state, message_name, Serialise(args...));
 		}
-		template <typename... A> void Send(Receivers receivers, std::string message_name, A... args)
+		template <typename... A> void Send(Receivers receivers, std::shared_ptr<State> state, std::string message_name, A... args)
 		{
-			switch (receivers)
+			if (connection_type() == ConnectionType::None)
 			{
-			case network::message::Receivers::Server:
-				if (connection_type() == ConnectionType::Server) Call<void, A...>(Get(message_name), std::forward<A>(args)...);
-				else Send({ server_socket }, message_name, std::forward<A>(args)...);
-				break;
-			case network::message::Receivers::Me:
-				if (connection_type() == ConnectionType::Server) Call<void, A...>(Get(message_name), std::forward<A>(args)...);
-				else Send({ my_socket }, message_name, std::forward<A>(args)...);
-				break;
-			case network::message::Receivers::All:
+				switch (receivers)
+				{
+				case network::message::Receivers::All: 
+				case network::message::Receivers::Me: 
+				case network::message::Receivers::AllClients: Call<void, A...>(impl::_Get(message_name, 0), std::forward<A>(args)...); break;
+				case network::message::Receivers::Server: break;
+				case network::message::Receivers::OtherClients: break;
+				case network::message::Receivers::OtherClientsAndServer: break;
+				default: break;
+				}
+			}
+			else
+			{
+				switch (receivers)
+				{
+				case network::message::Receivers::Server:
+					if (connection_type() == ConnectionType::Server) Call<void, A...>(impl::_Get(message_name, 0), std::forward<A>(args)...);
+					else Send({ server_socket }, state, message_name, std::forward<A>(args)...);
+					break;
+				case network::message::Receivers::Me:
+					if (connection_type() == ConnectionType::Server) Call<void, A...>(impl::_Get(message_name, 0), std::forward<A>(args)...);
+					else Send({ my_socket }, state, message_name, std::forward<A>(args)...);
+					break;
+				case network::message::Receivers::All:
 				{
 					auto v = connections;
 					if (connection_type() != ConnectionType::Server)
@@ -253,30 +264,31 @@ namespace network
 						v.push_back(server_socket);
 						v.push_back(my_socket);
 					}
-					Send(v, message_name, args...);
-					if(connection_type() == ConnectionType::Server) Call<void, A...>(Get(message_name), std::forward<A>(args)...);
+					Send(v, state, message_name, args...);
+					if (connection_type() == ConnectionType::Server) Call<void, A...>(impl::_Get(message_name, 0), std::forward<A>(args)...);
 				}
 				break;
-			case network::message::Receivers::AllClients:
+				case network::message::Receivers::AllClients:
 				{
 					auto v = connections;
 					if (connection_type() != ConnectionType::Server)
 						v.push_back(my_socket);
-					Send(v, message_name, std::forward<A>(args)...);
+					Send(v, state, message_name, std::forward<A>(args)...);
 				}
 				break;
-			case network::message::Receivers::OtherClients:
-				Send(connections, message_name, std::forward<A>(args)...);
-				break;
-			case network::message::Receivers::OtherClientsAndServer:
+				case network::message::Receivers::OtherClients:
+					Send(connections, state, message_name, std::forward<A>(args)...);
+					break;
+				case network::message::Receivers::OtherClientsAndServer:
 				{
 					auto v = connections;
 					v.push_back(server_socket);
-					Send(v, message_name, std::forward<A>(args)...);
+					Send(v, state, message_name, std::forward<A>(args)...);
 				}
 				break;
-			default:
-				break;
+				default:
+					break;
+				}
 			}
 		}
 

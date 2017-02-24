@@ -52,9 +52,6 @@
     <Filter Include="Source Files\States\Defined">
       <UniqueIdentifier>{4f4b9921-ce7d-498f-b0a9-f37d40373e77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\States\Defined">
-      <UniqueIdentifier>{ef577068-5c45-4e50-900b-f150043042bf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Entities\Defined">
       <UniqueIdentifier>{135e9f88-2253-4c6d-b4d4-2640cfe9105f}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,9 @@
     </Filter>
     <Filter Include="Header Files\Network">
       <UniqueIdentifier>{2410e9fb-75f9-4f0d-b8b4-f4c841b7e512}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\States\Maps">
+      <UniqueIdentifier>{b83e488a-a708-4522-b56d-9e6599ffa682}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -98,9 +98,6 @@
     </ClCompile>
     <ClCompile Include="Output_Handler.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files\Users</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
       <Filter>Source Files\Input</Filter>
@@ -165,6 +162,9 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Movement.h">
@@ -199,9 +199,6 @@
     </ClInclude>
     <ClInclude Include="Output_Handler.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files\Users</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>Header Files\Input</Filter>
@@ -274,6 +271,15 @@
     </ClInclude>
     <ClInclude Include="Shape.h">
       <Filter>Header Files\Texture Handler</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PressButton_State.h">
+      <Filter>Header Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Maps\HumanFootball_State.h">
+      <Filter>Header Files\States\Maps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -15,8 +15,8 @@ namespace controlls
 	class Mapping
 	{
 	public:
-		using MapType = std::map<std::string, std::tuple<unsigned, unsigned, unsigned>>;
-		using MapTypePair = std::pair<std::string const, std::tuple<unsigned, unsigned, unsigned>>;
+		using MapType = std::unordered_map<std::string, std::tuple<unsigned, unsigned>>;
+		using MapTypePair = std::pair<std::string const, std::tuple<unsigned, unsigned>>;
 		using MapInputs = std::unordered_map<std::string, Input>;
 		//*** Initializes the Mapping class
 		//*** - path - the path to the file where keybinds are stored
@@ -34,7 +34,7 @@ namespace controlls
 		//*** - src_str - the line of string to read
 		//*** - dst_str - the string this function writes the action name to
 		//*** - binding - the Input this function sets
-		static int Read_Line(std::string& src_str, std::string* const dst_str = nullptr, unsigned* action = nullptr, unsigned* index = nullptr, unsigned* modifier = nullptr);
+		static int Read_Line(std::string& src_str, std::string* const dst_str = nullptr, unsigned* action = nullptr, unsigned* index = nullptr);
 		//*** Reads the file from given path and saves all recognised action-inputs pairs
 		//***	as a map; if no action was read succesfuly, but the name of a map is,
 		//***	creates an empty map of this name
@@ -50,19 +50,22 @@ namespace controlls
 		bool Save(std::string name);
 
 		//*** Creates a vector of Inputs by converting values read from the default path file
-		MapInputs CreateInputs(unsigned device);
+		static MapInputs CreateInputs(unsigned device);
 
-		Mapping() { __Map = {}; };
-		Mapping(MapType map);
+		Mapping() { __Map = std::unordered_map<std::string, std::tuple<unsigned, unsigned>>{}; };
+		Mapping(const MapType map);
 		Mapping(std::initializer_list<MapTypePair> list);
 		//*** Returns the action of given name from the __Map if it exists
-		std::tuple<unsigned, unsigned, unsigned> operator[](std::string name) const;
-		Mapping& operator=(MapType map);
+		std::tuple<unsigned, unsigned> operator[](std::string name) const;
+		Mapping& operator=(const MapType map);
 		Mapping& operator<<(MapTypePair input);
 		//*** Iterator to the first element of __Map
 		MapType::const_iterator begin() const { return __Map.begin(); };
 		//*** Iterator to the past-the-last element of __Map
 		MapType::const_iterator end() const { return __Map.end(); };
+
+		//*** The undefined input
+		static std::tuple<unsigned, unsigned> undefined;
 	private:
 		//*** The regex to convert mapping line to Input action
 		static std::regex __Regex;
@@ -71,7 +74,7 @@ namespace controlls
 		//*** - maps - a map of mapping names and Input maps
 		static bool __Save_To_File(const std::string path, const std::map<std::string, MapType>& maps);
 		//*** A map containing all inputs and their action names this mapping contains
-		std::map<std::string, std::tuple<unsigned, unsigned, unsigned>> __Map;
+		std::unordered_map<std::string, std::tuple<unsigned, unsigned>> __Map;
 	};
 
 } //namespace controlls

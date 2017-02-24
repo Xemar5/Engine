@@ -1,7 +1,7 @@
 #include <cctype>
 #include "System.h"
 //#include "Menu_State.h"
-#include "MainMenu_State.h"
+#include "PressButton_State.h"
 #include "Network\Network.h"
 
 int main(int argc, char* argv[])
@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 	if (argc >= 2)
 		network::ip = argv[1];
 
-	System::Start<MainMenu_State>();
+	System::Start<PressButton_State>();
 
 	return 0;
 }

@@ -1,8 +1,14 @@
 [Keyboard]
-#No Keybinds Change
-
-
-[XInput Controller #1]
-#No Keybinds Change
+la_right = button 97
+la_down = button 115
+la_up = button 119
+la_left = button 100
+ra_right = null 0
+ra_down = null 0
+ra_left = axis 0
+ra_up = axis 1
+action = button 32
+start = button 27
+utility = button 1073742049
 
 

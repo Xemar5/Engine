@@ -27,6 +27,7 @@ void System::_System_Update()
 		if (FPS_Clock.Get() > 1000 / System::FPS)
 		{
 			FPS_Clock.Restart();
+			if (State::Created.size()) __Create();
 			if (State::Deleted.size()) __Delete();
 
 			State::_state_phase = State::Phase::StateUpdate;
@@ -45,7 +46,7 @@ void System::_System_Update()
 		SDL_Delay(1);
 	}
 
-	Player::RemoveAll();
+	network::Disconnect();
 	Screen::Exit();
 	TTF_Quit();
 	SDL_AudioQuit();
@@ -60,17 +61,32 @@ void System::__Update()
 	std::vector<std::shared_ptr<State>> stt_to_update;
 	for (unsigned i = 0; i < State::Built.size(); i++)
 	{
+		bool isDeleted = false;
+		for (auto d : State::Deleted)
+			if (d == i) { isDeleted = true; break; }
+		if (isDeleted) continue;
+
+		bool isCreated = false;
+		for (auto d : State::Created)
+			if (d == i) { isCreated = true; break; }
+		if (isCreated) continue;
+
 		if (!State::Built[i]->Update_Underneath) stt_to_update.clear();
 		stt_to_update.push_back(State::Built[i]);
 	}
 	for (unsigned i = 0; i < stt_to_update.size(); i++)
 	{
 		State::_CurrentState = stt_to_update[i];
-		stt_to_update[i]->Update();
 		stt_to_update[i]->State::Update();
+		stt_to_update[i]->Update();
+
+		for (auto f : stt_to_update[i]->received_function_calls)
+			if (f.first)
+				f.first(*f.second);
+		stt_to_update[i]->received_function_calls.clear();
+
 		State::_CurrentState = nullptr;
 	}
-	Player::__Update();
 	controlls::impl::Signal::Update();
 	//Network::SendAll();
 }
@@ -85,6 +101,12 @@ void System::__Events()
 		for (auto d : State::Deleted)
 			if (d == i) { isDeleted = true; break; }
 		if (isDeleted) continue;
+
+		bool isCreated = false;
+		for (auto d : State::Created)
+			if (d == i) { isCreated = true; break; }
+		if (isCreated) continue;
+
 		if (!State::Built[i]->Update_Underneath) stt_to_events.clear();
 		stt_to_events.push_back(State::Built[i]);
 
@@ -96,8 +118,8 @@ void System::__Events()
 	for (unsigned i = 0; i < stt_to_events.size(); i++)
 	{
 		State::_CurrentState = stt_to_events[i];
-		stt_to_events[i]->Events();
 		stt_to_events[i]->State::Events();
+		stt_to_events[i]->Events();
 		State::_CurrentState = nullptr;
 	}
 }
@@ -110,8 +132,10 @@ void System::__ClearChildren(std::shared_ptr<Object> ent)
 		for (auto child : cont->children)
 			__ClearChildren(child);
 		cont->children.clear();
+		cont->sorted_children.clear();
 	}
 	ent->parent = nullptr;
+	if (Entity::last_object == ent) Entity::last_object = nullptr;
 }
 
 void System::__Delete()
@@ -136,4 +160,18 @@ void System::__Delete()
 		else ++it;
 	}
 	State::Deleted.clear();
+}
+
+void System::__Create()
+{
+	for (auto it = State::Created.begin(); it != State::Created.end();)
+	{
+		State::_state_phase = State::Phase::StateCreate;
+		State::_CurrentState = State::Built[*it];
+		State::Built[*it]->Create();
+		State::_CurrentState = nullptr;
+		State::_state_phase = State::Phase::SystemReserved;
+
+		it = State::Created.erase(it);
+	}
 }

@@ -20,7 +20,7 @@ namespace network
 				//*** Creates udp connection
 				void Join(std::string ip);
 				//*** Handles udp connsection resolving
-				void AsyncClientResolve(const boost::system::error_code & err, boost::asio::ip::udp::resolver::iterator it);
+				void AsyncClientResolve(std::shared_ptr<boost::asio::ip::udp::resolver> resolver, const boost::system::error_code & err, boost::asio::ip::udp::resolver::iterator it);
 
 			} //namespace client
 
@@ -31,8 +31,6 @@ namespace network
 
 			} //namespace server
 
-			//*** Handles udp connection
-			extern std::shared_ptr<boost::asio::ip::udp::resolver> resolver;
 			//*** Handles udp connection
 			extern std::shared_ptr<boost::asio::ip::udp::socket> socket;
 			//*** If true, system is awaiting an incomming UDP data

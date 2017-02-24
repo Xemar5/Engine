@@ -9,6 +9,9 @@
 
 class Tileset;
 class Texture;
+namespace network {
+	class Peer;
+}
 
 class State : public LayerContainer
 {
@@ -54,6 +57,9 @@ public:
 	//*** Deleted states in this System loop
 	//*** They will be removed at the begining of the next System loop
 	static std::vector<unsigned> Deleted;
+	//*** Newly created states in this System loop
+	//*** Their Create function will fire at the begining of the next System loop
+	static std::vector<unsigned> Created;
 
 
 
@@ -72,6 +78,12 @@ public:
 	//*** Exits the game, destroy all states and state layers
 	template <bool = true> static void Exit_Game();
 
+
+	//*** Received messages
+	//*** Resolved at the end of this state update loop
+	std::vector<std::pair<network::message::Type, std::shared_ptr<std::istream>>> received_function_calls;
+
+
 	virtual ~State() = 0 {};
 private:
 	void __Update(std::shared_ptr<Object> e);
@@ -85,6 +97,8 @@ private:
 
 	//*** Pointer to the current state
 	static std::shared_ptr<State> _CurrentState;
+
+
 
 	friend void network::impl::tcp::Init();
 	friend class System;
@@ -117,7 +131,7 @@ private:
 template <typename T, typename... Args>
 std::shared_ptr<T> State::Change(Args&&... args)
 {
-	if (__isDeleted(CurrentState())) return nullptr;
+	//if (__isDeleted(CurrentState())) return nullptr;
 
 	_state_phase = Phase::SystemReserved;
 
@@ -127,12 +141,13 @@ std::shared_ptr<T> State::Change(Args&&... args)
 	network::message::messages[2].clear();
 	
 	Built.push_back(std::make_shared<T>(std::forward<Args>(args)...));
+	Created.push_back(Built.size() - 1);
 
-	_state_phase = Phase::StateCreate;
-	_CurrentState = Built.back();
-	Built.back()->Create();
-	_CurrentState = nullptr;
-	_state_phase = Phase::SystemReserved;
+	//_state_phase = Phase::StateCreate;
+	//_CurrentState = Built.back();
+	//Built.back()->Create();
+	//_CurrentState = nullptr;
+	//_state_phase = Phase::SystemReserved;
 
 	return std::static_pointer_cast<T>(Built.back());
 }
@@ -145,19 +160,19 @@ std::shared_ptr<T> State::Change(Args&&... args)
 template <typename T, bool update_underneath, typename... Args>
 std::shared_ptr<T> State::Add(Args&&... args)
 {
-	if (__isDeleted(CurrentState())) return nullptr;
+	//if (__isDeleted(CurrentState())) return nullptr;
 
 	_state_phase = Phase::SystemReserved;
 
-	Built.emplace_back(std::make_shared<T>(std::forward<Args>(args)...));
+	Built.push_back(std::make_shared<T>(std::forward<Args>(args)...));
 	Built.back()->Update_Underneath = update_underneath;
-	//Built.back()->State::Create();
+	Created.push_back(Built.size() - 1);
 	
-	_state_phase = Phase::StateCreate;
-	_CurrentState = Built.back();
-	Built.back()->Create();
-	_CurrentState = nullptr;
-	_state_phase = Phase::SystemReserved;
+	//_state_phase = Phase::StateCreate;
+	//_CurrentState = Built.back();
+	//Built.back()->Create();
+	//_CurrentState = nullptr;
+	//_state_phase = Phase::SystemReserved;
 	
 	return std::static_pointer_cast<T>(Built.back());
 }

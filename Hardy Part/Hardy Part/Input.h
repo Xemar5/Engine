@@ -8,6 +8,7 @@ class Entity;
 
 namespace controlls
 {
+	unsigned DeviceByName(std::string name);
 	class Mapping;
 
 	enum class Directions
@@ -126,33 +127,26 @@ namespace controlls
 			bool operator!=(const Input& other) { return !operator==(other); }
 
 			//*** Returns current value of this input
-			virtual double value() { return _signal().value; }
+			virtual double value() const { return _signal().value; }
 			//*** Returns the value of this input before this event has occured
-			virtual double last_value() { return _signal().last_value; }
+			virtual double last_value() const { return _signal().last_value; }
 			//*** If not equal to 0, the value of this input is being changed
 			//*** <0 - value descends
 			//*** >0 - value increases
 			//*** Dont use with Axis (might give wrong data)
-			virtual int in_motion() { return pushed() - released(); }
+			virtual int in_motion() const { return pushed() - released(); }
 			//*** Returns the raw value of this input
 			//*** Works only for Axis (for other types returns value() )
-			virtual double raw_value() { return _signal().value; }
+			virtual double raw_value() const { return _signal().value; }
 			//*** Returns the value of this input before this event has occured
-			virtual double raw_last_value() { return _signal().last_value; }
+			virtual double raw_last_value() const { return _signal().last_value; }
 			//*** If 1, the input is being curently pushed
 			//*** Works for Button and Hat
-			virtual bool pushed() { return abs((int)last_value()) < abs((int)value()) ? _signal().EventResolve() : false; }
+			virtual bool pushed() const { return abs((int)last_value()) < abs((int)value()) ? _signal().EventResolve() : false; }
 			//virtual bool pushed() { auto& i = input_map[get_device()][get_action()][get_index()]; return (int)i.last_value < i.value ? i.EventResolve() : false; }
 			//*** If 1, the input is being curently released
 			//*** Works for Button and Hat
-			virtual bool released() { return abs((int)last_value()) > abs((int)value()) ? _signal().EventResolve() : false; }
-			//*** Sets the modifier of this input
-			//*** Works only for Hat
-			//*** use with enum class Direction
-			virtual Input* modifier(unsigned dir) { this->_modifier = dir; return this; }
-			//*** Returns the currently pushed direction on the Hat
-			//*** Wotks only with Hat
-			virtual Directions which_direction() { return static_cast<Directions>((int)value()); }
+			virtual bool released() const { return abs((int)last_value()) > abs((int)value()) ? _signal().EventResolve() : false; }
 
 			//*** Returns the device the input is comming from
 			virtual unsigned get_device() const { return _device ? _device : input_map[_device][0][1].push_time; }
@@ -162,18 +156,15 @@ namespace controlls
 			virtual unsigned get_index() const { return _action ? _index : (unsigned)input_map[_device][0][1].last_value; }
 			//*** Returns the modifier of this input
 			//*** Modifiers are used in Hat inputs, determining direction
-			unsigned get_modifier() const { return _modifier; }
+			virtual unsigned get_modifier() const { return 0; }
 
 			//*** Returns the name of current input action
-			std::string get_action_name();
+			std::string get_action_name() const;
 
 			//*** Converts this input to a specific type
 			template <typename T> T as() { return InputTypeRetrive<T>::from(get_device(), get_action(), get_index()); }
 		protected:
 
-			//*** direction value
-			//*** use with Hat
-			unsigned _modifier = 0;
 			//*** current device
 			unsigned _device = 0;
 			//*** current action (see enum class Actions)
@@ -182,42 +173,40 @@ namespace controlls
 			unsigned _index = 0;
 
 			//*** Returns the signal this Input points to
-			Signal& _signal() { return input_map[get_device()][get_action()][get_index()]; }
+			Signal& _signal() const { return input_map[get_device()][get_action()][get_index()]; }
 
 			template <typename T> friend class ActionHandler;
 			friend class GamepadMap;
+			friend class Mapping;
 		};
 		struct Button : public Input
 		{
 			Button(unsigned Device) : Input(Device, 1) {}
 			Button(unsigned Device, unsigned Index) : Input(Device, 1, Index) {}
 			Button(unsigned Device, unsigned Action, unsigned Index) : Input(Device, 1, Index) {}
-		private:
-			using Input::which_direction;
-			using Input::modifier;
 		};
 		struct Hat : public Input
 		{
 			Hat(unsigned Device) : Input(Device, 3) {}
 			Hat(unsigned Device, unsigned Index) : Input(Device, 3, Index) {}
 			Hat(unsigned Device, unsigned Action, unsigned Index) : Input(Device, 3, Index) {}
+			//*** Returns the currently pushed direction on the Hat
+			unsigned get_modifier() const override { return (unsigned)value(); }
 			//*** Returns the direction that is being currently pushed
-			bool pushed() override;
+			bool pushed() const override;
 			//*** Returns the direction that is being currently released
-			bool released() override;
+			bool released() const override;
 		};
 		struct Axis : public Input
 		{
 			Axis(unsigned Device) : Input(Device, 2) {}
 			Axis(unsigned Device, unsigned Index) : Input(Device, 2, Index) {}
 			Axis(unsigned Device, unsigned Action, unsigned Index) : Input(Device, 2, Index) {}
-			double value() override { auto val = _signal().value; return val >= 32500 ? 1 : val <= -32500 ? -1 : val / 32768.0; }
-			double last_value() override { auto val = _signal().last_value; return val >= 32500 ? 1 : val <= -32500 ? -1 : val / 32768.0; }
+			double value() const override { auto val = _signal().value; return val >= 32500 ? 1 : val <= -32500 ? -1 : val / 32768.0; }
+			double last_value() const override { auto val = _signal().last_value; return val >= 32500 ? 1 : val <= -32500 ? -1 : val / 32768.0; }
 			//*** Don't use this (TODO)
-			int in_motion() override { return _signal().value != _signal().last_value; }
+			int in_motion() const override { return _signal().value != _signal().last_value; }
 		private:
-			using Input::which_direction;
-			using Input::modifier;
 		};
 		struct MouseAxis : public Input
 		{
@@ -226,16 +215,14 @@ namespace controlls
 			//*** If not equal to 0, the value of this input is being changed
 			//*** <0 - value descends
 			//*** >0 - value increases
-			int in_motion() override { return (int)(SDL_GetTicks() < 100 + input_map[_device][_action][_index + 2].push_time) * sgn(input_map[_device][_action][_index + 2].value); }
+			int in_motion() const override { return (int)(SDL_GetTicks() < 100 + input_map[_device][_action][_index + 2].push_time) * sgn(input_map[_device][_action][_index + 2].value); }
 			//*** True if mouse is in between 0 - 1 /4 of the screen and in between 3 - 4 /4 of the screen
-			bool pushed() override;
+			bool pushed() const override;
 			//*** True if mouse is in between 1 - 3 /4 of the screen
-			bool released() override { return !pushed(); }
+			bool released() const override { return !pushed(); }
 		private:
 			using Input::pushed;
 			using Input::released;
-			using Input::which_direction;
-			using Input::modifier;
 		};
 
 		template <typename T>
@@ -334,6 +321,7 @@ namespace controlls
 			std::unordered_map<unsigned, Gamepad> map;
 			//*** The index of recently connected gamepad
 
+			friend unsigned controlls::DeviceByName(std::string);
 			friend struct Gamepad;
 			friend void Signal::Events();
 			friend class ::controlls::Mapping;
@@ -366,11 +354,21 @@ namespace controlls
 		return impl::InputTypeRetrive<T>::from(device, action, index);
 	}
 
-	template <typename T = std::shared_ptr<impl::Input>>
-	T GetInput(unsigned device, unsigned action, unsigned index)
-	{
-		return StoreInput<T>(device, action, index);
-	}
+	
+	////*** Copies given input and converts it to T type
+	////*** Returened input can be stored for later use/checks
+	//template <typename T = std::shared_ptr<impl::Input>>
+	//T GetInput(unsigned device, unsigned action, unsigned index)
+	//{
+	//	return StoreInput<T>(device, action, index);
+	//}
+
+	//*** Returns the device index by supplied name
+	//*** If no device has this name, unsigned max (-1) is returned
+	unsigned DeviceByName(std::string name);
+
+	//*** Undefined input
+	extern std::shared_ptr<impl::Input> undefined;
 
 	using Input = std::shared_ptr<impl::Input>;
 	using Axis = std::shared_ptr<impl::Axis>;
@@ -381,4 +379,7 @@ namespace controlls
 
 
 } //namespace controlls
+
+
+#include "Mapping.h"
 

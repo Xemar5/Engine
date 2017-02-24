@@ -23,7 +23,7 @@ std::shared_ptr<Texture> Texture::Load(std::shared_ptr<Entity> ent, std::string 
 	if (!texture) texture = IMG_LoadTexture(Screen::Renderer, path.c_str());
 	if (!texture)
 	{
-		Output_Handler::Error << "ERR Texture::Load : No valid texture file supplied\n";
+		Output_Handler::Error << "ERR Texture::Load : No valid texture file supplied\n [" << path << "]\n";
 		return nullptr;
 	}
 
